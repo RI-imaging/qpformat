@@ -4,7 +4,7 @@ qpformat
 |PyPI Version| |Tests Status| |Coverage Status| |Docs Status|
 
 
-**qpformat** is a Python3 library for analyzing spherical objects in quantitative phase imaging.
+**qpformat** is a Python3 library for opening quantitative phase imaging data file formats.
 
 
 Documentation
