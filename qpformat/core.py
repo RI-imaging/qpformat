@@ -1,10 +1,19 @@
-from . import file_formats
+from .file_formats import formats, formats_dict, UnknownFileFormatError
+
+
+def guess_format(path):
+    """Determine the file format of a folder or a file"""
+    for fmt in formats:
+        if fmt.verify(path):
+            return fmt.__name__
+    else:
+        raise UnknownFileFormatError(path)
 
 
 def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
               h5out=None):
     """Load experimental data
-    
+
     Parameters
     ----------
     path: str
@@ -25,7 +34,7 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
         is written to disk.
     meta_data: dict
         Meta data (see `qpimage.meta.VALID_META_KEYS`)
-    
+
     Returns
     -------
     dataobj: `file_formats.Group` or `file_formats.Single`
@@ -33,13 +42,15 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
         experimental data.
     """
     if fmt is None:
-        fmt = file_formats.guess_format(path)
-    if bg_fmt is None and bg_path is not None:
-        bg_fmt = file_formats.guess_format(bg_path)
+        fmt = guess_format(path)
 
-    dataobj = file_formats.formats_dict[fmt](path)
-    bgobj = file_formats.formats_dict[bg_fmt](bg_path)
-    dataobj.set_bg(bgobj)
+    dataobj = formats_dict[fmt](path)
+
+    if bg_path is not None:
+        if bg_fmt is None:
+            bg_fmt = guess_format(bg_path)
+        bgobj = formats_dict[bg_fmt](bg_path)
+        dataobj.set_bg(bgobj)
 
     if h5out is not None:
         # TODO:

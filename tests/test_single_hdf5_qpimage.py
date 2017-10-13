@@ -1,17 +1,18 @@
-import os
-from os.path import abspath, dirname
+from os.path import abspath, dirname, join
 import sys
-import tempfile
-
-import numpy as np
 
 # Add parent directory to beginning of path variable
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpformat  # noqa: E402
 
 
-def test_nothing():
-    pass
+def test_load_data():
+    path = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    ds = qpformat.load_data(path)
+    assert ds.path == path
+    assert ds.get_time() == 0
+    assert "SingleHdf5Qpimage" in ds.__repr__()
+
 
 if __name__ == "__main__":
     # Run all tests
@@ -19,4 +20,3 @@ if __name__ == "__main__":
     for key in list(loc.keys()):
         if key.startswith("test_") and hasattr(loc[key], "__call__"):
             loc[key]()
-
