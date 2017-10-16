@@ -48,17 +48,18 @@ class DataSet(object):
         # raw data
         qpi = self.get_qpimage_raw(idx)
         # bg data
-        if len(self._bgdata) == 1:
-            # One background for all
-            bgidx = 0
-        else:
-            bgidx = idx
+        if self._bgdata:
+            if len(self._bgdata) == 1:
+                # One background for all
+                bgidx = 0
+            else:
+                bgidx = idx
 
-        if isinstance(self._bgdata, DataSet):
-            bg = self._bgdata.get_qpimage_raw(bgidx)
-        else:
-            bg = self._bgdata[bgidx]
-        qpi.set_bg(bg_data=bg)
+            if isinstance(self._bgdata, DataSet):
+                bg = self._bgdata.get_qpimage_raw(bgidx)
+            else:
+                bg = self._bgdata[bgidx]
+            qpi.set_bg_data(bg_data=bg)
         return qpi
 
     @abc.abstractmethod
@@ -115,4 +116,7 @@ class DataSet(object):
         """Verify that `path` has this file format
 
         Returns `True` if the file format matches.
+        The implementation of this method should be fast and
+        memory efficient, because e.g. the "GroupFolder" file
+        format depends on it.
         """
