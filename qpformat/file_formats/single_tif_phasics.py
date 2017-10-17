@@ -1,3 +1,4 @@
+import calendar
 import copy
 import time
 import xml.etree.ElementTree as ET
@@ -89,7 +90,8 @@ class SingleTifPhasics(DataSet):
             structtime = time.strptime(timestr[0],
                                        "%Y-%m-%d_%Hh%Mm%Ss")
             fracsec = float(timestr[1]) * 1e-5
-            thetime = time.mktime(structtime) + fracsec
+            # use calendar, because we need UTC
+            thetime = calendar.timegm(structtime) + fracsec
         else:
             thetime = 0
         return thetime
