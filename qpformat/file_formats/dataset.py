@@ -39,11 +39,11 @@ class DataSet(object):
     def __len__(self):
         """Return number of samples of a data set"""
 
-    def get_name(self, idx):
+    def get_name(self, idx=0):
         """Return name of data at index `idx`"""
         return "{} [{}]".format(self.path, idx)
 
-    def get_qpimage(self, idx):
+    def get_qpimage(self, idx=0):
         """Return background-corrected QPImage of data at index `idx`"""
         # raw data
         qpi = self.get_qpimage_raw(idx)
@@ -63,10 +63,10 @@ class DataSet(object):
         return qpi
 
     @abc.abstractmethod
-    def get_qpimage_raw(self, idx):
+    def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
 
-    def get_time(self, idx):
+    def get_time(self, idx=0):
         """Return time of data at in dex `idx`
 
         By default, this returns zero and must be

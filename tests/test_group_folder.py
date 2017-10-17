@@ -9,7 +9,7 @@ import qpformat  # noqa: E402
 
 
 def setup_folder_single_h5(size=2):
-    path = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
     tdir = tempfile.mkdtemp(prefix="qpformat_test_")
     files = []
     for ss in range(size):

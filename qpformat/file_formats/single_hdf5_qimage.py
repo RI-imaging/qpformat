@@ -8,8 +8,10 @@ class SingleHdf5Qpimage(DataSet):
     def __len__(self):
         return 1
 
-    def get_qpimage(self, idx):
+    def get_qpimage(self, idx=0):
         """Return background-corrected QPImage of data at index `idx`"""
+        if idx != 0:
+            raise ValueError("Single file format, only one entry (`idx!=0`)!")
         if self._bgdata:
             # The user has explicitly chosen different background data
             # using `get_qpimage_raw`.
@@ -29,6 +31,8 @@ class SingleHdf5Qpimage(DataSet):
 
     def get_time(self, idx=0):
         """Return the time of the QPImage data"""
+        if idx != 0:
+            raise ValueError("Single file format, only one entry (`idx!=0`)!")
         qpi = qpimage.QPImage(h5file=self.path, h5mode="r")
         if "time" in qpi.meta:
             return qpi.meta["time"]

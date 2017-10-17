@@ -11,7 +11,7 @@ def guess_format(path):
 
 
 def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
-              h5out=None):
+              meta_data={}, h5out=None):
     """Load experimental data
 
     Parameters
@@ -27,13 +27,13 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
         The file format to use (see `file_formats.formats`)
         for the background. If set to `None`, the file format
         is be guessed.
+    meta_data: dict
+        Meta data (see `qpimage.meta.VALID_META_KEYS`)
     h5out: str
         Path to an hdf5 output file where all data
         is written in the :py:mod:`qpimage` data
         file format. If set to `None`, nothing
         is written to disk.
-    meta_data: dict
-        Meta data (see `qpimage.meta.VALID_META_KEYS`)
 
     Returns
     -------
@@ -44,12 +44,12 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
     if fmt is None:
         fmt = guess_format(path)
 
-    dataobj = formats_dict[fmt](path)
+    dataobj = formats_dict[fmt](path=path, meta_data=meta_data)
 
     if bg_path is not None:
         if bg_fmt is None:
             bg_fmt = guess_format(bg_path)
-        bgobj = formats_dict[bg_fmt](bg_path)
+        bgobj = formats_dict[bg_fmt](path=bg_path, meta_data=meta_data)
         dataobj.set_bg(bgobj)
 
     if h5out is not None:

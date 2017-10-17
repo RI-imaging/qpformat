@@ -7,7 +7,7 @@ import qpformat  # noqa: E402
 
 
 def test_load_data():
-    path = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
     ds = qpformat.load_data(path)
     assert ds.path == path
     assert ds.get_time() == 0
