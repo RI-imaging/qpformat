@@ -114,8 +114,7 @@ class SingleTifPhasics(DataSet):
                         nm, val = gchild
                         # print(sec, nm.text, val.text)
                         if (sec.lower() == section and
-                            nm.text.lower() == name
-                            ):
+                                nm.text.lower() == name):
                             return val.text
         else:
             return None
@@ -135,10 +134,10 @@ class SingleTifPhasics(DataSet):
             else:
                 if (len(tf) == 3 and
                     "61243" in tf.pages[0].tags and
-                            "61242" in tf.pages[0].tags and
-                        "61238" in tf.pages[0].tags and
-                        "max_sample_value" in tf.pages[0].tags and
-                    tf.pages[0].tags["61242"].value != tf.pages[1].tags["61242"].value
-                    ):
+                    "61242" in tf.pages[0].tags and
+                    "61238" in tf.pages[0].tags and
+                    "max_sample_value" in tf.pages[0].tags and
+                    (tf.pages[0].tags["61242"].value !=
+                     tf.pages[1].tags["61242"].value)):
                     valid = True
         return valid
