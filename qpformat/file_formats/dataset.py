@@ -8,6 +8,16 @@ class DataSet(object):
     __meta__ = abc.ABCMeta
 
     def __init__(self, path, meta_data={}):
+        """Experimental data set
+
+        Parameters
+        ----------
+        path: str
+            path to the experimental data file.
+        meta_data: dict
+            dictionary containing meta data.
+            see :py:class:`qpimage.VALID_META_KEYS`.
+        """
         self.path = path
         self.meta_data = copy.copy(meta_data)
         self._bgdata = []

@@ -20,6 +20,22 @@ class LoadTifPhasicsError(BaseException):
 
 class SingleTifPhasics(DataSet):
     def __init__(self, path, meta_data={}):
+        """DataSet for single "SID PHA*.tif" files by Phasics S.A.
+
+        Parameters
+        ----------
+        path: str
+            path to the experimental data file.
+        meta_data: dict
+            dictionary containing meta data.
+            see :py:class:`qpimage.VALID_META_KEYS`.
+
+        Notes
+        -----
+        If the "wavelength" key in `meta_data` is not set (units: [m]),
+        then the wavelength is extracted from the xml data stored in
+        tag "61238" of the tif file.
+        """
         if "wavelength" not in meta_data:
             # get wavelength if not given
             wl_str = SingleTifPhasics._get_meta_data(path=path,
