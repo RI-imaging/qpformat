@@ -25,7 +25,7 @@ class SingleTifPhasics(DataSet):
         Parameters
         ----------
         path: str
-            path to the experimental data file.
+            path to the experimental data file or an open file object
         meta_data: dict
             dictionary containing meta data.
             see :py:class:`qpimage.VALID_META_KEYS`.
@@ -55,12 +55,20 @@ class SingleTifPhasics(DataSet):
     def __len__(self):
         return 1
 
+    @staticmethod
+    def _get_tif(path):
+        if not isinstance(path, str):
+            # Seek open file zero to avoid error in tifffile:
+            # "ValueError: invalid TIFF file"
+            path.seek(0)
+        return tifffile.TiffFile(path)
+
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         if idx != 0:
             raise ValueError("Single file format, only one entry (`idx!=0`)!")
         # Load experimental data
-        with tifffile.TiffFile(self.path) as tf:
+        with SingleTifPhasics._get_tif(self.path) as tf:
             # page 0 contains intensity
             # page 1 contains phase in nm
             # page 2 contains phase in wavelengths
@@ -114,7 +122,7 @@ class SingleTifPhasics(DataSet):
 
     @staticmethod
     def _get_meta_data(path, section, name):
-        with tifffile.TiffFile(path) as tf:
+        with SingleTifPhasics._get_tif(path) as tf:
             meta = str(tf.pages[0].tags["61238"].value)
 
         meta = meta.strip("'b")
@@ -142,18 +150,17 @@ class SingleTifPhasics(DataSet):
         Returns `True` if the file format matches.
         """
         valid = False
-        if path.endswith(".tif"):
-            try:
-                tf = tifffile.TiffFile(path)
-            except:
-                pass
-            else:
-                if (len(tf) == 3 and
-                    "61243" in tf.pages[0].tags and
-                    "61242" in tf.pages[0].tags and
-                    "61238" in tf.pages[0].tags and
-                    "max_sample_value" in tf.pages[0].tags and
-                    (tf.pages[0].tags["61242"].value !=
-                     tf.pages[1].tags["61242"].value)):
-                    valid = True
+        try:
+            tf = SingleTifPhasics._get_tif(path)
+        except:
+            pass
+        else:
+            if (len(tf) == 3 and
+                "61243" in tf.pages[0].tags and
+                "61242" in tf.pages[0].tags and
+                "61238" in tf.pages[0].tags and
+                "max_sample_value" in tf.pages[0].tags and
+                (tf.pages[0].tags["61242"].value !=
+                 tf.pages[1].tags["61242"].value)):
+                valid = True
         return valid
