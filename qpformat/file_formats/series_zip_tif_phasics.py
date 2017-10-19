@@ -6,9 +6,9 @@ from .dataset import DataSet
 from .single_tif_phasics import SingleTifPhasics
 
 
-class GroupZipTifPhasics(DataSet):
+class SeriesZipTifPhasics(DataSet):
     def __init__(self, *args, **kwargs):
-        super(GroupZipTifPhasics, self).__init__(*args, **kwargs)
+        super(SeriesZipTifPhasics, self).__init__(*args, **kwargs)
         self._files = None
         self._dataset = None
 
@@ -47,7 +47,7 @@ class GroupZipTifPhasics(DataSet):
     @property
     def files(self):
         if self._files is None:
-            self._files = GroupZipTifPhasics._index_files(self.path)
+            self._files = SeriesZipTifPhasics._index_files(self.path)
         return self._files
 
     def get_qpimage_raw(self, idx=0):

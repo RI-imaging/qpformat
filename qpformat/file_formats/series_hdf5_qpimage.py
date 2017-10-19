@@ -1,5 +1,5 @@
 from dataset import DataSet
 
 
-class GroupHdf5Qpimage(DataSet):
+class SeriesHdf5Qpimage(DataSet):
     pass

@@ -1,5 +1,5 @@
 """
-The test file "group_phasics.zip" was created from an original
+The test file "series_phasics.zip" was created from an original
 Phasics zip file. The "ConfigStack.txt" was adapted to reflect
 only three measured images. All data files that are not relevant
 for qpformat are included as empty files to reflect the original
@@ -17,14 +17,14 @@ import qpformat  # noqa: E402
 
 
 def test_load_data():
-    path = join(dirname(abspath(__file__)), "data/group_phasics.zip")
+    path = join(dirname(abspath(__file__)), "data/series_phasics.zip")
     ds = qpformat.load_data(path)
     assert ds.path == path
-    assert "GroupZipTifPhasics" in ds.__repr__()
+    assert "SeriesZipTifPhasics" in ds.__repr__()
 
 
 def test_data_content():
-    path = join(dirname(abspath(__file__)), "data/group_phasics.zip")
+    path = join(dirname(abspath(__file__)), "data/series_phasics.zip")
     ds = qpformat.load_data(path)
     assert len(ds) == 3
     assert ds.get_time(0) == 1461949418.29027

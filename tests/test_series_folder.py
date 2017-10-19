@@ -35,7 +35,7 @@ def test_load_data():
     assert ds.get_time(0) == 0
     # format should be right
     assert ds.verify(ds.path)
-    assert ds.__class__.__name__ == "GroupFolder"
+    assert ds.__class__.__name__ == "SeriesFolder"
     shutil.rmtree(path, ignore_errors=True)
 
 

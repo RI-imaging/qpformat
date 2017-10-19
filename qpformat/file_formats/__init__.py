@@ -2,15 +2,15 @@ import os
 import os.path as op
 
 from .dataset import DataSet
-# from .group_hdf5_qpimage import GroupHdf5Qpimage
-from .group_zip_tif_phasics import GroupZipTifPhasics
-from .single_hdf5_qimage import SingleHdf5Qpimage
+# from .series_hdf5_qpimage import SeriesHdf5Qpimage
+from .series_zip_tif_phasics import SeriesZipTifPhasics
+from .single_hdf5_qpimage import SingleHdf5Qpimage
 from .single_tif_phasics import SingleTifPhasics
 
 
-class GroupFolder(DataSet):
+class SeriesFolder(DataSet):
     def __init__(self, *args, **kwargs):
-        super(GroupFolder, self).__init__(*args, **kwargs)
+        super(SeriesFolder, self).__init__(*args, **kwargs)
         self._files = None
         self._formats = None
         self._dataset = None
@@ -32,7 +32,7 @@ class GroupFolder(DataSet):
         theformats = [ff[1] for ff in fifo]
         formset = set(theformats)
         if len(formset) > 1:
-            fmts_qpimage = ["SingleHdf5Qpimage", "GroupHdf5Qpimage"]
+            fmts_qpimage = ["SingleHdf5Qpimage", "SeriesHdf5Qpimage"]
             fifo = [ff for ff in fifo if ff[1] not in fmts_qpimage]
         # sort the lists
         fifo = sorted(fifo)
@@ -49,14 +49,14 @@ class GroupFolder(DataSet):
             # TODO:
             # - add enumeration within files
             # - required for `self.get_*` functions
-            msg = "Multiple qpimages per GroupFolder file not supported yet!"
+            msg = "Multiple qpimages per SeriesFolder file not supported yet!"
             raise NotImplementedError(msg)
         return self._dataset[idx]
 
     @property
     def files(self):
         if self._files is None:
-            fifo = GroupFolder._search_files(self.path)
+            fifo = SeriesFolder._search_files(self.path)
             self._files = [ff[0] for ff in fifo]
             self._formats = [ff[1] for ff in fifo]
         return self._files
@@ -77,7 +77,7 @@ class GroupFolder(DataSet):
         The folder file format is only valid when
         - there is only one file format present
         """
-        fifo = GroupFolder._search_files(path)
+        fifo = SeriesFolder._search_files(path)
         fifmts = [ff[1] for ff in fifo]
         return len(set(fifmts)) == 1
 
@@ -87,9 +87,9 @@ class UnknownFileFormatError(BaseException):
 
 
 # the order is important for
-formats = [GroupFolder,
-           GroupZipTifPhasics,
-           # GroupHdf5Qpimage,
+formats = [SeriesFolder,
+           SeriesZipTifPhasics,
+           # SeriesHdf5Qpimage,
            SingleHdf5Qpimage,
            SingleTifPhasics,
            ]
