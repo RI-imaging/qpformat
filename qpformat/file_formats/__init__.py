@@ -2,7 +2,7 @@ import os
 import os.path as op
 
 from .dataset import DataSet
-# from .series_hdf5_qpimage import SeriesHdf5Qpimage
+from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
 from .single_tif_phasics import SingleTifPhasics
@@ -89,7 +89,7 @@ class UnknownFileFormatError(BaseException):
 # the order is important for
 formats = [SeriesFolder,
            SeriesZipTifPhasics,
-           # SeriesHdf5Qpimage,
+           SeriesHdf5Qpimage,
            SingleHdf5Qpimage,
            SingleTifPhasics,
            ]
