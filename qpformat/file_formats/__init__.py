@@ -1,7 +1,7 @@
 import os
 import os.path as op
 
-from .dataset import SeriesData, SingleData
+from .dataset import SeriesData
 from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
