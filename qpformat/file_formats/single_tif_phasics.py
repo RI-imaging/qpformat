@@ -7,7 +7,7 @@ import numpy as np
 import qpimage
 from skimage.external import tifffile
 
-from .dataset import DataSet
+from .dataset import SingleData
 
 
 # baseline clamp intensity normalization for phasics tif files
@@ -18,7 +18,7 @@ class LoadTifPhasicsError(BaseException):
     pass
 
 
-class SingleTifPhasics(DataSet):
+class SingleTifPhasics(SingleData):
     def __init__(self, path, meta_data={}):
         """DataSet for single "SID PHA*.tif" files by Phasics S.A.
 
@@ -52,9 +52,6 @@ class SingleTifPhasics(DataSet):
         super(SingleTifPhasics, self).__init__(path=path,
                                                meta_data=meta_data)
 
-    def __len__(self):
-        return 1
-
     @staticmethod
     def _get_tif(path):
         if not isinstance(path, str):
@@ -63,10 +60,8 @@ class SingleTifPhasics(DataSet):
             path.seek(0)
         return tifffile.TiffFile(path)
 
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self):
         """Return QPImage without background correction"""
-        if idx != 0:
-            raise ValueError("Single file format, only one entry (`idx!=0`)!")
         # Load experimental data
         with SingleTifPhasics._get_tif(self.path) as tf:
             # page 0 contains intensity
@@ -94,13 +89,13 @@ class SingleTifPhasics(DataSet):
 
         meta_data = copy.copy(self.meta_data)
         if "time" not in meta_data:
-            meta_data["time"] = self.get_time(idx)
+            meta_data["time"] = self.get_time()
         qpi = qpimage.QPImage(data=(pha, inten),
                               which_data="phase,intensity",
                               meta_data=meta_data)
         return qpi
 
-    def get_time(self, idx=0):
+    def get_time(self):
         """Return the time of the tif data since the epoch
 
         The time is stored in the "61238" tag.

@@ -4,7 +4,7 @@ import copy
 import qpimage
 
 
-class DataSet(object):
+class SeriesData(object):
     __meta__ = abc.ABCMeta
 
     def __init__(self, path, meta_data={}):
@@ -49,14 +49,19 @@ class DataSet(object):
     def __len__(self):
         """Return number of samples of a data set"""
 
-    def get_name(self, idx=0):
+    def get_name(self, idx):
         """Return name of data at index `idx`"""
         return "{} [{}]".format(self.path, idx)
 
-    def get_qpimage(self, idx=0):
+    def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         # raw data
-        qpi = self.get_qpimage_raw(idx)
+        if isinstance(self, SingleData):
+            # `get_pqimage` does not take `idx`
+            qpi = self.get_qpimage_raw()
+        else:
+            # `get_pqimage` does take `idx`
+            qpi = self.get_qpimage_raw(idx)
         # bg data
         if self._bgdata:
             if len(self._bgdata) == 1:
@@ -65,18 +70,23 @@ class DataSet(object):
             else:
                 bgidx = idx
 
-            if isinstance(self._bgdata, DataSet):
+            if isinstance(self._bgdata, SingleData):
+                # `get_pqimage` does not take `idx`
+                bg = self._bgdata.get_qpimage_raw()
+            elif isinstance(self._bgdata, SeriesData):
+                # `get_pqimage` does take `idx`
                 bg = self._bgdata.get_qpimage_raw(bgidx)
             else:
+                # `self._bgdata` is a QPImage
                 bg = self._bgdata[bgidx]
             qpi.set_bg_data(bg_data=bg)
         return qpi
 
     @abc.abstractmethod
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
 
-    def get_time(self, idx=0):
+    def get_time(self, idx):
         """Return time of data at in dex `idx`
 
         By default, this returns zero and must be
@@ -111,7 +121,7 @@ class DataSet(object):
               isinstance(dataset[0], qpimage.QPImage)):
             # List of QPImage
             self.bgdata = dataset
-        elif (isinstance(dataset, DataSet) and
+        elif (isinstance(dataset, SeriesData) and
               (len(dataset) == 1 or
                len(dataset) == len(self))):
             # DataSet
@@ -130,3 +140,23 @@ class DataSet(object):
         memory efficient, because e.g. the "GroupFolder" file
         format depends on it.
         """
+
+
+class SingleData(SeriesData):
+    __meta__ = abc.ABCMeta
+
+    def __len__(self):
+        return 1
+    
+    def get_name(self):
+        return super(SingleData, self).get_name(idx=0)
+
+    def get_qpimage(self):
+        return super(SingleData, self).get_qpimage(idx=0)
+        
+    @abc.abstractmethod
+    def get_qpimage_raw(self):
+        return super(SingleData, self).get_qpimage_raw(idx=0)
+
+    def get_time(self):
+        return super(SingleData, self).get_time(idx=0)

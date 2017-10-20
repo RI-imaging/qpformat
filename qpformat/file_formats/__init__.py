@@ -1,7 +1,7 @@
 import os
 import os.path as op
 
-from .dataset import DataSet
+from .dataset import SeriesData
 from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
@@ -9,7 +9,7 @@ from .single_npy_numpy import SingleNpyNumpy
 from .single_tif_phasics import SingleTifPhasics
 
 
-class SeriesFolder(DataSet):
+class SeriesFolder(SeriesData):
     def __init__(self, *args, **kwargs):
         super(SeriesFolder, self).__init__(*args, **kwargs)
         self._files = None
@@ -62,14 +62,14 @@ class SeriesFolder(DataSet):
             self._formats = [ff[1] for ff in fifo]
         return self._files
 
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
-        return ds.get_qpimage_raw(idx=0)
+        return ds.get_qpimage_raw()
 
-    def get_time(self, idx=0):
+    def get_time(self, idx):
         ds = self._get_dataset(idx)
-        return ds.get_time(idx=0)
+        return ds.get_time()
 
     @staticmethod
     def verify(path):

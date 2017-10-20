@@ -2,11 +2,11 @@ import io
 import functools
 import zipfile
 
-from .dataset import DataSet
+from .dataset import SeriesData
 from .single_tif_phasics import SingleTifPhasics
 
 
-class SeriesZipTifPhasics(DataSet):
+class SeriesZipTifPhasics(SeriesData):
     def __init__(self, *args, **kwargs):
         super(SeriesZipTifPhasics, self).__init__(*args, **kwargs)
         self._files = None
@@ -50,14 +50,14 @@ class SeriesZipTifPhasics(DataSet):
             self._files = SeriesZipTifPhasics._index_files(self.path)
         return self._files
 
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
-        return ds.get_qpimage_raw(idx=0)
+        return ds.get_qpimage_raw()
 
-    def get_time(self, idx=0):
+    def get_time(self, idx):
         ds = self._get_dataset(idx)
-        return ds.get_time(idx=0)
+        return ds.get_time()
 
     @staticmethod
     def verify(path):

@@ -3,24 +3,18 @@ import copy
 import numpy as np
 import qpimage
 
-from .dataset import DataSet
+from .dataset import SingleData
 
 
-class SingleNpyNumpy(DataSet):
+class SingleNpyNumpy(SingleData):
     """Field data stored in numpy's .npy file format
 
     The experimental data given in `path` consist of a single
     2D ndarray (no pickled objects). The ndarray is either
     complex-valued (scattered field) or real-valued (phase).
     """
-
-    def __len__(self):
-        return 1
-
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self):
         """Return QPImage without background correction"""
-        if idx != 0:
-            raise ValueError("Single file format, only one entry (`idx!=0`)!")
         # Load experimental data
         nf = np.load(self.path, mmap_mode="c", allow_pickle=False)
         if np.iscomplexobj(nf):

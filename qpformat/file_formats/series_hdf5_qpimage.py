@@ -1,10 +1,10 @@
 import h5py
 import qpimage
 
-from .dataset import DataSet
+from .dataset import SeriesData
 
 
-class SeriesHdf5Qpimage(DataSet):
+class SeriesHdf5Qpimage(SeriesData):
     def __init__(self, *args, **kwargs):
         super(SeriesHdf5Qpimage, self).__init__(*args, **kwargs)
         self._qpseries = qpimage.QPSeries(h5file=self.path,

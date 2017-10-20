@@ -1,38 +1,29 @@
 import h5py
 import qpimage
 
-from .dataset import DataSet
+from .dataset import SingleData
 
 
-class SingleHdf5Qpimage(DataSet):
-    def __len__(self):
-        return 1
-
-    def get_qpimage(self, idx=0):
-        """Return background-corrected QPImage of data at index `idx`"""
-        if idx != 0:
-            raise ValueError("Single file format, only one entry (`idx!=0`)!")
+class SingleHdf5Qpimage(SingleData):
+    def get_qpimage(self):
+        """Return background-corrected QPImage"""
         if self._bgdata:
             # The user has explicitly chosen different background data
             # using `get_qpimage_raw`.
-            return super(SingleHdf5Qpimage, self).get_qpimage(idx)
+            return super(SingleHdf5Qpimage, self).get_qpimage()
         else:
             # We can use the background data stored in the qpimage hdf5 file
             return qpimage.QPImage(h5file=self.path, h5mode="r").copy()
 
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self):
         """Return QPImage without background correction"""
-        if idx != 0:
-            raise ValueError("Single file format, only one entry (`idx!=0`)!")
         qpi = qpimage.QPImage(h5file=self.path, h5mode="r").copy()
         # Remove previously performed background correction
         qpi.set_bg_data(None)
         return qpi
 
-    def get_time(self, idx=0):
+    def get_time(self):
         """Return the time of the QPImage data"""
-        if idx != 0:
-            raise ValueError("Single file format, only one entry (`idx!=0`)!")
         qpi = qpimage.QPImage(h5file=self.path, h5mode="r")
         if "time" in qpi.meta:
             return qpi.meta["time"]
