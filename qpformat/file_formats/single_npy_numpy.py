@@ -8,11 +8,12 @@ from .dataset import DataSet
 
 class SingleNpyNumpy(DataSet):
     """Field data stored in numpy's .npy file format
-    
+
     The experimental data given in `path` consist of a single
     2D ndarray (no pickled objects). The ndarray is either
     complex-valued (scattered field) or real-valued (phase).
     """
+
     def __len__(self):
         return 1
 
