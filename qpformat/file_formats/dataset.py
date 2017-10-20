@@ -57,10 +57,10 @@ class SeriesData(object):
         """Return background-corrected QPImage of data at index `idx`"""
         # raw data
         if isinstance(self, SingleData):
-            # `get_pqimage` does not take `idx`
+            # `get_qpimage` does not take `idx`
             qpi = self.get_qpimage_raw()
         else:
-            # `get_pqimage` does take `idx`
+            # `get_qpimage` does take `idx`
             qpi = self.get_qpimage_raw(idx)
         # bg data
         if self._bgdata:
@@ -71,10 +71,10 @@ class SeriesData(object):
                 bgidx = idx
 
             if isinstance(self._bgdata, SingleData):
-                # `get_pqimage` does not take `idx`
+                # `get_qpimage` does not take `idx`
                 bg = self._bgdata.get_qpimage_raw()
             elif isinstance(self._bgdata, SeriesData):
-                # `get_pqimage` does take `idx`
+                # `get_qpimage` does take `idx`
                 bg = self._bgdata.get_qpimage_raw(bgidx)
             else:
                 # `self._bgdata` is a QPImage
@@ -87,12 +87,21 @@ class SeriesData(object):
         """Return QPImage without background correction"""
 
     def get_time(self, idx):
-        """Return time of data at in dex `idx`
+        """Return time of data at index `idx`
 
-        By default, this returns zero and must be
-        overridden if the file format supports timing.
         """
-        return 0
+        # raw data
+        if isinstance(self, SingleData):
+            # `get_qpimage` does not take `idx`
+            qpi = self.get_qpimage_raw()
+        else:
+            # `get_qpimage` does take `idx`
+            qpi = self.get_qpimage_raw(idx)
+        if "time" in qpi.meta:
+            thetime = qpi.meta["time"]
+        else:
+            thetime = 0
+        return thetime
 
     def saveh5(self, h5file):
         """Save the data set as an hdf5 file (QPImage format)"""
@@ -112,7 +121,6 @@ class SeriesData(object):
         --------
         get_qpimage: obtain the background corrected QPImage
         """
-
         if isinstance(dataset, qpimage.QPImage):
             # Single QPImage
             self._bgdata = [dataset]
@@ -120,15 +128,14 @@ class SeriesData(object):
               len(dataset) == len(self) and
               isinstance(dataset[0], qpimage.QPImage)):
             # List of QPImage
-            self.bgdata = dataset
+            self._bgdata = dataset
         elif (isinstance(dataset, SeriesData) and
               (len(dataset) == 1 or
                len(dataset) == len(self))):
             # DataSet
-            self.bgdata = dataset
+            self._bgdata = dataset
         else:
             raise ValueError("Bad length or type for bg: {}".format(dataset))
-        self._bgdata = dataset
 
     @staticmethod
     @abc.abstractmethod
@@ -156,7 +163,8 @@ class SingleData(SeriesData):
         
     @abc.abstractmethod
     def get_qpimage_raw(self):
-        return super(SingleData, self).get_qpimage_raw(idx=0)
+        """QPImage without background correction"""
 
     def get_time(self):
+        """Time of QPImage"""
         return super(SingleData, self).get_time(idx=0)

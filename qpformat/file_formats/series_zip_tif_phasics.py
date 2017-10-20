@@ -56,6 +56,7 @@ class SeriesZipTifPhasics(SeriesData):
         return ds.get_qpimage_raw()
 
     def get_time(self, idx):
+        # Obtain the time from the tif meta data
         ds = self._get_dataset(idx)
         return ds.get_time()
 

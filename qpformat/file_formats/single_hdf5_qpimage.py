@@ -22,14 +22,6 @@ class SingleHdf5Qpimage(SingleData):
         qpi.set_bg_data(None)
         return qpi
 
-    def get_time(self):
-        """Return the time of the QPImage data"""
-        qpi = qpimage.QPImage(h5file=self.path, h5mode="r")
-        if "time" in qpi.meta:
-            return qpi.meta["time"]
-        else:
-            return 0
-
     @staticmethod
     def verify(path):
         """Verify that `path` has the qpimage file format

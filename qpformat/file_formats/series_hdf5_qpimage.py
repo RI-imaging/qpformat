@@ -14,7 +14,7 @@ class SeriesHdf5Qpimage(SeriesData):
     def __len__(self):
         return len(self._qpseries)
 
-    def get_qpimage(self, idx=0):
+    def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         if self._bgdata:
             # The user has explicitly chosen different background data
@@ -24,20 +24,12 @@ class SeriesHdf5Qpimage(SeriesData):
             # We can use the background data stored in the qpimage hdf5 file
             return self._qpseries.get_qpimage(index=idx).copy()
 
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         qpi = self._qpseries.get_qpimage(index=idx).copy()
         # Remove previously performed background correction
         qpi.set_bg_data(None)
         return qpi
-
-    def get_time(self, idx=0):
-        """Return the time of the QPImage data"""
-        qpi = self._qpseries.get_qpimage(index=idx)
-        if "time" in qpi.meta:
-            return qpi.meta["time"]
-        else:
-            return 0
 
     @staticmethod
     def verify(path):
