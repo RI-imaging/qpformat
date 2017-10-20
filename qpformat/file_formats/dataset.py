@@ -154,13 +154,13 @@ class SingleData(SeriesData):
 
     def __len__(self):
         return 1
-    
+
     def get_name(self):
         return super(SingleData, self).get_name(idx=0)
 
     def get_qpimage(self):
         return super(SingleData, self).get_qpimage(idx=0)
-        
+
     @abc.abstractmethod
     def get_qpimage_raw(self):
         """QPImage without background correction"""

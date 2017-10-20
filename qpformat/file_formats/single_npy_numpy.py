@@ -13,6 +13,7 @@ class SingleNpyNumpy(SingleData):
     2D ndarray (no pickled objects). The ndarray is either
     complex-valued (scattered field) or real-valued (phase).
     """
+
     def get_qpimage_raw(self):
         """Return QPImage without background correction"""
         # Load experimental data
