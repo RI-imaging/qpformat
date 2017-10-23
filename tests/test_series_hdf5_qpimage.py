@@ -29,7 +29,7 @@ def test_load_data():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 

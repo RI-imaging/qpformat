@@ -31,7 +31,7 @@ class SingleHdf5Qpimage(SingleData):
         valid = False
         try:
             h5 = h5py.File(path, mode="r")
-        except:
+        except OSError:
             pass
         else:
             if ("qpimage version" in h5.attrs and

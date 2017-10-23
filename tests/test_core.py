@@ -23,7 +23,7 @@ def test_wrong_file_format():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -45,7 +45,7 @@ def test_load_with_bg():
     try:
         os.remove(f_data)
         os.remove(f_bg_data)
-    except:
+    except OSError:
         pass
 
 

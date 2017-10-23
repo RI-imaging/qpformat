@@ -27,7 +27,7 @@ def test_repr():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -43,7 +43,7 @@ def test_meta():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -89,7 +89,7 @@ def test_set_bg():
     try:
         os.remove(f_data)
         os.remove(f_bg_data)
-    except:
+    except OSError:
         pass
 
 

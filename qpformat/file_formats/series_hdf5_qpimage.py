@@ -41,7 +41,7 @@ class SeriesHdf5Qpimage(SeriesData):
         try:
             h5 = h5py.File(path, mode="r")
             qpi0 = h5["qpi_0"]
-        except:
+        except (OSError, KeyError):
             pass
         else:
             if ("qpimage version" in qpi0.attrs and

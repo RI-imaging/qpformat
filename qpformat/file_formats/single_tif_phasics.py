@@ -147,7 +147,7 @@ class SingleTifPhasics(SingleData):
         valid = False
         try:
             tf = SingleTifPhasics._get_tif(path)
-        except:
+        except ValueError:
             pass
         else:
             if (len(tf) == 3 and
