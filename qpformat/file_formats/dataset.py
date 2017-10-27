@@ -1,11 +1,14 @@
 import abc
 import copy
+import functools
+import hashlib
 
 import qpimage
 
 
 class SeriesData(object):
     __meta__ = abc.ABCMeta
+    is_series = False
 
     def __init__(self, path, meta_data={}):
         """Experimental data set
@@ -49,9 +52,18 @@ class SeriesData(object):
     def __len__(self):
         """Return number of samples of a data set"""
 
+    @property
+    @functools.lru_cache(maxsize=32)
+    def identifier(self):
+        """Return a unique identifier for the given data set"""
+        with open(self.path, "rb") as fd:
+            data = fd.read(50*1024)
+        idsum = hashlib.md5(data).hexdigest()[:5]
+        return idsum
+
     def get_name(self, idx):
         """Return name of data at index `idx`"""
-        return "{} [{}]".format(self.path, idx)
+        return "{}:{}".format(self.path, idx)
 
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
@@ -151,6 +163,7 @@ class SeriesData(object):
 
 class SingleData(SeriesData):
     __meta__ = abc.ABCMeta
+    is_series = False
 
     def __len__(self):
         return 1

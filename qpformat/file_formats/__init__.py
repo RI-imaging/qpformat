@@ -1,3 +1,5 @@
+import functools
+import hashlib
 import os
 import os.path as op
 
@@ -61,6 +63,18 @@ class SeriesFolder(SeriesData):
             self._files = [ff[0] for ff in fifo]
             self._formats = [ff[1] for ff in fifo]
         return self._files
+
+    @property
+    @functools.lru_cache(maxsize=32)
+    def identifier(self):
+        """Return a unique identifier for the given data set"""
+        # Use only file names
+        files = [op.basename(ff) for ff in self.files]
+        files.sort()
+        # also use the folder name
+        files.append(op.basename(self.path))
+        idsum = hashlib.md5("".join(files)).hexdigest()[:5]
+        return idsum
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
