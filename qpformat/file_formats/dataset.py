@@ -19,7 +19,7 @@ class SeriesData(object):
             path to the experimental data file.
         meta_data: dict
             dictionary containing meta data.
-            see :py:class:`qpimage.VALID_META_KEYS`.
+            see :py:class:`qpimage.META_KEYS`.
         """
         self.path = path
         self.meta_data = copy.copy(meta_data)

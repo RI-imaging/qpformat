@@ -28,7 +28,7 @@ class SingleTifPhasics(SingleData):
             path to the experimental data file or an open file object
         meta_data: dict
             dictionary containing meta data.
-            see :py:class:`qpimage.VALID_META_KEYS`.
+            see :py:class:`qpimage.META_KEYS`.
 
         Notes
         -----

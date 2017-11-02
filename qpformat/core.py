@@ -28,7 +28,7 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
         for the background. If set to `None`, the file format
         is be guessed.
     meta_data: dict
-        Meta data (see `qpimage.meta.VALID_META_KEYS`)
+        Meta data (see `qpimage.meta.META_KEYS`)
     h5out: str
         Path to an hdf5 output file where all data
         is written in the :py:mod:`qpimage` data
