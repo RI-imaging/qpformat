@@ -73,7 +73,7 @@ class SeriesFolder(SeriesData):
         files.sort()
         # also use the folder name
         files.append(op.basename(self.path))
-        idsum = hashlib.md5("".join(files)).hexdigest()[:5]
+        idsum = hashlib.md5("".join(files).encode("utf-8")).hexdigest()[:5]
         return idsum
 
     def get_qpimage_raw(self, idx):

@@ -8,7 +8,7 @@ import qpimage
 
 class SeriesData(object):
     __meta__ = abc.ABCMeta
-    is_series = False
+    is_series = True
 
     def __init__(self, path, meta_data={}):
         """Experimental data set
