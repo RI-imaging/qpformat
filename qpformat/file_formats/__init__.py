@@ -69,11 +69,13 @@ class SeriesFolder(SeriesData):
     def identifier(self):
         """Return a unique identifier for the given data set"""
         # Use only file names
-        files = [op.basename(ff) for ff in self.files]
-        files.sort()
+        data = [op.basename(ff) for ff in self.files]
+        data.sort()
         # also use the folder name
-        files.append(op.basename(self.path))
-        idsum = hashlib.md5("".join(files).encode("utf-8")).hexdigest()[:5]
+        data.append(op.basename(self.path))
+        for key in sorted(list(self.meta_data.keys())):
+            data.append("{}={}".format(key, self.meta_data[key]))
+        idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()[:5]
         return idsum
 
     def get_qpimage_raw(self, idx):

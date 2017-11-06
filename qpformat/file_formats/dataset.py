@@ -58,6 +58,8 @@ class SeriesData(object):
         """Return a unique identifier for the given data set"""
         with open(self.path, "rb") as fd:
             data = fd.read(50*1024)
+        for key in sorted(list(self.meta_data.keys())):
+            data += b"{}={}".format(key, self.meta_data[key])
         idsum = hashlib.md5(data).hexdigest()[:5]
         return idsum
 
