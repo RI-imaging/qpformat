@@ -66,7 +66,7 @@ class SeriesZipTifPhasics(SeriesData):
         valid = False
         try:
             zf = zipfile.ZipFile(path)
-        except zipfile.BadZipfile:
+        except (zipfile.BadZipfile, IsADirectoryError):
             pass
         else:
             names = sorted(zf.namelist())

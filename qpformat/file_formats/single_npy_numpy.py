@@ -38,7 +38,7 @@ class SingleNpyNumpy(SingleData):
         if path.endswith(".npy"):
             try:
                 nf = np.load(path, mmap_mode="r", allow_pickle=False)
-            except (OSError, ValueError):
+            except (OSError, ValueError, IsADirectoryError):
                 pass
             else:
                 if len(nf.shape) == 2:
