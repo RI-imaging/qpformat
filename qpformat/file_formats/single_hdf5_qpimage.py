@@ -5,7 +5,7 @@ from .dataset import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):
-    def get_qpimage(self):
+    def get_qpimage(self, idx=0):
         """Return background-corrected QPImage"""
         if self._bgdata:
             # The user has explicitly chosen different background data
@@ -15,7 +15,7 @@ class SingleHdf5Qpimage(SingleData):
             # We can use the background data stored in the qpimage hdf5 file
             return qpimage.QPImage(h5file=self.path, h5mode="r").copy()
 
-    def get_qpimage_raw(self):
+    def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         qpi = qpimage.QPImage(h5file=self.path, h5mode="r").copy()
         # Remove previously performed background correction

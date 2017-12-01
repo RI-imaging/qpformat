@@ -14,7 +14,7 @@ class SingleNpyNumpy(SingleData):
     complex-valued (scattered field) or real-valued (phase).
     """
 
-    def get_qpimage_raw(self):
+    def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
         nf = np.load(self.path, mmap_mode="c", allow_pickle=False)

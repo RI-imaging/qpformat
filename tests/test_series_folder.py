@@ -29,7 +29,13 @@ def test_load_data():
     # names should be different
     assert ds.get_name(0) != ds.get_name(1)
     # data should be the same
-    assert ds.get_qpimage(0) == ds.get_qpimage(1)
+    qpi0 = ds.get_qpimage(0)
+    qpi1 = ds.get_qpimage(1)
+    assert qpi0 != qpi1
+    assert qpi0["identifier"] != qpi1["identifier"]
+    qpi0["identifier"] = ""
+    qpi1["identifier"] = ""
+    assert qpi0 == qpi1
     assert ds.get_qpimage_raw(0) == ds.get_qpimage_raw(1)
     assert ds.get_qpimage(0).shape == (50, 50)
     assert ds.get_time(0) == 0

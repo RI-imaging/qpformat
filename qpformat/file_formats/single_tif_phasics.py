@@ -53,6 +53,29 @@ class SingleTifPhasics(SingleData):
                                                meta_data=meta_data)
 
     @staticmethod
+    def _get_meta_data(path, section, name):
+        with SingleTifPhasics._get_tif(path) as tf:
+            meta = str(tf.pages[0].tags["61238"].value)
+
+        meta = meta.strip("'b")
+        meta = meta.replace("\\n", "\n")
+        meta = meta.replace("\\r", "")
+        root = ET.fromstring("<root>\n" + meta + "</root>")
+        for phadata in root.getchildren():
+            for cluster in phadata.getchildren():
+                sec = cluster.getchildren()[0].text
+                for child in cluster.getchildren():
+                    gchild = child.getchildren()
+                    if len(gchild) == 2:
+                        nm, val = gchild
+                        # print(sec, nm.text, val.text)
+                        if (sec.lower() == section and
+                                nm.text.lower() == name):
+                            return val.text
+        else:
+            return None
+
+    @staticmethod
     def _get_tif(path):
         if not isinstance(path, str):
             # Seek open file zero to avoid error in tifffile:
@@ -60,7 +83,7 @@ class SingleTifPhasics(SingleData):
             path.seek(0)
         return tifffile.TiffFile(path)
 
-    def get_qpimage_raw(self):
+    def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
         with SingleTifPhasics._get_tif(self.path) as tf:
@@ -95,7 +118,7 @@ class SingleTifPhasics(SingleData):
                               meta_data=meta_data)
         return qpi
 
-    def get_time(self):
+    def get_time(self, idx=0):
         """Return the time of the tif data since the epoch
 
         The time is stored in the "61238" tag.
@@ -114,29 +137,6 @@ class SingleTifPhasics(SingleData):
         else:
             thetime = 0
         return thetime
-
-    @staticmethod
-    def _get_meta_data(path, section, name):
-        with SingleTifPhasics._get_tif(path) as tf:
-            meta = str(tf.pages[0].tags["61238"].value)
-
-        meta = meta.strip("'b")
-        meta = meta.replace("\\n", "\n")
-        meta = meta.replace("\\r", "")
-        root = ET.fromstring("<root>\n" + meta + "</root>")
-        for phadata in root.getchildren():
-            for cluster in phadata.getchildren():
-                sec = cluster.getchildren()[0].text
-                for child in cluster.getchildren():
-                    gchild = child.getchildren()
-                    if len(gchild) == 2:
-                        nm, val = gchild
-                        # print(sec, nm.text, val.text)
-                        if (sec.lower() == section and
-                                nm.text.lower() == name):
-                            return val.text
-        else:
-            return None
 
     @staticmethod
     def verify(path):

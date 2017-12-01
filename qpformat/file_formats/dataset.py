@@ -56,12 +56,18 @@ class SeriesData(object):
     @functools.lru_cache(maxsize=32)
     def identifier(self):
         """Return a unique identifier for the given data set"""
+        data = []
         with open(self.path, "rb") as fd:
-            data = fd.read(50*1024)
+            data.append(fd.read(50 * 1024))
         for key in sorted(list(self.meta_data.keys())):
-            data += b"{}={}".format(key, self.meta_data[key])
-        idsum = hashlib.md5(data).hexdigest()[:5]
+            value = self.meta_data[key]
+            data.append("{}={}".format(key, value).encode("utf-8"))
+        idsum = hashlib.md5(b"".join(data)).hexdigest()[:5]
         return idsum
+
+    def get_identifier(self, idx):
+        """Return an identifier for the data at index `idx`"""
+        return "{}:{}".format(self.identifier, idx)
 
     def get_name(self, idx):
         """Return name of data at index `idx`"""
@@ -70,12 +76,7 @@ class SeriesData(object):
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         # raw data
-        if isinstance(self, SingleData):
-            # `get_qpimage` does not take `idx`
-            qpi = self.get_qpimage_raw()
-        else:
-            # `get_qpimage` does take `idx`
-            qpi = self.get_qpimage_raw(idx)
+        qpi = self.get_qpimage_raw(idx)
         # bg data
         if self._bgdata:
             if len(self._bgdata) == 1:
@@ -84,16 +85,15 @@ class SeriesData(object):
             else:
                 bgidx = idx
 
-            if isinstance(self._bgdata, SingleData):
-                # `get_qpimage` does not take `idx`
-                bg = self._bgdata.get_qpimage_raw()
-            elif isinstance(self._bgdata, SeriesData):
+            if isinstance(self._bgdata, SeriesData):
                 # `get_qpimage` does take `idx`
                 bg = self._bgdata.get_qpimage_raw(bgidx)
             else:
                 # `self._bgdata` is a QPImage
                 bg = self._bgdata[bgidx]
             qpi.set_bg_data(bg_data=bg)
+        # set identifier
+        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @abc.abstractmethod
@@ -105,12 +105,7 @@ class SeriesData(object):
 
         """
         # raw data
-        if isinstance(self, SingleData):
-            # `get_qpimage` does not take `idx`
-            qpi = self.get_qpimage_raw()
-        else:
-            # `get_qpimage` does take `idx`
-            qpi = self.get_qpimage_raw(idx)
+        qpi = self.get_qpimage_raw(idx)
         if "time" in qpi.meta:
             thetime = qpi.meta["time"]
         else:
@@ -119,6 +114,12 @@ class SeriesData(object):
 
     def saveh5(self, h5file):
         """Save the data set as an hdf5 file (QPImage format)"""
+        with qpimage.QPSeries(h5file=h5file,
+                              h5mode="w",
+                              identifier=self.identifier) as qps:
+            for ii in range(len(self)):
+                qpi = self.get_qpimage(ii)
+                qps.add_qpimage(qpi)
 
     def set_bg(self, dataset):
         """Set background data
@@ -170,16 +171,19 @@ class SingleData(SeriesData):
     def __len__(self):
         return 1
 
-    def get_name(self):
+    def get_identifier(self, idx=0):
+        return self.identifier
+
+    def get_name(self, idx=0):
         return super(SingleData, self).get_name(idx=0)
 
-    def get_qpimage(self):
+    def get_qpimage(self, idx=0):
         return super(SingleData, self).get_qpimage(idx=0)
 
     @abc.abstractmethod
-    def get_qpimage_raw(self):
+    def get_qpimage_raw(self, idx=0):
         """QPImage without background correction"""
 
-    def get_time(self):
+    def get_time(self, idx=0):
         """Time of QPImage"""
         return super(SingleData, self).get_time(idx=0)

@@ -21,25 +21,13 @@ class SeriesFolder(SeriesData):
     def __len__(self):
         return len(self.files)
 
-    @staticmethod
-    def _search_files(path):
-        fifo = []
-        for root, _dirs, files in os.walk(path):
-            for ff in files:
-                fp = op.join(root, ff)
-                for fmt in formats:
-                    if fmt.verify(fp):
-                        fifo.append((fp, fmt.__name__))
-        # remove qpimage formats if multiple formats were
-        # detected.
-        theformats = [ff[1] for ff in fifo]
-        formset = set(theformats)
-        if len(formset) > 1:
-            fmts_qpimage = ["SingleHdf5Qpimage", "SeriesHdf5Qpimage"]
-            fifo = [ff for ff in fifo if ff[1] not in fmts_qpimage]
-        # sort the lists
-        fifo = sorted(fifo)
-        return fifo
+    @functools.lru_cache(maxsize=32)
+    def _get_cropped_file_names(self):
+        """self.files with common path prefix/suffix removed"""
+        prefix = os.path.commonprefix(self.files)
+        suffix = os.path.commonprefix([f[::-1] for f in self.files])[::-1]
+        cropped = [f[len(prefix):-len(suffix)] for f in self.files]
+        return cropped
 
     def _get_dataset(self, idx):
         if self._dataset is None:
@@ -55,6 +43,26 @@ class SeriesFolder(SeriesData):
             msg = "Multiple qpimages per SeriesFolder file not supported yet!"
             raise NotImplementedError(msg)
         return self._dataset[idx]
+
+    @staticmethod
+    def _search_files(path):
+        fifo = []
+        for root, _dirs, files in os.walk(path):
+            for ff in files:
+                fp = op.join(root, ff)
+                for fmt in formats:
+                    if fmt.verify(fp):
+                        fifo.append((fp, fmt.__name__))
+        # ignore qpimage formats if multiple formats were
+        # detected.
+        theformats = [ff[1] for ff in fifo]
+        formset = set(theformats)
+        if len(formset) > 1:
+            fmts_qpimage = ["SingleHdf5Qpimage", "SeriesHdf5Qpimage"]
+            fifo = [ff for ff in fifo if ff[1] not in fmts_qpimage]
+        # sort the lists
+        fifo = sorted(fifo)
+        return fifo
 
     @property
     def files(self):
@@ -77,6 +85,11 @@ class SeriesFolder(SeriesData):
             data.append("{}={}".format(key, self.meta_data[key]))
         idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()[:5]
         return idsum
+
+    def get_identifier(self, idx):
+        """Return an identifier for the data at index `idx`"""
+        name = self._get_cropped_file_names()[idx]
+        return "{}:{}:{}".format(self.identifier, idx, name)
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
