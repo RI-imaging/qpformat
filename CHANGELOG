@@ -1,3 +1,6 @@
+0.1.2
+ - implement SeriesData.saveh5 (export as qpimage.QPSeries) (#2)
+ - add unique part of file name to SeriesFolder image identifiers (#2)
 0.1.1
  - support pathlib on high level
  - add SeriesData.identifier
