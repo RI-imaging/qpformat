@@ -5,6 +5,18 @@ from .dataset import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):
+    @property
+    def identifier(self):
+        with qpimage.QPImage(h5file=self.path, h5mode="r") as qpi:
+            if "identifier" in qpi:
+                identifier = qpi["identifier"]
+            else:
+                identifier = super(SingleHdf5Qpimage, self).identifier
+        return identifier
+
+    def get_identifier(self, idx=0):
+        return self.identifier
+
     def get_qpimage(self, idx=0):
         """Return background-corrected QPImage"""
         if self._bgdata:

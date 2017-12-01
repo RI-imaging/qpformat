@@ -14,6 +14,21 @@ class SeriesHdf5Qpimage(SeriesData):
     def __len__(self):
         return len(self._qpseries)
 
+    @property
+    def identifier(self):
+        identifier = self._qpseries.identifier
+        if identifier is None:
+            identifier = super(SeriesHdf5Qpimage, self).identifier
+        return identifier
+
+    def get_identifier(self, idx):
+        """Return an identifier for the data at index `idx`"""
+        if "identifier" in self._qpseries[idx]:
+            identifier = self._qpseries[idx]["identifier"]
+        else:
+            identifier = super(SeriesHdf5Qpimage, self).get_identifier(idx)
+        return identifier
+
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         if self._bgdata:
