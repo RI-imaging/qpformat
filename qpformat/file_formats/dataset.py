@@ -3,6 +3,7 @@ import copy
 import functools
 import hashlib
 
+import numpy as np
 import qpimage
 
 
@@ -24,7 +25,9 @@ class SeriesData(object):
         self.path = path
         self.meta_data = copy.copy(meta_data)
         self._bgdata = []
-        self._bgid = b""
+        #: Unique string that identifies the background data that
+        #: was set using `set_bg`.
+        self.background_identifier = None
 
     def __repr__(self):
         rep = "QPFormat '{}'".format(self.__class__.__name__) \
@@ -62,13 +65,11 @@ class SeriesData(object):
             if "identifier" in bg:
                 return bg["identifier"]
             else:
-                data = []
+                data = [bg.amp, bg.pha]
                 for key in sorted(list(bg.meta.keys())):
                     val = bg.meta[key]
                     data.append("{}={}".format(key, val))
-                data.append(bg.amp.as_bytes())
-                data.append(bg.pha.as_bytes())
-                return hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+                return hash_obj(data)
         elif (isinstance(bg, list) and
               len(bg) == len(self) and
               isinstance(bg[0], qpimage.QPImage)):
@@ -76,12 +77,14 @@ class SeriesData(object):
             data = []
             for bgii in bg:
                 data.append(self._compute_bgid(bgii))
-            return hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+            return hash_obj(data)
         elif (isinstance(bg, SeriesData) and
               (len(bg) == 1 or
                len(bg) == len(self))):
             # DataSet
             return bg.identifier
+        else:
+            raise ValueError("Unknown background data type: {}".format(bg))
 
     @functools.lru_cache(maxsize=32)
     def _identifier_data(self):
@@ -90,19 +93,17 @@ class SeriesData(object):
             data.append(fd.read(50 * 1024))
         for key in sorted(list(self.meta_data.keys())):
             value = self.meta_data[key]
-            data.append("{}={}".format(key, value).encode("utf-8"))
-        idsum = hashlib.md5(b"".join(data)).hexdigest()
-        return idsum
+            data.append("{}={}".format(key, value))
+        return hash_obj(data)
 
     @property
     def identifier(self):
         """Return a unique identifier for the given data set"""
-        if self._bgid == b"":
+        if self.background_identifier is None:
             return self._identifier_data()
         else:
-            data = [self._identifier_data(),
-                    self._bgid]
-            idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+            idsum = hash_obj([self._identifier_data(),
+                              self.background_identifier])
             return idsum[:5]
 
     def get_identifier(self, idx):
@@ -192,7 +193,7 @@ class SeriesData(object):
         else:
             raise ValueError("Bad length or type for bg: {}".format(dataset))
 
-        self._bgid = self._compute_bgid()
+        self.background_identifier = self._compute_bgid()
 
     @staticmethod
     @abc.abstractmethod
@@ -229,3 +230,28 @@ class SingleData(SeriesData):
     def get_time(self, idx=0):
         """Time of QPImage"""
         return super(SingleData, self).get_time(idx=0)
+
+
+def hash_obj(data):
+    hasher = hashlib.md5()
+    for dd in data:
+        tohash = obj2bytes(dd)
+        hasher.update(tohash)
+    return hasher.hexdigest()
+
+
+def obj2bytes(data):
+    tohash = []
+    if isinstance(data, (tuple, list)):
+        for item in data:
+            tohash.append(obj2bytes(item))
+    elif isinstance(data, str):
+        tohash.append(data.encode("utf-8"))
+    elif isinstance(data, bytes):
+        tohash.append(data)
+    elif isinstance(data, np.ndarray):
+        tohash.append(data.as_bytes())
+    else:
+        msg = "No rule to convert to bytes: {}".format(data)
+        raise NotImplementedError(msg)
+    return b"".join(tohash)

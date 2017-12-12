@@ -1,9 +1,8 @@
 import functools
-import hashlib
 import os
 import os.path as op
 
-from .dataset import SeriesData
+from .dataset import SeriesData, hash_obj
 from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
@@ -54,7 +53,7 @@ class SeriesFolder(SeriesData):
         data.append(op.basename(self.path))
         for key in sorted(list(self.meta_data.keys())):
             data.append("{}={}".format(key, self.meta_data[key]))
-        idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+        idsum = hash_obj(data)
         return idsum
 
     @staticmethod
