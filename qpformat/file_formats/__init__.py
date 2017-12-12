@@ -44,6 +44,19 @@ class SeriesFolder(SeriesData):
             raise NotImplementedError(msg)
         return self._dataset[idx]
 
+    @functools.lru_cache(maxsize=32)
+    def _identifier_data(self):
+        """Return a unique identifier for the folder data"""
+        # Use only file names
+        data = [op.basename(ff) for ff in self.files]
+        data.sort()
+        # also use the folder name
+        data.append(op.basename(self.path))
+        for key in sorted(list(self.meta_data.keys())):
+            data.append("{}={}".format(key, self.meta_data[key]))
+        idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+        return idsum
+
     @staticmethod
     def _search_files(path):
         fifo = []
@@ -71,20 +84,6 @@ class SeriesFolder(SeriesData):
             self._files = [ff[0] for ff in fifo]
             self._formats = [ff[1] for ff in fifo]
         return self._files
-
-    @property
-    @functools.lru_cache(maxsize=32)
-    def identifier(self):
-        """Return a unique identifier for the given data set"""
-        # Use only file names
-        data = [op.basename(ff) for ff in self.files]
-        data.sort()
-        # also use the folder name
-        data.append(op.basename(self.path))
-        for key in sorted(list(self.meta_data.keys())):
-            data.append("{}={}".format(key, self.meta_data[key]))
-        idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()[:5]
-        return idsum
 
     def get_identifier(self, idx):
         """Return an identifier for the data at index `idx`"""

@@ -1,3 +1,5 @@
+0.1.3
+ - include background data in determination of data set identifiers
 0.1.2
  - implement SeriesData.saveh5 (export as qpimage.QPSeries) (#2)
  - add unique part of file name to SeriesFolder image identifiers (#2)

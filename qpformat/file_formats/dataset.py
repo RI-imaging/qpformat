@@ -24,6 +24,7 @@ class SeriesData(object):
         self.path = path
         self.meta_data = copy.copy(meta_data)
         self._bgdata = []
+        self._bgid = b""
 
     def __repr__(self):
         rep = "QPFormat '{}'".format(self.__class__.__name__) \
@@ -52,18 +53,57 @@ class SeriesData(object):
     def __len__(self):
         """Return number of samples of a data set"""
 
-    @property
+    def _compute_bgid(self, bg=None):
+        """Return a unique identifier for the background data"""
+        if bg is None:
+            bg = self._bgdata
+        if isinstance(bg, qpimage.QPImage):
+            # Single QPImage
+            if "identifier" in bg:
+                return bg["identifier"]
+            else:
+                data = []
+                for key in sorted(list(bg.meta.keys())):
+                    val = bg.meta[key]
+                    data.append("{}={}".format(key, val))
+                data.append(bg.amp.as_bytes())
+                data.append(bg.pha.as_bytes())
+                return hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+        elif (isinstance(bg, list) and
+              len(bg) == len(self) and
+              isinstance(bg[0], qpimage.QPImage)):
+            # List of QPImage
+            data = []
+            for bgii in bg:
+                data.append(self._compute_bgid(bgii))
+            return hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+        elif (isinstance(bg, SeriesData) and
+              (len(bg) == 1 or
+               len(bg) == len(self))):
+            # DataSet
+            return bg.identifier
+
     @functools.lru_cache(maxsize=32)
-    def identifier(self):
-        """Return a unique identifier for the given data set"""
+    def _identifier_data(self):
         data = []
         with open(self.path, "rb") as fd:
             data.append(fd.read(50 * 1024))
         for key in sorted(list(self.meta_data.keys())):
             value = self.meta_data[key]
             data.append("{}={}".format(key, value).encode("utf-8"))
-        idsum = hashlib.md5(b"".join(data)).hexdigest()[:5]
+        idsum = hashlib.md5(b"".join(data)).hexdigest()
         return idsum
+
+    @property
+    def identifier(self):
+        """Return a unique identifier for the given data set"""
+        if self._bgid == b"":
+            return self._identifier_data()
+        else:
+            data = [self._identifier_data(),
+                    self._bgid]
+            idsum = hashlib.md5("".join(data).encode("utf-8")).hexdigest()
+            return idsum[:5]
 
     def get_identifier(self, idx):
         """Return an identifier for the data at index `idx`"""
@@ -126,7 +166,7 @@ class SeriesData(object):
 
         Parameters
         ----------
-        dataset: `DataSet` or `qpimage.QPImage`
+        dataset: `DataSet`, `qpimage.QPImage`, or int
             If the ``len(dataset)`` matches ``len(self)``,
             then background correction is performed
             element-wise. Otherwise, ``len(dataset)``
@@ -151,6 +191,8 @@ class SeriesData(object):
             self._bgdata = dataset
         else:
             raise ValueError("Bad length or type for bg: {}".format(dataset))
+
+        self._bgid = self._compute_bgid()
 
     @staticmethod
     @abc.abstractmethod

@@ -14,7 +14,7 @@ def guess_format(path):
         raise UnknownFileFormatError(str(path))
 
 
-def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
+def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
               meta_data={}):
     """Load experimental data
 
@@ -25,8 +25,8 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
     fmt: str
         The file format to use (see `file_formats.formats`).
         If set to `None`, the file format is be guessed.
-    bg_path: str
-        Path to background data file.
+    bg_data: str
+        Path to background data file or `qpimage.QPImage`
     bg_fmt: str
         The file format to use (see `file_formats.formats`)
         for the background. If set to `None`, the file format
@@ -52,11 +52,17 @@ def load_data(path, fmt=None, bg_path=None, bg_fmt=None,
 
     dataobj = formats_dict[fmt](path=str(path), meta_data=meta_data)
 
-    if bg_path:
-        bg_path = pathlib.Path(bg_path).resolve()
-        if bg_fmt is None:
-            bg_fmt = guess_format(bg_path)
-        bgobj = formats_dict[bg_fmt](path=str(bg_path), meta_data=meta_data)
-        dataobj.set_bg(bgobj)
+    if bg_data is not None:
+        if isinstance(bg_data, qpimage.QPImage):
+            # qpimage instance
+            dataobj.set_bg(bg_data)
+        else:
+            # actual data on disk
+            bg_path = pathlib.Path(bg_data).resolve()
+            if bg_fmt is None:
+                bg_fmt = guess_format(bg_path)
+                bgobj = formats_dict[bg_fmt](
+                    path=str(bg_path), meta_data=meta_data)
+                dataobj.set_bg(bgobj)
 
     return dataobj
