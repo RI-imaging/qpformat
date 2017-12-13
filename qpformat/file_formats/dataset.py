@@ -71,7 +71,6 @@ class SeriesData(object):
                     data.append("{}={}".format(key, val))
                 return hash_obj(data)
         elif (isinstance(bg, list) and
-              len(bg) == len(self) and
               isinstance(bg[0], qpimage.QPImage)):
             # List of QPImage
             data = []
@@ -159,8 +158,15 @@ class SeriesData(object):
                               h5mode="w",
                               identifier=self.identifier) as qps:
             for ii in range(len(self)):
-                qpi = self.get_qpimage(ii)
-                qps.add_qpimage(qpi)
+                if ii == 0 or len(self._bgdata) != 1:
+                    # initial image or series data where each image
+                    # has a unique background image
+                    qpi = self.get_qpimage(ii)
+                    qps.add_qpimage(qpi)
+                else:
+                    # hard-link the background data
+                    qpiraw = self.get_qpimage_raw(ii)
+                    qps.add_qpimage(qpiraw, bg_from_idx=0)
 
     def set_bg(self, dataset):
         """Set background data
@@ -250,7 +256,7 @@ def obj2bytes(data):
     elif isinstance(data, bytes):
         tohash.append(data)
     elif isinstance(data, np.ndarray):
-        tohash.append(data.as_bytes())
+        tohash.append(data.tobytes())
     else:
         msg = "No rule to convert to bytes: {}".format(data)
         raise NotImplementedError(msg)
