@@ -32,6 +32,9 @@ class SingleHdf5Qpimage(SingleData):
         qpi = qpimage.QPImage(h5file=self.path, h5mode="r").copy()
         # Remove previously performed background correction
         qpi.set_bg_data(None)
+        # Set meta data
+        for key in self.meta_data:
+            qpi[key] = self.meta_data[key]
         return qpi
 
     @staticmethod
