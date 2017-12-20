@@ -6,15 +6,6 @@ import qpimage
 import qpformat
 
 
-def test_load_data():
-    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
-    ds = qpformat.load_data(path)
-    assert ds.path == path
-    assert ds.get_time() == 0
-    assert "SingleHdf5Qpimage" in ds.__repr__()
-    assert ds.get_qpimage() == qpimage.QPImage(h5file=path, h5mode="r")
-
-
 def test_identifier():
     path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
     tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
@@ -29,6 +20,40 @@ def test_identifier():
     assert ds2.identifier == "an extremely important string"
     assert ds1.identifier == ds1.get_identifier()
     assert ds2.identifier == ds2.get_identifier()
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
+def test_load_data():
+    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
+    ds = qpformat.load_data(path)
+    assert ds.path == path
+    assert ds.get_time() == 0
+    assert "SingleHdf5Qpimage" in ds.__repr__()
+    assert ds.get_qpimage() == qpimage.QPImage(h5file=path, h5mode="r")
+
+
+def test_meta_override():
+    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
+    tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
+    qpi = qpimage.QPImage(h5file=path, h5mode="r").copy()
+    qpi.copy(tf)
+
+    wl = 333e-9
+    px = .111
+    ds = qpformat.load_data(tf, meta_data={"wavelength": wl,
+                                           "pixel size": px})
+
+    assert ds.meta_data["wavelength"] == wl
+    assert ds.meta_data["pixel size"] == px
+
+    qpi_ds = ds.get_qpimage(0)
+    assert qpi_ds["wavelength"] == wl
+    assert qpi_ds["pixel size"] == px
 
     # cleanup
     try:

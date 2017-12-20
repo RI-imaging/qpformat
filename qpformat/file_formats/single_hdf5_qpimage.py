@@ -22,17 +22,21 @@ class SingleHdf5Qpimage(SingleData):
         if self._bgdata:
             # The user has explicitly chosen different background data
             # using `get_qpimage_raw`.
-            return super(SingleHdf5Qpimage, self).get_qpimage()
+            qpi = super(SingleHdf5Qpimage, self).get_qpimage()
         else:
             # We can use the background data stored in the qpimage hdf5 file
-            return qpimage.QPImage(h5file=self.path, h5mode="r").copy()
+            qpi = qpimage.QPImage(h5file=self.path, h5mode="r").copy()
+            # Force meta data
+            for key in self.meta_data:
+                qpi[key] = self.meta_data[key]
+        return qpi
 
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         qpi = qpimage.QPImage(h5file=self.path, h5mode="r").copy()
         # Remove previously performed background correction
         qpi.set_bg_data(None)
-        # Set meta data
+        # Force meta data
         for key in self.meta_data:
             qpi[key] = self.meta_data[key]
         return qpi

@@ -34,16 +34,23 @@ class SeriesHdf5Qpimage(SeriesData):
         if self._bgdata:
             # The user has explicitly chosen different background data
             # using `get_qpimage_raw`.
-            return super(SeriesHdf5Qpimage, self).get_qpimage(idx)
+            qpi = super(SeriesHdf5Qpimage, self).get_qpimage(idx)
         else:
             # We can use the background data stored in the qpimage hdf5 file
-            return self._qpseries.get_qpimage(index=idx).copy()
+            qpi = self._qpseries.get_qpimage(index=idx).copy()
+            # Force meta data
+            for key in self.meta_data:
+                qpi[key] = self.meta_data[key]
+        return qpi
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         qpi = self._qpseries.get_qpimage(index=idx).copy()
         # Remove previously performed background correction
         qpi.set_bg_data(None)
+        # Force meta data
+        for key in self.meta_data:
+            qpi[key] = self.meta_data[key]
         return qpi
 
     @staticmethod
