@@ -11,7 +11,7 @@ class SeriesData(object):
     __meta__ = abc.ABCMeta
     is_series = True
 
-    def __init__(self, path, meta_data={}):
+    def __init__(self, path, meta_data={}, holo_kw={}):
         """Experimental data set
 
         Parameters
@@ -24,6 +24,7 @@ class SeriesData(object):
         """
         self.path = path
         self.meta_data = copy.copy(meta_data)
+        self.holo_kw = holo_kw
         self._bgdata = []
         #: Unique string that identifies the background data that
         #: was set using `set_bg`.

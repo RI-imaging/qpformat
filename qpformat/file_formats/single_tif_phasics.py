@@ -19,7 +19,7 @@ class LoadTifPhasicsError(BaseException):
 
 
 class SingleTifPhasics(SingleData):
-    def __init__(self, path, meta_data={}):
+    def __init__(self, path, meta_data={}, *args, **kwargs):
         """DataSet for single "SID PHA*.tif" files by Phasics S.A.
 
         Parameters
@@ -50,7 +50,8 @@ class SingleTifPhasics(SingleData):
                 raise LoadTifPhasicsError(msg)
 
         super(SingleTifPhasics, self).__init__(path=path,
-                                               meta_data=meta_data)
+                                               meta_data=meta_data,
+                                               *args, **kwargs)
 
     @staticmethod
     def _get_meta_data(path, section, name):

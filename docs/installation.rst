@@ -7,7 +7,6 @@ including:
 
  - `numpy <https://docs.scipy.org/doc/numpy/>`_,
  - `scipy <https://docs.scipy.org/doc/scipy/reference/>`_,
- - `scikit-image <http://scikit-image.org/>`_ (segmentation).
  - `qpimage <https://qpimage.readthedocs.io/en/stable/>`_ (phase data manipulation),
     
 

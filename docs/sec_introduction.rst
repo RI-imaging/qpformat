@@ -6,8 +6,8 @@ Introduction
   :maxdepth: 2
 
 
-The decoupling problem
-======================
+Phase image retrieval
+=====================
 
 
 Why qpformat?

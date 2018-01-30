@@ -7,6 +7,7 @@ from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
 from .single_npy_numpy import SingleNpyNumpy
+from .single_tif_holo import SingleTifHolo
 from .single_tif_phasics import SingleTifPhasics
 
 
@@ -118,6 +119,7 @@ class UnknownFileFormatError(BaseException):
 formats = [SeriesFolder,
            SingleHdf5Qpimage,
            SingleTifPhasics,
+           SingleTifHolo,
            SingleNpyNumpy,
            SeriesHdf5Qpimage,
            SeriesZipTifPhasics,

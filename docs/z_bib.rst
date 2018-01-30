@@ -1,0 +1,6 @@
+=============
+Bilbliography
+=============
+
+.. bibliography:: qpformat.bib
+

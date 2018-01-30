@@ -15,7 +15,7 @@ def guess_format(path):
 
 
 def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
-              meta_data={}):
+              meta_data={}, holo_kw={}):
     """Load experimental data
 
     Parameters
@@ -50,7 +50,9 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     if fmt is None:
         fmt = guess_format(path)
 
-    dataobj = formats_dict[fmt](path=str(path), meta_data=meta_data)
+    dataobj = formats_dict[fmt](path=str(path),
+                                meta_data=meta_data,
+                                holo_kw=holo_kw)
 
     if bg_data is not None:
         if isinstance(bg_data, qpimage.QPImage):
