@@ -103,4 +103,5 @@ ENV/
 _version_save.py
 
 *.bib.bak
-USAF_test.tif
+examples/*.tif
+examples/*.hdf5

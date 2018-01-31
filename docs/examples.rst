@@ -7,3 +7,6 @@ Examples
 
 
 .. fancy_include:: tif_hologram.py
+
+.. fancy_include:: hyperspy_hologram.py
+

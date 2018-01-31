@@ -3,6 +3,7 @@ import os
 import os.path as op
 
 from .dataset import SeriesData, hash_obj
+from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
 from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
@@ -115,12 +116,13 @@ class UnknownFileFormatError(BaseException):
     pass
 
 
-# the order is important for
+# the order is important
 formats = [SeriesFolder,
            SingleHdf5Qpimage,
            SingleTifPhasics,
            SingleTifHolo,
            SingleNpyNumpy,
+           SeriesHdf5HyperSpy,
            SeriesHdf5Qpimage,
            SeriesZipTifPhasics,
            ]
