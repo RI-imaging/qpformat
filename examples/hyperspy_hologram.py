@@ -22,7 +22,6 @@ if not os.path.exists(dl_name):
     urllib.request.urlretrieve(dl_loc + dl_name, dl_name)
 
 ds = qpformat.load_data(dl_name,
-                        
                         holo_kw={
                             # reduces ringing artifacts in the amplitude image
                             "filter_name": "smooth disk",
