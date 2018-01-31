@@ -22,8 +22,13 @@ if not os.path.exists(dl_name):
     urllib.request.urlretrieve(dl_loc + dl_name, dl_name)
 
 ds = qpformat.load_data(dl_name,
-                        # reduces ringing artifacts in the amplitude image
-                        holo_kw={"filter_name": "smooth disk"})
+                        
+                        holo_kw={
+                            # reduces ringing artifacts in the amplitude image
+                            "filter_name": "smooth disk",
+                            # select correct sideband
+                            "sideband": -1,
+                            })
 
 # retrieve the qpimage.QPImage instance
 qpi = ds.get_qpimage(0)
