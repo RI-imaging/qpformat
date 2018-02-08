@@ -1,4 +1,4 @@
-ODTbrain documentation
+qpformat documentation
 ======================
 To install the requirements for building the documentation, run
 

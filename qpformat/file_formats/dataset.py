@@ -89,10 +89,22 @@ class SeriesData(object):
     @functools.lru_cache(maxsize=32)
     def _identifier_data(self):
         data = []
+        # data
         with open(self.path, "rb") as fd:
             data.append(fd.read(50 * 1024))
+        data += self._identifier_meta()
+        return hash_obj(data)
+
+    @functools.lru_cache(maxsize=32)
+    def _identifier_meta(self):
+        data = []
+        # meta data
         for key in sorted(list(self.meta_data.keys())):
             value = self.meta_data[key]
+            data.append("{}={}".format(key, value))
+        # hologram info
+        for key in sorted(list(self.holo_kw.keys())):
+            value = self.holo_kw[key]
             data.append("{}={}".format(key, value))
         return hash_obj(data)
 

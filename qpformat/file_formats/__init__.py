@@ -53,10 +53,9 @@ class SeriesFolder(SeriesData):
         data.sort()
         # also use the folder name
         data.append(op.basename(self.path))
-        for key in sorted(list(self.meta_data.keys())):
-            data.append("{}={}".format(key, self.meta_data[key]))
-        idsum = hash_obj(data)
-        return idsum
+        # add meta data
+        data += self._identifier_meta()
+        return hash_obj(data)
 
     @staticmethod
     def _search_files(path):
