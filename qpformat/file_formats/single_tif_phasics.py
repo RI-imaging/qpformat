@@ -19,6 +19,8 @@ class LoadTifPhasicsError(BaseException):
 
 
 class SingleTifPhasics(SingleData):
+    storage_type = "phase,intensity"
+
     def __init__(self, path, meta_data={}, *args, **kwargs):
         """DataSet for single "SID PHA*.tif" files by Phasics S.A.
 

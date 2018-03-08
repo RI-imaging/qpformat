@@ -38,26 +38,22 @@ This test uses a cropped version of an original phasics tif file
                         extratags=extratags,
                         append=True)
 """
-
-from os.path import abspath, dirname, join
-import sys
+import pathlib
 
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpformat  # noqa: E402
+import qpformat
 
 
 def test_load_data():
-    path = join(dirname(abspath(__file__)), "data/single_phasics.tif")
+    path = pathlib.Path(__file__).parent / "data" / "single_phasics.tif"
     ds = qpformat.load_data(path)
     assert ds.path == path
     assert "SingleTifPhasics" in ds.__repr__()
 
 
 def test_data_content():
-    path = join(dirname(abspath(__file__)), "data/single_phasics.tif")
+    path = pathlib.Path(__file__).parent / "data" / "single_phasics.tif"
     ds = qpformat.load_data(path)
     assert ds.get_time() == 1461951095.00827
     qpi = ds.get_qpimage()

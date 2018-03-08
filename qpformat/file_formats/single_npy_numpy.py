@@ -4,6 +4,7 @@ import numpy as np
 import qpimage
 
 from .dataset import SingleData
+from flake8.style_guide import lru_cache
 
 
 class SingleNpyNumpy(SingleData):
@@ -13,18 +14,25 @@ class SingleNpyNumpy(SingleData):
     2D ndarray (no pickled objects). The ndarray is either
     complex-valued (scattered field) or real-valued (phase).
     """
+    # storage type is implemented as a property
+
+    @property
+    @lru_cache(maxsize=32)
+    def storage_type(self):
+        nf = np.load(self.path, mmap_mode="c", allow_pickle=False)
+        if np.iscomplexobj(nf):
+            st = "field"
+        else:
+            st = "phase"
+        return st
 
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
         nf = np.load(self.path, mmap_mode="c", allow_pickle=False)
-        if np.iscomplexobj(nf):
-            which_data = "field"
-        else:
-            which_data = "phase"
         meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=nf,
-                              which_data=which_data,
+                              which_data=self.storage_type,
                               meta_data=meta_data)
         return qpi
 

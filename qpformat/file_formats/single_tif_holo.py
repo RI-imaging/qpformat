@@ -8,6 +8,8 @@ from .dataset import SingleData
 
 class SingleTifHolo(SingleData):
     """DataSet for single hologram images"""
+    storage_type = "hologram"
+
     @staticmethod
     def _get_tif(path):
         if not isinstance(path, str):

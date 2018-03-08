@@ -5,6 +5,8 @@ from .dataset import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):
+    storage_type = "phase,amplitude"
+
     @property
     def identifier(self):
         with qpimage.QPImage(h5file=self.path, h5mode="r") as qpi:

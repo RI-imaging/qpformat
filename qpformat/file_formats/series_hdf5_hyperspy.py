@@ -16,6 +16,7 @@ class SeriesHdf5HyperSpy(SeriesData):
 
     hyperspy.io_plugins.hspy
     """
+    storage_type = "hologram"
 
     def __len__(self):
         return len(self._get_experiments())

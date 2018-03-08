@@ -7,6 +7,8 @@ from .single_tif_phasics import SingleTifPhasics
 
 
 class SeriesZipTifPhasics(SeriesData):
+    storage_type = "phase,intensity"
+
     def __init__(self, *args, **kwargs):
         super(SeriesZipTifPhasics, self).__init__(*args, **kwargs)
         self._files = None
