@@ -48,7 +48,7 @@ import qpformat
 def test_load_data():
     path = pathlib.Path(__file__).parent / "data" / "single_phasics.tif"
     ds = qpformat.load_data(path)
-    assert ds.path == path
+    assert pathlib.Path(ds.path) == path
     assert "SingleTifPhasics" in ds.__repr__()
 
 

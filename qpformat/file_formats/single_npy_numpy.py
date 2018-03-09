@@ -1,10 +1,10 @@
+from functools import lru_cache
 import copy
 
 import numpy as np
 import qpimage
 
 from .dataset import SingleData
-from flake8.style_guide import lru_cache
 
 
 class SingleNpyNumpy(SingleData):

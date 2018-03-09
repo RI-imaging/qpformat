@@ -1,4 +1,4 @@
-import functools
+from functools import lru_cache
 import os
 import os.path as op
 
@@ -10,7 +10,6 @@ from .single_hdf5_qpimage import SingleHdf5Qpimage
 from .single_npy_numpy import SingleNpyNumpy
 from .single_tif_holo import SingleTifHolo
 from .single_tif_phasics import SingleTifPhasics
-from flake8.style_guide import lru_cache
 
 
 class MultipleFormatsNotSupportedError(BaseException):
@@ -29,7 +28,7 @@ class SeriesFolder(SeriesData):
     def __len__(self):
         return len(self.files)
 
-    @functools.lru_cache(maxsize=32)
+    @lru_cache(maxsize=32)
     def _get_cropped_file_names(self):
         """self.files with common path prefix/suffix removed"""
         prefix = os.path.commonprefix(self.files)
@@ -52,7 +51,7 @@ class SeriesFolder(SeriesData):
             raise NotImplementedError(msg)
         return self._dataset[idx]
 
-    @functools.lru_cache(maxsize=32)
+    @lru_cache(maxsize=32)
     def _identifier_data(self):
         """Return a unique identifier for the folder data"""
         # Use only file names
