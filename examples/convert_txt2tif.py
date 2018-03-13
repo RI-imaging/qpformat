@@ -20,6 +20,8 @@ from skimage.external import tifffile
 ignore_endswith = ['.bmp', '.npy', '.opj', '.png', '.pptx', '.py', '.svg',
                    '.tif', '.txt', '_RIdist', '_parameter', '_parameter_old',
                    '_phase', 'n_array', 'n_array_real', '~']
+# uncomment this line to keep background hologram files
+ignore_endswith += ['_bg']
 
 
 def get_paths(folder, ignore_endswith=ignore_endswith):
@@ -53,6 +55,6 @@ if __name__ == "__main__":
     for ff in files:
         # convert image data to uint8 (most image sensors)
         hol = np.loadtxt(str(ff), dtype=np.uint8)
-        tifout = str(pout / (ff.name[:-10] + ".tif"))
+        tifout = str(pout / (ff.name + ".tif"))
         # compress image data
         tifffile.imsave(tifout, hol, compress=9)

@@ -5,6 +5,7 @@ import os.path as op
 from .dataset import SeriesData, hash_obj
 from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
 from .series_hdf5_qpimage import SeriesHdf5Qpimage
+from .series_zip_tif_holo import SeriesZipTifHolo
 from .series_zip_tif_phasics import SeriesZipTifPhasics
 from .single_hdf5_qpimage import SingleHdf5Qpimage
 from .single_npy_numpy import SingleNpyNumpy
@@ -144,6 +145,7 @@ formats = [SeriesFolder,
            SeriesHdf5HyperSpy,
            SeriesHdf5Qpimage,
            SeriesZipTifPhasics,
+           SeriesZipTifHolo,  # after phasics, b/c phasics has extra keywords
            ]
 
 # convenience dictionary

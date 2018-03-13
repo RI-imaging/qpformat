@@ -1,4 +1,5 @@
 0.1.4
+ - feat: new file format for zipped hologram tif files
  - feat: add "storage_type" property describing which type of data
    is stored originally in a dataset
  - feat: add hologram file formats: HyperSpy and tif-based 
