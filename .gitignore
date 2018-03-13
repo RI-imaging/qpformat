@@ -105,3 +105,4 @@ _version_save.py
 *.bib.bak
 examples/*.tif
 examples/*.hdf5
+.pytest_cache

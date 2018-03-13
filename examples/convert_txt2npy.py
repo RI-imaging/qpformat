@@ -9,7 +9,7 @@ file format which is supported by qpformat.
 
 This example must be executed with a directory as an
 command line argument, i.e.
-``python convert_tcxt2tig /path/to/folder/``
+``python convert_txt2npy /path/to/folder/``
 """
 import pathlib
 import sys

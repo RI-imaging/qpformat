@@ -11,3 +11,5 @@ Examples
 .. fancy_include:: hyperspy_hologram.py
 
 .. fancy_include:: convert_txt2npy.py
+
+.. fancy_include:: convert_txt2tif.py
