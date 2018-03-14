@@ -25,7 +25,7 @@ ignore_endswith += ['_bg']
 
 
 def get_paths(folder, ignore_endswith=ignore_endswith):
-    """Return hologram file paths
+    '''Return hologram file paths
 
     Parameters
     ----------
@@ -34,7 +34,7 @@ def get_paths(folder, ignore_endswith=ignore_endswith):
     ignore_endswith: list
         List of filename ending strings indicating which
         files should be ignored.
-    """
+    '''
     folder = pathlib.Path(folder).resolve()
     files = folder.rglob("*")
     for ie in ignore_endswith:

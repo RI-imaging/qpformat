@@ -18,14 +18,14 @@ import numpy as np
 
 
 def get_paths(folder):
-    """Return *_phase.txt files in `folder`"""
+    '''Return *_phase.txt files in `folder`'''
     folder = pathlib.Path(folder).resolve()
     files = folder.rglob("*_phase.txt")
     return sorted(files)
 
 
 def load_file(path):
-    """Load a txt data file"""
+    '''Load a txt data file'''
     path = pathlib.Path(path)
     data = path.open().readlines()
     # remove comments and empty lines
@@ -42,7 +42,7 @@ def load_file(path):
 
 
 def load_field(path):
-    """Load QPI data using *_phase.txt files"""
+    '''Load QPI data using *_phase.txt files'''
     path = pathlib.Path(path)
     phase = load_file(path)
     inten = load_file(path.parent / (path.name[:-10] + "_intensity.txt"))
