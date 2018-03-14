@@ -1,7 +1,7 @@
+.. _index:
+
 qpformat documentation
 ======================
-
-.. _index:
 
 Qpformat is a Python3 library for opening quantitative
 phase imaging data file formats. This is the
