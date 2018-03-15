@@ -109,7 +109,7 @@ class SeriesFolder(SeriesData):
     def get_identifier(self, idx):
         """Return an identifier for the data at index `idx`"""
         name = self._get_cropped_file_names()[idx]
-        return "{}:{}:{}".format(self.identifier, idx, name)
+        return "{}:{}:{}".format(self.identifier, name, idx)
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""

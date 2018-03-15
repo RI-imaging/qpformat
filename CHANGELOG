@@ -1,3 +1,6 @@
+0.1.5
+ - feat: reduce length of dataset hashes to six chars for user convenience
+ - feat: switch order of name and index in identifier for user convenience
 0.1.4
  - feat: new file format for zipped hologram tif files
  - feat: add "storage_type" property describing which type of data

@@ -251,12 +251,12 @@ class SingleData(SeriesData):
         return super(SingleData, self).get_time(idx=0)
 
 
-def hash_obj(data):
+def hash_obj(data, maxlen=5):
     hasher = hashlib.md5()
     for dd in data:
         tohash = obj2bytes(dd)
         hasher.update(tohash)
-    return hasher.hexdigest()
+    return hasher.hexdigest()[:maxlen]
 
 
 def obj2bytes(data):
