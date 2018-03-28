@@ -10,12 +10,12 @@ wavelength, and reconstruction distance are taken from the
 corresponding `Python example <http://shampoo.readthedocs.io/en/latest
 /getting_started.html#simple-numerical-reconstruction>`_.
 
-The object returned by the 
+The object returned by the
 :func:`get_qpimage <qpformat.file_formats.dataset.SingleData.get_qpimage`
 function is an instance of :class:`qpimage.QPImage <qpimage.core.QPImage>`
-which allows for field refocusing. The refocused QPImage is background-corrected
-using a polynomial fit to the phase data at locations where the
-amplitude data is not attenuated (bright regions in the amplitude
+which allows for field refocusing. The refocused QPImage is
+background-corrected using a polynomial fit to the phase data at locations
+where the amplitude data is not attenuated (bright regions in the amplitude
 image).
 """
 
