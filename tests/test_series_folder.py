@@ -110,7 +110,7 @@ def test_multiple_formats_error():
     """
     # combine a zip file with a regular hologram file
     path, _files2 = setup_folder_single_holo()
-    shutil.copy2(datapath / "series_phasics.zip", path)
+    shutil.copy2(str(datapath / "series_phasics.zip"), path)
     try:
         qpformat.load_data(path)
     except qpformat.file_formats.MultipleFormatsNotSupportedError:
