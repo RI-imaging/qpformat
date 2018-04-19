@@ -82,10 +82,14 @@ class SeriesFolder(SeriesData):
         if len(formset) > 1:
             fmts_qpimage = ["SingleHdf5Qpimage", "SeriesHdf5Qpimage"]
             fifo = [ff for ff in fifo if ff[1] not in fmts_qpimage]
+        # ignore raw tif files if single_tif_phasics is detected
+        if len(formset) > 1 and "SingleTifPhasics" in theformats:
+            fmts_badtif = "SingleTifHolo"
+            fifo = [ff for ff in fifo if ff[1] not in fmts_badtif]
         # otherwise, prevent multiple file formats
         theformats2 = [ff[1] for ff in fifo]
         formset2 = set(theformats2)
-        if len(formset) > 1:
+        if len(formset2) > 1:
             msg = "Qpformat does not support multiple different file " \
                   + "formats within one directory: {}".format(formset2)
             raise MultipleFormatsNotSupportedError(msg)

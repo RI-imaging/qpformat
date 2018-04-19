@@ -1,21 +1,50 @@
-from os.path import abspath, dirname, join
+import pathlib
 import shutil
-import sys
 import tempfile
+import zipfile
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpformat  # noqa: E402
 
+datapath = pathlib.Path(__file__).parent / "data"
 
-def setup_folder_single_h5(size=2):
-    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
-    tdir = tempfile.mkdtemp(prefix="qpformat_test_")
+
+def setup_folder_single_h5(size=2, tdir=None):
+    path = datapath / "single_qpimage.h5"
+    if tdir is None:
+        tdir = tempfile.mkdtemp(prefix="qpformat_test_")
+    tdir = pathlib.Path(tdir)
     files = []
     for ss in range(size):
-        tpath = join(tdir, "data{:04d}.h5".format(ss))
-        files.append(tpath)
-        shutil.copy(path, tpath)
+        tpath = tdir / "data{:04d}.h5".format(ss)
+        files.append(str(tpath))
+        shutil.copy(str(path), str(tpath))
+    return str(tdir), files
+
+
+def setup_folder_single_holo(size=2, tdir=None):
+    path = datapath / "single_holo.tif"
+    if tdir is None:
+        tdir = tempfile.mkdtemp(prefix="qpformat_test_")
+    tdir = pathlib.Path(tdir)
+    files = []
+    for ss in range(size):
+        tpath = tdir / "data{:04d}.h5".format(ss)
+        files.append(str(tpath))
+        shutil.copy(str(path), str(tpath))
+    return str(tdir), files
+
+
+def setup_folder_single_phasics_tif(tdir=None):
+    path = datapath / "series_phasics.zip"
+    if tdir is None:
+        tdir = tempfile.mkdtemp(prefix="qpformat_test_")
+
+    files = []
+    with zipfile.ZipFile(str(path)) as arc:
+        for fn in arc.namelist():
+            arc.extract(fn, path=tdir)
+            if fn.startswith("SID PHA") and fn.endswith(".tif"):
+                files.append(str(pathlib.Path(tdir) / fn))
     return tdir, files
 
 
@@ -42,6 +71,52 @@ def test_load_data():
     # format should be right
     assert ds.verify(ds.path)
     assert ds.__class__.__name__ == "SeriesFolder"
+    shutil.rmtree(path, ignore_errors=True)
+
+
+def test_multiple_formats_phasics_tif():
+    """
+    Folders with phasics tif files sometimes contain raw tif files.
+    This test makes sure the raw files are ignored
+    """
+    path, files = setup_folder_single_phasics_tif()
+    ds = qpformat.load_data(path)
+    for ff in ds.files:
+        assert ff in files
+    assert ds.verify(ds.path)
+    assert ds.__class__.__name__ == "SeriesFolder"
+    shutil.rmtree(path, ignore_errors=True)
+
+
+def test_multiple_formats_phasics_tif_ignore_h5():
+    """
+    In folders that contain h5 files and another formats, the
+    h5 files are ignored.
+    """
+    path, files1 = setup_folder_single_phasics_tif()
+    path, _files2 = setup_folder_single_h5(tdir=path)
+    ds = qpformat.load_data(path)
+    for ff in ds.files:
+        assert ff in files1
+    shutil.rmtree(path, ignore_errors=True)
+
+
+def test_multiple_formats_error():
+    """
+    Folders containing two different formats that are not handled
+    by test_multiple_formats_phasics_tif_ignore_h5
+    and test_multiple_formats_phasics_tif
+    should not be supported.
+    """
+    # combine a zip file with a regular hologram file
+    path, _files2 = setup_folder_single_holo()
+    shutil.copy2(datapath / "series_phasics.zip", path)
+    try:
+        qpformat.load_data(path)
+    except qpformat.file_formats.MultipleFormatsNotSupportedError:
+        pass
+    else:
+        assert False, "Multiple formats should raise error!"
     shutil.rmtree(path, ignore_errors=True)
 
 

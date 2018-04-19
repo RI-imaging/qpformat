@@ -1,4 +1,5 @@
 0.1.5
+ - fix: raw phasics tif files were not ignored in `SeriesFolder` (#3)
  - feat: reduce length of dataset hashes to six chars for user convenience
  - feat: switch order of name and index in identifier for user convenience
 0.1.4
