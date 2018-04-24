@@ -13,6 +13,7 @@ documentation of qpformat version |release|.
 
    sec_introduction
    sec_getting_started
+   sec_examples
    sec_code_reference
    z_bib
 
