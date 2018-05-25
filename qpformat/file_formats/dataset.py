@@ -50,7 +50,7 @@ class SeriesData(object):
                 meta.append("1px={}µm".format(pxm * 1e6))
             else:
                 meta.append("1px={}m".format(pxm))
-        rep += ", ".join(meta)
+        rep = ", ".join([rep] + meta)
         return rep
 
     @abc.abstractmethod
