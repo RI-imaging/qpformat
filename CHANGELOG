@@ -1,3 +1,5 @@
+0.1.6
+ - code cleanup
 0.1.5
  - fix: raw phasics tif files were not ignored in `SeriesFolder` (#3)
  - feat: reduce length of dataset hashes to six chars for user convenience
