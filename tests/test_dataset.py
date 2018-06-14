@@ -129,7 +129,6 @@ def test_set_bg_series():
 
 
 if __name__ == "__main__":
-    test_set_bg_series()
     # Run all tests
     loc = locals()
     for key in list(loc.keys()):
