@@ -33,7 +33,8 @@ class SingleNpyNumpy(SingleData):
         meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=nf,
                               which_data=self.storage_type,
-                              meta_data=meta_data)
+                              meta_data=meta_data,
+                              h5dtype=self.as_type)
         return qpi
 
     @staticmethod

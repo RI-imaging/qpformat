@@ -11,17 +11,24 @@ class SeriesData(object):
     __meta__ = abc.ABCMeta
     is_series = True
 
-    def __init__(self, path, meta_data={}, holo_kw={}):
+    def __init__(self, path, meta_data={}, holo_kw={}, as_type="float32"):
         """Experimental data set
 
         Parameters
         ----------
         path: str
-            path to the experimental data file.
+            Path to the experimental data file.
         meta_data: dict
-            dictionary containing meta data.
+            Dictionary containing meta data.
             see :py:class:`qpimage.META_KEYS`.
+        as_type: str
+            Defines the data type that the input data is casted to.
+            The default is "float32" which saves memory. If high
+            numerical accuracy is required (does not apply for a
+            simple 2D phase analysis), set this to double precision
+            ("float64").
         """
+        self.as_type = as_type
         self.path = path
         self.meta_data = copy.copy(meta_data)
         self.holo_kw = holo_kw

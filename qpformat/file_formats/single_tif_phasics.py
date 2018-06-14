@@ -118,7 +118,8 @@ class SingleTifPhasics(SingleData):
             meta_data["time"] = self.get_time()
         qpi = qpimage.QPImage(data=(pha, inten),
                               which_data="phase,intensity",
-                              meta_data=meta_data)
+                              meta_data=meta_data,
+                              h5dtype=self.as_type)
         return qpi
 
     def get_time(self, idx=0):

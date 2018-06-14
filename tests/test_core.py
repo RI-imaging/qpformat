@@ -38,7 +38,9 @@ def test_load_with_bg():
     f_bg_data = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
     np.save(f_bg_data, bg_data)
 
-    ds = qpformat.core.load_data(path=f_data, bg_data=f_bg_data)
+    ds = qpformat.core.load_data(path=f_data,
+                                 bg_data=f_bg_data,
+                                 as_type="float64")
     qpi = ds.get_qpimage()
     assert np.allclose(qpi.pha, data - bg_data, atol=1e-15, rtol=0)
     # cleanup

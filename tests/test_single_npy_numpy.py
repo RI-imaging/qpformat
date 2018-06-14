@@ -16,7 +16,7 @@ def test_load_phase():
     phase *= np.linspace(0, .3, 20).reshape(-1, 1)
     np.save(tf, phase)
 
-    ds = qpformat.load_data(tf)
+    ds = qpformat.load_data(tf, as_type="float64")
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
     assert ds.path == tf
     assert "SingleNpyNumpy" in ds.__repr__()
@@ -32,7 +32,7 @@ def test_load_field():
     field = amplitude * np.exp(1j * phase)
     np.save(tf, field)
 
-    ds = qpformat.load_data(tf)
+    ds = qpformat.load_data(tf, as_type="float64")
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
     assert np.allclose(ds.get_qpimage().amp, amplitude, atol=1e-15, rtol=0)
 

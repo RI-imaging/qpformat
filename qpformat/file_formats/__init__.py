@@ -43,7 +43,8 @@ class SeriesFolder(SeriesData):
         if self._dataset[idx] is None:
             format_class = formats_dict[self._formats[idx]]
             self._dataset[idx] = format_class(path=self._files[idx],
-                                              meta_data=self.meta_data)
+                                              meta_data=self.meta_data,
+                                              as_type=self.as_type)
         if len(self._dataset[idx]) != 1:
             # TODO:
             # - add enumeration within files

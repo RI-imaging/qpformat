@@ -83,7 +83,8 @@ class SeriesHdf5HyperSpy(SeriesData):
         qpi = qpimage.QPImage(data=data,
                               which_data="hologram",
                               meta_data=meta_data,
-                              holo_kw=self.holo_kw)
+                              holo_kw=self.holo_kw,
+                              h5dtype=self.as_type)
         return qpi
 
     @staticmethod

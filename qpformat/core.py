@@ -15,7 +15,7 @@ def guess_format(path):
 
 
 def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
-              meta_data={}, holo_kw={}):
+              meta_data={}, holo_kw={}, as_type="float32"):
     """Load experimental data
 
     Parameters
@@ -33,6 +33,12 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
         is be guessed.
     meta_data: dict
         Meta data (see `qpimage.meta.DATA_KEYS`)
+    as_type: str
+        Defines the data type that the input data is casted to.
+        The default is "float32" which saves memory. If high
+        numerical accuracy is required (does not apply for a
+        simple 2D phase analysis), set this to double precision
+        ("float64").
 
     Returns
     -------
@@ -52,7 +58,8 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
 
     dataobj = formats_dict[fmt](path=str(path),
                                 meta_data=meta_data,
-                                holo_kw=holo_kw)
+                                holo_kw=holo_kw,
+                                as_type=as_type)
 
     if bg_data is not None:
         if isinstance(bg_data, qpimage.QPImage):
@@ -63,8 +70,10 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
             bg_path = pathlib.Path(bg_data).resolve()
             if bg_fmt is None:
                 bg_fmt = guess_format(bg_path)
-                bgobj = formats_dict[bg_fmt](
-                    path=str(bg_path), meta_data=meta_data)
+                bgobj = formats_dict[bg_fmt](path=str(bg_path),
+                                             meta_data=meta_data,
+                                             holo_kw=holo_kw,
+                                             as_type=as_type)
                 dataobj.set_bg(bgobj)
 
     return dataobj

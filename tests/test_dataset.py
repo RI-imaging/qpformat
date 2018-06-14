@@ -10,6 +10,22 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpformat.core  # noqa: E402
 
 
+def test_meta():
+    data = np.ones((20, 20), dtype=float)
+    tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
+    np.save(tf, data)
+
+    ds = qpformat.load_data(path=tf, meta_data={"time": 47})
+    assert ds.get_time() == 47
+    assert tf in ds.get_name()
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
 def test_repr():
     data = np.ones((20, 20), dtype=float)
     tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
@@ -24,22 +40,6 @@ def test_repr():
                                                  "pixel size": 15})
     assert "λ=1" in ds2.__repr__()
     assert "1px=15" in ds2.__repr__()
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
-
-
-def test_meta():
-    data = np.ones((20, 20), dtype=float)
-    tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
-    np.save(tf, data)
-
-    ds = qpformat.load_data(path=tf, meta_data={"time": 47})
-    assert ds.get_time() == 47
-    assert tf in ds.get_name()
-
     # cleanup
     try:
         os.remove(tf)
@@ -118,8 +118,8 @@ def test_set_bg_series():
     np.save(f_bg_data2, bg_data2)
 
     # tests
-    ds1 = qpformat.core.load_data(path=data_dir)
-    bg1 = qpformat.core.load_data(path=bg_data_dir)
+    ds1 = qpformat.core.load_data(path=data_dir, as_type="float64")
+    bg1 = qpformat.core.load_data(path=bg_data_dir, as_type="float64")
     assert len(ds1) == 2
     ds1.set_bg(bg1)
 
@@ -129,6 +129,7 @@ def test_set_bg_series():
 
 
 if __name__ == "__main__":
+    test_set_bg_series()
     # Run all tests
     loc = locals()
     for key in list(loc.keys()):
