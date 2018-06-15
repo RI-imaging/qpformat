@@ -1,13 +1,8 @@
 import os
-from os.path import abspath, dirname
-import sys
 import tempfile
 
 import numpy as np
-
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpformat.core  # noqa: E402
+import qpformat.core
 
 
 def test_wrong_file_format():

@@ -61,7 +61,7 @@ class SeriesZipTifHolo(SeriesData):
         """Verify hologram zip tif file format"""
         valid = False
         try:
-            zf = zipfile.ZipFile(path)
+            zf = zipfile.ZipFile(str(path))
         except (zipfile.BadZipfile, IsADirectoryError):
             pass
         else:

@@ -1,5 +1,6 @@
 import calendar
 import copy
+import pathlib
 import time
 import xml.etree.ElementTree as ET
 
@@ -80,7 +81,9 @@ class SingleTifPhasics(SingleData):
 
     @staticmethod
     def _get_tif(path):
-        if not isinstance(path, str):
+        if isinstance(path, pathlib.Path):
+            path = str(path)
+        elif not isinstance(path, str):
             # Seek open file zero to avoid error in tifffile:
             # "ValueError: invalid TIFF file"
             path.seek(0)

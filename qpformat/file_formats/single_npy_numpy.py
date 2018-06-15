@@ -1,5 +1,6 @@
-from functools import lru_cache
 import copy
+from functools import lru_cache
+import pathlib
 
 import numpy as np
 import qpimage
@@ -19,7 +20,7 @@ class SingleNpyNumpy(SingleData):
     @property
     @lru_cache(maxsize=32)
     def storage_type(self):
-        nf = np.load(self.path, mmap_mode="c", allow_pickle=False)
+        nf = np.load(str(self.path), mmap_mode="c", allow_pickle=False)
         if np.iscomplexobj(nf):
             st = "field"
         else:
@@ -29,7 +30,7 @@ class SingleNpyNumpy(SingleData):
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
-        nf = np.load(self.path, mmap_mode="c", allow_pickle=False)
+        nf = np.load(str(self.path), mmap_mode="c", allow_pickle=False)
         meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=nf,
                               which_data=self.storage_type,
@@ -43,10 +44,11 @@ class SingleNpyNumpy(SingleData):
 
         Returns `True` if the file format matches.
         """
+        path = pathlib.Path(path)
         valid = False
-        if path.endswith(".npy"):
+        if path.suffix == ".npy":
             try:
-                nf = np.load(path, mmap_mode="r", allow_pickle=False)
+                nf = np.load(str(path), mmap_mode="r", allow_pickle=False)
             except (OSError, ValueError, IsADirectoryError):
                 pass
             else:

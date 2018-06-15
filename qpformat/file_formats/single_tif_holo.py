@@ -39,7 +39,7 @@ class SingleTifHolo(SingleData):
         """
         valid = False
         try:
-            tf = SingleTifHolo._get_tif(path)
+            tf = SingleTifHolo._get_tif(str(path))
         except (ValueError, IsADirectoryError):
             pass
         else:

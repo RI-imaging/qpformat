@@ -1,13 +1,16 @@
 import os
-from os.path import abspath, dirname, join
+import pathlib
 import tempfile
 
 import qpimage
 import qpformat
 
 
+datapath = pathlib.Path(__file__).parent / "data"
+
+
 def test_identifier():
-    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
+    path = datapath / "single_qpimage.h5"
     tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
     qpi = qpimage.QPImage(h5file=path, h5mode="r").copy()
     qpi["identifier"] = "an extremely important string"
@@ -29,16 +32,16 @@ def test_identifier():
 
 
 def test_load_data():
-    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
+    path = datapath / "single_qpimage.h5"
     ds = qpformat.load_data(path)
-    assert ds.path == path
+    assert ds.path == path.resolve()
     assert ds.get_time() == 0
     assert "SingleHdf5Qpimage" in ds.__repr__()
     assert ds.get_qpimage() == qpimage.QPImage(h5file=path, h5mode="r")
 
 
 def test_meta_override():
-    path = join(dirname(abspath(__file__)), "data/single_qpimage.h5")
+    path = datapath / "single_qpimage.h5"
     tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
     qpi = qpimage.QPImage(h5file=path, h5mode="r").copy()
     qpi.copy(tf)

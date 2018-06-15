@@ -2,6 +2,7 @@ import abc
 import copy
 import functools
 import hashlib
+import pathlib
 
 import numpy as np
 import qpimage
@@ -16,7 +17,7 @@ class SeriesData(object):
 
         Parameters
         ----------
-        path: str
+        path: str or pathlib.Path
             Path to the experimental data file.
         meta_data: dict
             Dictionary containing meta data.
@@ -29,7 +30,11 @@ class SeriesData(object):
             ("float64").
         """
         self.as_type = as_type
-        self.path = path
+        if isinstance(path, (str, pathlib.Path)):
+            self.path = pathlib.Path(path).resolve()
+        else:
+            # _io.BytesIO
+            self.path = path
         self.meta_data = copy.copy(meta_data)
         self.holo_kw = holo_kw
         self._bgdata = []
@@ -97,7 +102,7 @@ class SeriesData(object):
     def _identifier_data(self):
         data = []
         # data
-        with open(self.path, "rb") as fd:
+        with self.path.open("rb") as fd:
             data.append(fd.read(50 * 1024))
         data += self._identifier_meta()
         return hash_obj(data)

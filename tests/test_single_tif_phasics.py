@@ -45,15 +45,18 @@ import numpy as np
 import qpformat
 
 
+datapath = pathlib.Path(__file__).parent / "data"
+
+
 def test_load_data():
-    path = pathlib.Path(__file__).parent / "data" / "single_phasics.tif"
+    path = datapath / "single_phasics.tif"
     ds = qpformat.load_data(path)
     assert pathlib.Path(ds.path) == path
     assert "SingleTifPhasics" in ds.__repr__()
 
 
 def test_data_content():
-    path = pathlib.Path(__file__).parent / "data" / "single_phasics.tif"
+    path = datapath / "single_phasics.tif"
     ds = qpformat.load_data(path)
     assert ds.get_time() == 1461951095.00827
     qpi = ds.get_qpimage()

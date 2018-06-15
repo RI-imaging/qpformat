@@ -6,25 +6,25 @@ for qpformat are included as empty files to reflect the original
 zip file structure. The "SID PHA*.tif" files were created with
 the script given in the doc string of "test_single_tif_phasics.py".
 """
-from os.path import abspath, dirname, join
-import sys
+import pathlib
 
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpformat  # noqa: E402
+import qpformat
+
+
+datapath = pathlib.Path(__file__).parent / "data"
 
 
 def test_load_data():
-    path = join(dirname(abspath(__file__)), "data/series_phasics.zip")
+    path = datapath / "series_phasics.zip"
     ds = qpformat.load_data(path)
-    assert ds.path == path
+    assert ds.path == path.resolve()
     assert "SeriesZipTifPhasics" in ds.__repr__()
 
 
 def test_data_content():
-    path = join(dirname(abspath(__file__)), "data/series_phasics.zip")
+    path = datapath / "series_phasics.zip"
     ds = qpformat.load_data(path)
     assert len(ds) == 3
     assert ds.get_time(0) == 1461949418.29027

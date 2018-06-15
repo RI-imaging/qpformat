@@ -1,4 +1,4 @@
-import os
+import pathlib
 import tempfile
 
 import numpy as np
@@ -8,7 +8,7 @@ import qpformat
 
 def test_load_phase():
     # generate test data
-    tf = tempfile.mktemp(suffix=".npy", prefix="qpformat_test_")
+    tf = pathlib.Path(tempfile.mktemp(suffix=".npy", prefix="qpformat_test_"))
     phase = np.ones((20, 20), dtype=float)
     phase *= np.linspace(0, .3, 20).reshape(-1, 1)
     np.save(tf, phase)
@@ -19,14 +19,14 @@ def test_load_phase():
     assert "SingleNpyNumpy" in ds.__repr__()
 
     try:
-        os.remove(tf)
+        tf.unlink()
     except OSError:
         pass
 
 
 def test_load_field():
     # generate test data
-    tf = tempfile.mktemp(suffix=".npy", prefix="qpformat_test_")
+    tf = pathlib.Path(tempfile.mktemp(suffix=".npy", prefix="qpformat_test_"))
     phase = np.ones((20, 20), dtype=float)
     phase *= np.linspace(0, .3, 20).reshape(-1, 1)
     amplitude = np.ones((20, 20), dtype=float)
@@ -39,7 +39,7 @@ def test_load_field():
     assert np.allclose(ds.get_qpimage().amp, amplitude, atol=1e-15, rtol=0)
 
     try:
-        os.remove(tf)
+        tf.unlink()
     except OSError:
         pass
 

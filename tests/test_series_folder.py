@@ -3,7 +3,7 @@ import shutil
 import tempfile
 import zipfile
 
-import qpformat  # noqa: E402
+import qpformat
 
 datapath = pathlib.Path(__file__).parent / "data"
 
