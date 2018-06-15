@@ -1,12 +1,9 @@
-from os.path import abspath, dirname
-import sys
+import os
 import tempfile
 
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpformat  # noqa: E402
+import qpformat
 
 
 def test_load_phase():
@@ -20,6 +17,11 @@ def test_load_phase():
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
     assert ds.path == tf
     assert "SingleNpyNumpy" in ds.__repr__()
+
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
 
 
 def test_load_field():
@@ -35,6 +37,11 @@ def test_load_field():
     ds = qpformat.load_data(tf, as_type="float64")
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
     assert np.allclose(ds.get_qpimage().amp, amplitude, atol=1e-15, rtol=0)
+
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":

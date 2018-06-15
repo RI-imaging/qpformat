@@ -24,7 +24,7 @@ setup(
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["nrefocus>=0.1.5",
-                      "numpy>=1.9.0",
+                      "numpy>=1.12.0",
                       "qpimage",
                       "scikit-image>=0.11.0",
                       "scipy>=0.18.0",
