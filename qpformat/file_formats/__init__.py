@@ -1,6 +1,6 @@
 from functools import lru_cache
-import os
-import os.path as op
+from os.path import commonprefix
+import pathlib
 
 from .dataset import SeriesData, hash_obj
 from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
@@ -32,9 +32,10 @@ class SeriesFolder(SeriesData):
     @lru_cache(maxsize=32)
     def _get_cropped_file_names(self):
         """self.files with common path prefix/suffix removed"""
-        prefix = os.path.commonprefix(self.files)
-        suffix = os.path.commonprefix([f[::-1] for f in self.files])[::-1]
-        cropped = [f[len(prefix):-len(suffix)] for f in self.files]
+        files = [ff.name for ff in self.files]
+        prefix = commonprefix(files)
+        suffix = commonprefix([f[::-1] for f in files])[::-1]
+        cropped = [f[len(prefix):-len(suffix)] for f in files]
         return cropped
 
     def _get_dataset(self, idx):
@@ -57,10 +58,10 @@ class SeriesFolder(SeriesData):
     def _identifier_data(self):
         """Return a unique identifier for the folder data"""
         # Use only file names
-        data = [op.basename(ff) for ff in self.files]
+        data = [ff.name for ff in self.files]
         data.sort()
         # also use the folder name
-        data.append(op.basename(self.path))
+        data.append(self.path.name)
         # add meta data
         data += self._identifier_meta()
         return hash_obj(data)
@@ -68,14 +69,17 @@ class SeriesFolder(SeriesData):
     @staticmethod
     @lru_cache(maxsize=32)
     def _search_files(path):
+        path = pathlib.Path(path)
         fifo = []
-        for root, _dirs, files in os.walk(path):
-            for ff in files:
-                fp = op.join(root, ff)
-                for fmt in formats:
-                    if fmt.verify(fp):
-                        fifo.append((fp, fmt.__name__))
-                        break
+
+        for fp in path.rglob("*"):
+            if fp.is_dir():
+                continue
+            for fmt in formats:
+                if fmt.verify(fp):
+                    fifo.append((fp, fmt.__name__))
+                    break
+
         # ignore qpimage formats if multiple formats were
         # detected.
         theformats = [ff[1] for ff in fifo]

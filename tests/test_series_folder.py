@@ -54,7 +54,7 @@ def test_load_data():
     # check files in folder
     assert len(ds) == 2
     for ff in ds.files:
-        assert ff in files
+        assert str(ff) in files
     # names should be different
     assert ds.get_name(0) != ds.get_name(1)
     # data should be the same
@@ -82,7 +82,7 @@ def test_multiple_formats_phasics_tif():
     path, files = setup_folder_single_phasics_tif()
     ds = qpformat.load_data(path)
     for ff in ds.files:
-        assert ff in files
+        assert str(ff) in files
     assert ds.verify(ds.path)
     assert ds.__class__.__name__ == "SeriesFolder"
     shutil.rmtree(path, ignore_errors=True)
@@ -97,7 +97,7 @@ def test_multiple_formats_phasics_tif_ignore_h5():
     path, _files2 = setup_folder_single_h5(tdir=path)
     ds = qpformat.load_data(path)
     for ff in ds.files:
-        assert ff in files1
+        assert str(ff) in files1
     shutil.rmtree(path, ignore_errors=True)
 
 
