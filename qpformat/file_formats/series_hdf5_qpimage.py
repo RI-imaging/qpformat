@@ -9,26 +9,30 @@ class SeriesHdf5Qpimage(SeriesData):
 
     def __init__(self, *args, **kwargs):
         super(SeriesHdf5Qpimage, self).__init__(*args, **kwargs)
-        self._qpseries = qpimage.QPSeries(h5file=self.path,
-                                          h5mode="r")
         self._dataset = None
 
     def __len__(self):
-        return len(self._qpseries)
+        with self._qpseries() as qps:
+            return len(qps)
+
+    def _qpseries(self):
+        return qpimage.QPSeries(h5file=self.path, h5mode="r")
 
     @property
     def identifier(self):
-        identifier = self._qpseries.identifier
+        with self._qpseries() as qps:
+            identifier = qps.identifier
         if identifier is None:
             identifier = super(SeriesHdf5Qpimage, self).identifier
         return identifier
 
     def get_identifier(self, idx):
         """Return an identifier for the data at index `idx`"""
-        if "identifier" in self._qpseries[idx]:
-            identifier = self._qpseries[idx]["identifier"]
-        else:
-            identifier = super(SeriesHdf5Qpimage, self).get_identifier(idx)
+        with self._qpseries() as qps:
+            if "identifier" in qps[idx]:
+                identifier = qps[idx]["identifier"]
+            else:
+                identifier = super(SeriesHdf5Qpimage, self).get_identifier(idx)
         return identifier
 
     def get_qpimage(self, idx):
@@ -39,7 +43,8 @@ class SeriesHdf5Qpimage(SeriesData):
             qpi = super(SeriesHdf5Qpimage, self).get_qpimage(idx)
         else:
             # We can use the background data stored in the qpimage hdf5 file
-            qpi = self._qpseries.get_qpimage(index=idx).copy()
+            with self._qpseries() as qps:
+                qpi = qps.get_qpimage(index=idx).copy()
             # Force meta data
             for key in self.meta_data:
                 qpi[key] = self.meta_data[key]
@@ -47,7 +52,8 @@ class SeriesHdf5Qpimage(SeriesData):
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
-        qpi = self._qpseries.get_qpimage(index=idx).copy()
+        with self._qpseries() as qps:
+            qpi = qps.get_qpimage(index=idx).copy()
         # Remove previously performed background correction
         qpi.set_bg_data(None)
         # Force meta data
