@@ -1,4 +1,5 @@
 import copy
+import pathlib
 
 import qpimage
 from skimage.external import tifffile
@@ -12,7 +13,9 @@ class SingleTifHolo(SingleData):
 
     @staticmethod
     def _get_tif(path):
-        if not isinstance(path, str):
+        if isinstance(path, pathlib.Path):
+            path = str(path)
+        elif not isinstance(path, str):
             # Seek open file zero to avoid error in tifffile:
             # "ValueError: invalid TIFF file"
             path.seek(0)
@@ -39,7 +42,7 @@ class SingleTifHolo(SingleData):
         """
         valid = False
         try:
-            tf = SingleTifHolo._get_tif(str(path))
+            tf = SingleTifHolo._get_tif(path)
         except (ValueError, IsADirectoryError):
             pass
         else:
