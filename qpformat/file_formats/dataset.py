@@ -124,11 +124,11 @@ class SeriesData(object):
     def identifier(self):
         """Return a unique identifier for the given data set"""
         if self.background_identifier is None:
-            return self._identifier_data()
+            idsum = self._identifier_data()
         else:
             idsum = hash_obj([self._identifier_data(),
                               self.background_identifier])
-            return idsum[:5]
+        return idsum
 
     def get_identifier(self, idx):
         """Return an identifier for the data at index `idx`"""

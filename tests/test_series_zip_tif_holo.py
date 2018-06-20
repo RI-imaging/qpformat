@@ -34,16 +34,6 @@ def test_basic():
         pass
 
 
-def test_identifier():
-    path = setup_test_zip(1)
-    ds = qpformat.load_data(path, holo_kw={"sideband": 1})
-    assert ds.identifier == "641ca"
-    try:
-        path.unlink()
-    except OSError:
-        pass
-
-
 def test_load_data():
     num = 5
     path = setup_test_zip(num)
