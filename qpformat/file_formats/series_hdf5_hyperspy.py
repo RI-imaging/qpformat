@@ -95,7 +95,7 @@ class SeriesHdf5HyperSpy(SeriesData):
         """
         valid = False
         try:
-            h5 = h5py.File(str(path), mode="r")
+            h5 = h5py.File(path, mode="r")
         except (OSError,):
             pass
         else:

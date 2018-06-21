@@ -69,7 +69,7 @@ class SeriesHdf5Qpimage(SeriesData):
         """
         valid = False
         try:
-            h5 = h5py.File(str(path), mode="r")
+            h5 = h5py.File(path, mode="r")
             qpi0 = h5["qpi_0"]
         except (OSError, KeyError):
             pass

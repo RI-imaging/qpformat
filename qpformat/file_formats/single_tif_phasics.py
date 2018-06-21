@@ -1,6 +1,6 @@
 import calendar
 import copy
-import pathlib
+from os import fspath
 import time
 import xml.etree.ElementTree as ET
 
@@ -59,7 +59,7 @@ class SingleTifPhasics(SingleData):
     @staticmethod
     def _get_meta_data(path, section, name):
         with SingleTifPhasics._get_tif(path) as tf:
-            meta = str(tf.pages[0].tags["61238"].value)
+            meta = tf.pages[0].tags["61238"].as_str()
 
         meta = meta.strip("'b")
         meta = meta.replace("\\n", "\n")
@@ -81,12 +81,12 @@ class SingleTifPhasics(SingleData):
 
     @staticmethod
     def _get_tif(path):
-        if isinstance(path, pathlib.Path):
-            path = str(path)
-        elif not isinstance(path, str):
+        if hasattr(path, "seek"):  # opened file
             # Seek open file zero to avoid error in tifffile:
             # "ValueError: invalid TIFF file"
             path.seek(0)
+        else:  # path
+            path = fspath(path)
         return tifffile.TiffFile(path)
 
     def get_qpimage_raw(self, idx=0):

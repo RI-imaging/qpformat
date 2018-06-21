@@ -12,7 +12,7 @@ def test_basic():
     # basic tests
     assert ds.storage_type == "hologram"
     assert not ds.is_series
-    assert ds.path == path
+    assert ds.path == path.resolve()
     assert "SingleTifHolo" in ds.__repr__()
 
 

@@ -8,10 +8,11 @@ from .file_formats import formats, formats_dict, UnknownFileFormatError
 def guess_format(path):
     """Determine the file format of a folder or a file"""
     for fmt in formats:
-        if fmt.verify(str(path)):
+        if fmt.verify(path):
             return fmt.__name__
     else:
-        raise UnknownFileFormatError(str(path))
+        msg = "Undefined file format: '{}'".format(path)
+        raise UnknownFileFormatError(msg)
 
 
 def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
@@ -56,7 +57,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     if fmt is None:
         fmt = guess_format(path)
 
-    dataobj = formats_dict[fmt](path=str(path),
+    dataobj = formats_dict[fmt](path=path,
                                 meta_data=meta_data,
                                 holo_kw=holo_kw,
                                 as_type=as_type)
@@ -70,7 +71,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
             bg_path = pathlib.Path(bg_data).resolve()
             if bg_fmt is None:
                 bg_fmt = guess_format(bg_path)
-                bgobj = formats_dict[bg_fmt](path=str(bg_path),
+                bgobj = formats_dict[bg_fmt](path=bg_path,
                                              meta_data=meta_data,
                                              holo_kw=holo_kw,
                                              as_type=as_type)
