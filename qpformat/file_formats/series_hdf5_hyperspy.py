@@ -89,14 +89,14 @@ class SeriesHdf5HyperSpy(SeriesData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the qpimage file format
+        """Verify that `path` has the hyperspy file format
 
         Returns `True` if the file format matches.
         """
         valid = False
         try:
             h5 = h5py.File(path, mode="r")
-        except (OSError,):
+        except (OSError, IsADirectoryError):
             pass
         else:
             if ("file_format" in h5.attrs and
