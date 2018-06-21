@@ -10,7 +10,7 @@ qpformat
 Documentation
 -------------
 
-The documentation, including the reference and examples, is available on `readthedocs.io <https://qpformat.readthedocs.io/en/stable/>`__.
+The documentation, including the reference and examples, is available at `qpformat.readthedocs.io <https://qpformat.readthedocs.io/en/stable/>`__.
 
 
 Installation

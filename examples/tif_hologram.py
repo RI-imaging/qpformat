@@ -30,6 +30,7 @@ import qpformat
 dl_loc = "https://github.com/bmorris3/shampoo/raw/master/data/"
 dl_name = "USAF_test.tif"
 if not os.path.exists(dl_name):
+    print("Downloading {} ...".format(dl_name))
     urllib.request.urlretrieve(dl_loc + dl_name, dl_name)
 
 

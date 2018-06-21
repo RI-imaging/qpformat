@@ -15,10 +15,11 @@ import matplotlib.pylab as plt
 import qpformat
 
 # load the experimental data
-dl_loc = "https://github.com/hyperspy/hyperspy/raw/RELEASE_v1.3/" \
+dl_loc = "https://github.com/hyperspy/hyperspy/raw/RELEASE_next_major/" \
          + "hyperspy/misc/holography/example_signals/"
 dl_name = "01_holo_Vbp_130V_0V_bin2_crop.hdf5"
 if not os.path.exists(dl_name):
+    print("Downloading {} ...".format(dl_name))
     urllib.request.urlretrieve(dl_loc + dl_name, dl_name)
 
 ds = qpformat.load_data(dl_name,
