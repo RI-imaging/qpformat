@@ -5,6 +5,7 @@ from .dataset import SeriesData
 
 
 class SeriesHdf5Qpimage(SeriesData):
+    """Series qpimage files (hdf5-based)"""
     storage_type = "phase,amplitude"
 
     def __init__(self, *args, **kwargs):

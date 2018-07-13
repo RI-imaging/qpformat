@@ -5,6 +5,7 @@ from .dataset import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):
+    """Single qpimage files (hdf5-based)"""
     storage_type = "phase,amplitude"
 
     @property

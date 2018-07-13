@@ -14,29 +14,23 @@ is that experimental data is not loaded into memory until the
 
 Basic Usage
 -----------
-The file format type is determined automatically by qpformat.
-If the file format is implemented in qpformat, experimental
-data can be loaded with the :py:func:`qpformat.load_data` method.
+To extract the (unwrapped) phase from a DHM image, use the
+:func:`qpformat.load_data` method. The file format type is
+determined automatically by qpformat.
 
-.. code-block:: python
+.. code:: python
 
-   # Obtain a qpformat.file_formats.SingleData object
-   # (the data is not loaded into memory, only the meta data is read)
-   ds = qpformat.load_data(path="/path/to/SID PHA_xxx.tif")
-   # Get the quantitative phase data (a qpimage.QPImage is returned)
-   qpi = ds.get_qpimage()
+    import qpformat
+    # The data are not loaded into memory, only the meta data is read
+    dataset = qpformat.load_data("/path/to/hologram_image.tif")
+    # Get the quantitative phase data (a qpimage.QPImage is returned)
+    qpi = dataset.get_qpimage()
+    # Get the 2D phase image data as a numpy array
+    phase = qpi.pha
 
-
-SingleData
-----------
-.. autoclass:: qpformat.file_formats.SeriesData
-    :inherited-members:
-
-SeriesData
-----------
-.. autoclass:: qpformat.file_formats.SeriesData
-    :members:
-
-Constants
----------
-.. autodata:: qpformat.file_formats.formats
+The object ``qpi`` is an instance of
+:class:`qpimage.QPImage <qpimage.core.QPImage>` which
+comes with an elaborate set of background correction methods. Note
+that :func:`qpformat.load_data` accepts keyword arguments that allow
+to define the setup metadata as well as the hologram reconstruction
+parameters.

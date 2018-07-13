@@ -8,7 +8,7 @@ from .dataset import SingleData
 
 
 class SingleTifHolo(SingleData):
-    """DataSet for off-axis hologram data"""
+    """Single off-axis hologram .tif files"""
     storage_type = "hologram"
 
     @staticmethod

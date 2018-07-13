@@ -7,6 +7,7 @@ from .single_tif_holo import SingleTifHolo
 
 
 class SeriesZipTifHolo(SeriesData):
+    """Zipped off-axis hologram .tif files"""
     storage_type = "hologram"
 
     def __init__(self, *args, **kwargs):

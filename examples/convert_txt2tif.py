@@ -3,7 +3,7 @@
 Qpformat can load hologram data from .tif image files. If your
 experimental hologram data are stored in a different file format,
 you can either request its implementation in qpformat by
-`creating an issue<https://github.com/RI-imaging/qpformat/issues/new>`_
+`creating an issue <https://github.com/RI-imaging/qpformat/issues/new>`__
 or you can modify this example script to your needs.
 
 This example must be executed with a directory as an

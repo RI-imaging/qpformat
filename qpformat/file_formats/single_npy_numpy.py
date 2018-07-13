@@ -9,7 +9,7 @@ from .dataset import SingleData
 
 
 class SingleNpyNumpy(SingleData):
-    """Field data stored in numpy's .npy file format
+    """Single numpy-based files (.npy format)
 
     The experimental data given in `path` consist of a single
     2D ndarray (no pickled objects). The ndarray is either

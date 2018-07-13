@@ -12,7 +12,7 @@ class HyperSpyNoDataFoundError(BaseException):
 
 
 class SeriesHdf5HyperSpy(SeriesData):
-    """HyperSpy file format
+    """HyperSpy files
 
     hyperspy.io_plugins.hspy
     """

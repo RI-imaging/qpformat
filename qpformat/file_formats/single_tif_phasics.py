@@ -20,6 +20,7 @@ class LoadTifPhasicsError(BaseException):
 
 
 class SingleTifPhasics(SingleData):
+    """Single Phasics .tif files ("SID PHA*.tif")"""
     storage_type = "phase,intensity"
 
     def __init__(self, path, meta_data={}, *args, **kwargs):

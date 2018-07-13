@@ -13,11 +13,22 @@ from .single_tif_holo import SingleTifHolo
 from .single_tif_phasics import SingleTifPhasics
 
 
+
 class MultipleFormatsNotSupportedError(BaseException):
+    """Used when a folder contains series file formats
+
+    (see `GitHub issue #1 <https://github.com/RI-imaging/qpformat/issues/1>`__)
+    """
+    pass
+
+
+class UnknownFileFormatError(BaseException):
+    """Used when a file format could not be detected"""
     pass
 
 
 class SeriesFolder(SeriesData):
+    """Folder-based file format"""
     # storage_type is implemented as a property
 
     def __init__(self, *args, **kwargs):
@@ -140,9 +151,6 @@ class SeriesFolder(SeriesData):
         fifmts = [ff[1] for ff in fifo]
         return len(set(fifmts)) == 1
 
-
-class UnknownFileFormatError(BaseException):
-    pass
 
 
 # the order is important
