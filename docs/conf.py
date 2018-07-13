@@ -42,7 +42,7 @@ rtd_link = "stable" if rtd_version != "latest" else "latest"
 
 # Mock all dependencies
 install_requires = ["h5py", "numpy", "qpimage",
-                    "skimage.external"]
+                    "skimage.external", "os.fspath"]
 
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()
