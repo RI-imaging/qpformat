@@ -8,7 +8,7 @@ from .dataset import SingleData
 
 
 class SingleTifHolo(SingleData):
-    """Single off-axis hologram .tif files"""
+    """Off-axis hologram image (TIFF format)"""
     storage_type = "hologram"
 
     @staticmethod
@@ -36,10 +36,7 @@ class SingleTifHolo(SingleData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the qpimage file format
-
-        Returns `True` if the file format matches.
-        """
+        """Verify that `path` is a valid TIFF file"""
         valid = False
         try:
             tf = SingleTifHolo._get_tif(path)

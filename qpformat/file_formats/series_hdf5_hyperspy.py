@@ -12,9 +12,10 @@ class HyperSpyNoDataFoundError(BaseException):
 
 
 class SeriesHdf5HyperSpy(SeriesData):
-    """HyperSpy files
+    """HyperSpy hologram series (HDF5 format)
 
-    hyperspy.io_plugins.hspy
+    HyperSpy has its :ref:`own implementation
+    <hyperspy:electron-holography-label>` to read this file format.
     """
     storage_type = "hologram"
 
@@ -89,10 +90,7 @@ class SeriesHdf5HyperSpy(SeriesData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the hyperspy file format
-
-        Returns `True` if the file format matches.
-        """
+        """Verify that `path` has the HyperSpy file format"""
         valid = False
         try:
             h5 = h5py.File(path, mode="r")

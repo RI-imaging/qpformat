@@ -7,7 +7,11 @@ from .single_tif_holo import SingleTifHolo
 
 
 class SeriesZipTifHolo(SeriesData):
-    """Zipped off-axis hologram .tif files"""
+    """Off-axis hologram series (zipped TIFF files)
+
+    The data are stored as multiple TIFF files
+    (:class:`qpformat.file_formats.SingleTifHolo`) in a zip file.
+    """
     storage_type = "hologram"
 
     def __init__(self, *args, **kwargs):
@@ -48,6 +52,7 @@ class SeriesZipTifHolo(SeriesData):
 
     @property
     def files(self):
+        """List of hologram data file names in the input zip file"""
         if self._files is None:
             self._files = SeriesZipTifHolo._index_files(self.path)
         return self._files
@@ -59,7 +64,7 @@ class SeriesZipTifHolo(SeriesData):
 
     @staticmethod
     def verify(path):
-        """Verify hologram zip tif file format"""
+        """Verify that `path` is a zip file containing TIFF files"""
         valid = False
         try:
             zf = zipfile.ZipFile(path)

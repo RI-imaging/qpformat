@@ -13,7 +13,6 @@ from .single_tif_holo import SingleTifHolo
 from .single_tif_phasics import SingleTifPhasics
 
 
-
 class MultipleFormatsNotSupportedError(BaseException):
     """Used when a folder contains series file formats
 
@@ -28,7 +27,7 @@ class UnknownFileFormatError(BaseException):
 
 
 class SeriesFolder(SeriesData):
-    """Folder-based file format"""
+    """Folder-based wrapper file format"""
     # storage_type is implemented as a property
 
     def __init__(self, *args, **kwargs):
@@ -115,6 +114,7 @@ class SeriesFolder(SeriesData):
 
     @property
     def files(self):
+        """List of files (only supported file formats)"""
         if self._files is None:
             fifo = SeriesFolder._search_files(self.path)
             self._files = [ff[0] for ff in fifo]
@@ -123,6 +123,7 @@ class SeriesFolder(SeriesData):
 
     @property
     def storage_type(self):
+        """The storage type depends on the wrapped file format"""
         ds = self._get_dataset(0)
         return ds.storage_type
 
@@ -145,12 +146,11 @@ class SeriesFolder(SeriesData):
         """Verify folder file format
 
         The folder file format is only valid when
-        - there is only one file format present
+        there is only one file format present.
         """
         fifo = SeriesFolder._search_files(path)
         fifmts = [ff[1] for ff in fifo]
         return len(set(fifmts)) == 1
-
 
 
 # the order is important

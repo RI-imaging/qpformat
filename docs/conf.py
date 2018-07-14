@@ -51,6 +51,7 @@ for mod_name in install_requires:
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'bysource'
 autodoc_mock_imports = install_requires
+autoclass_content = 'both'
 
 # Display link to GitHub repo instead of doc on rtfd
 rst_prolog = """
@@ -203,6 +204,7 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {"python": ('https://docs.python.org/', None),
+                       "hyperspy": ('http://hyperspy.readthedocs.io/en/stable/', None),
                        "numpy": ('http://docs.scipy.org/doc/numpy', None),
                        "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
                        "skimage": ('http://scikit-image.org/docs/stable/', None),

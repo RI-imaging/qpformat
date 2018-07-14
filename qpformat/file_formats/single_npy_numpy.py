@@ -9,7 +9,7 @@ from .dataset import SingleData
 
 
 class SingleNpyNumpy(SingleData):
-    """Single numpy-based files (.npy format)
+    """Numpy complex field or phase data (numpy binary format)
 
     The experimental data given in `path` consist of a single
     2D ndarray (no pickled objects). The ndarray is either
@@ -20,6 +20,8 @@ class SingleNpyNumpy(SingleData):
     @property
     @lru_cache(maxsize=32)
     def storage_type(self):
+        """Depending on input data type, the storage type is either
+        "field" (complex) or "phase" (real)."""
         nf = np.load(str(self.path), mmap_mode="c", allow_pickle=False)
         if np.iscomplexobj(nf):
             st = "field"
@@ -40,10 +42,7 @@ class SingleNpyNumpy(SingleData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the qpimage file format
-
-        Returns `True` if the file format matches.
-        """
+        """Verify that `path` has a supported numpy file format"""
         path = pathlib.Path(path)
         valid = False
         if path.suffix == ".npy":

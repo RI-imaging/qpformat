@@ -5,7 +5,7 @@ from .dataset import SeriesData
 
 
 class SeriesHdf5Qpimage(SeriesData):
-    """Series qpimage files (hdf5-based)"""
+    """Qpimage series (HDF5 format)"""
     storage_type = "phase,amplitude"
 
     def __init__(self, *args, **kwargs):
@@ -64,10 +64,7 @@ class SeriesHdf5Qpimage(SeriesData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the qpimage file format
-
-        Returns `True` if the file format matches.
-        """
+        """Verify that `path` has the qpimage series file format"""
         valid = False
         try:
             h5 = h5py.File(path, mode="r")

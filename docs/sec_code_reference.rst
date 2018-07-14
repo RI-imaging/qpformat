@@ -13,19 +13,23 @@ module-level
 
 file format base classes
 ========================
-SingleData
-----------
-.. autoclass:: qpformat.file_formats.dataset.SingleData
-    :inherited-members:
-
 SeriesData
 ----------
 .. autoclass:: qpformat.file_formats.dataset.SeriesData
     :members:
 
+SingleData
+----------
+.. autoclass:: qpformat.file_formats.dataset.SingleData
+    :inherited-members:
+
+
 
 file format readers
 ===================
+All file formats inherit from :class:`qpformat.file_formats.dataset.SeriesData`
+(and/or :class:`qpformat.file_formats.dataset.SingleData`).
+
 .. autodoc_qpformats::
 
 

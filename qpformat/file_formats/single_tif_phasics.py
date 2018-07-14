@@ -20,26 +20,21 @@ class LoadTifPhasicsError(BaseException):
 
 
 class SingleTifPhasics(SingleData):
-    """Single Phasics .tif files ("SID PHA*.tif")"""
+    """Phasics image ("SID PHA*.tif")
+
+    Notes
+    -----
+    - Only the processed phase data files are supported, i.e. TIFF
+      file names starting with "SID PHA" exported by the commercial
+      Phasics software.
+
+    - If the "wavelength" key in `meta_data` is not set (units: [m]),
+      then the wavelength is extracted from the xml data stored in
+      tag "61238" of the tif file.
+    """
     storage_type = "phase,intensity"
 
     def __init__(self, path, meta_data={}, *args, **kwargs):
-        """DataSet for single "SID PHA*.tif" files by Phasics S.A.
-
-        Parameters
-        ----------
-        path: str
-            path to the experimental data file or an open file object
-        meta_data: dict
-            dictionary containing meta data.
-            see :py:class:`qpimage.META_KEYS`.
-
-        Notes
-        -----
-        If the "wavelength" key in `meta_data` is not set (units: [m]),
-        then the wavelength is extracted from the xml data stored in
-        tag "61238" of the tif file.
-        """
         if "wavelength" not in meta_data:
             # get wavelength if not given
             wl_str = SingleTifPhasics._get_meta_data(path=path,
@@ -148,10 +143,7 @@ class SingleTifPhasics(SingleData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the qpimage file format
-
-        Returns `True` if the file format matches.
-        """
+        """Verify that `path` is a phasics phase/intensity TIFF file"""
         valid = False
         try:
             tf = SingleTifPhasics._get_tif(path)

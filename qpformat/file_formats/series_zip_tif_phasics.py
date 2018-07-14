@@ -7,7 +7,11 @@ from .single_tif_phasics import SingleTifPhasics
 
 
 class SeriesZipTifPhasics(SeriesData):
-    """Zipped Phasics .tif files ("SID PHA*.tif")"""
+    """Phasics series data (zipped "SID PHA*.tif" files)
+
+    The data are stored as multiple TIFF files
+    (:class:`qpformat.file_formats.SingleTifPhasics`) in a zip file.
+    """
     storage_type = "phase,intensity"
 
     def __init__(self, *args, **kwargs):
@@ -49,6 +53,7 @@ class SeriesZipTifPhasics(SeriesData):
 
     @property
     def files(self):
+        """List of Phasics tif file names in the input zip file"""
         if self._files is None:
             self._files = SeriesZipTifPhasics._index_files(self.path)
         return self._files
@@ -65,7 +70,7 @@ class SeriesZipTifPhasics(SeriesData):
 
     @staticmethod
     def verify(path):
-        """Verify phasics zip tif file format"""
+        """Verify that `path` is a zip file with Phasics TIFF files"""
         valid = False
         try:
             zf = zipfile.ZipFile(path)

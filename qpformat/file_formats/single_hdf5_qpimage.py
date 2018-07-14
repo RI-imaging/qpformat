@@ -5,7 +5,11 @@ from .dataset import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):
-    """Single qpimage files (hdf5-based)"""
+    """Qpimage single (HDF5 format)
+
+    See the documentation of :ref:`qpimage <qpimage:index>` for more
+    information.
+    """
     storage_type = "phase,amplitude"
 
     @property
@@ -52,10 +56,7 @@ class SingleHdf5Qpimage(SingleData):
 
     @staticmethod
     def verify(path):
-        """Verify that `path` has the qpimage file format
-
-        Returns `True` if the file format matches.
-        """
+        """Verify that `path` has the qpimage file format"""
         valid = False
         try:
             h5 = h5py.File(path, mode="r")
