@@ -1,6 +1,7 @@
 0.3.0
  - docs: automatically document all file format classes
  - docs: add introduction and file format overview
+ - tests: improve coverage
 0.2.1
  - fix: regression when loading data from zip file
 0.2.0
