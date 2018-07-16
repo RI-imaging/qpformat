@@ -11,6 +11,10 @@ class HyperSpyNoDataFoundError(BaseException):
     pass
 
 
+class WrongSignalTypeWarnging(UserWarning):
+    pass
+
+
 class SeriesHdf5HyperSpy(SeriesData):
     """HyperSpy hologram series (HDF5 format)
 
@@ -40,7 +44,7 @@ class SeriesHdf5HyperSpy(SeriesData):
             msg = "Signal type '{}' not supported: {}[{}]".format(signal_type,
                                                                   self.path,
                                                                   name)
-            warnings.warn(msg)
+            warnings.warn(msg, WrongSignalTypeWarnging)
         return signal_type == "hologram"
 
     @functools.lru_cache(maxsize=5)
@@ -48,6 +52,9 @@ class SeriesHdf5HyperSpy(SeriesData):
         """Get all experiments from the hdf5 file"""
         explist = []
         with h5py.File(name=self.path, mode="r") as h5:
+            if "Experiments" not in h5:
+                msg = "Group 'Experiments' not found in {}.".format(self.path)
+                raise HyperSpyNoDataFoundError(msg)
             for name in h5["Experiments"]:
                 # check experiment
                 if self._check_experiment(name):

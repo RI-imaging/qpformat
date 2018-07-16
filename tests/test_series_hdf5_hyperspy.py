@@ -2,17 +2,19 @@ import os
 import pathlib
 import tempfile
 import shutil
+import warnings
 
 import h5py
 from skimage.external import tifffile
 
 import qpformat
-
+from qpformat.file_formats.series_hdf5_hyperspy import (
+    HyperSpyNoDataFoundError, WrongSignalTypeWarnging)
 
 datapath = pathlib.Path(__file__).parent / "data"
 
 
-def make_hyperspy():
+def make_hyperspy(signal_type="hologram"):
     """Create a basic hyperspy file"""
     tifin = datapath / "single_holo.tif"
     with tifffile.TiffFile(os.fspath(tifin)) as tf:
@@ -26,7 +28,7 @@ def make_hyperspy():
         hol.create_dataset(name="data", data=data)
         # signal
         sig = hol.create_group("metadata/Signal")
-        sig.attrs["signal_type"] = "hologram"
+        sig.attrs["signal_type"] = signal_type
         # set pixel size
         for name in ["axis-0", "axis-1"]:
             axi = hol.create_group(name)
@@ -41,7 +43,42 @@ def test_basic():
     ds = qpformat.load_data(hspyf)
     qpi = ds.get_qpimage(0)
 
+    assert len(ds) == 1
     assert qpi["pixel size"] == 0.107e-6
+
+    shutil.rmtree(path=tdir, ignore_errors=True)
+
+
+def test_wrong_format():
+    path = datapath / "single_qpimage.h5"
+    ds = qpformat.load_data(path, fmt="SeriesHdf5HyperSpy")
+    try:
+        ds.get_qpimage(0)
+    except HyperSpyNoDataFoundError:
+        pass
+    else:
+        raise ValueError("qpimage data is not hyperspy data")
+
+
+def test_wrong_signal_type():
+    tdir, hspyf = make_hyperspy(signal_type="unknown")
+    ds = qpformat.load_data(hspyf)
+
+    with warnings.catch_warnings(record=True) as w:
+        # Cause all warnings to always be triggered.
+        warnings.simplefilter("always")
+        # Trigger a warning.
+        try:
+            ds.get_qpimage(0)
+        except HyperSpyNoDataFoundError:
+            pass
+        else:
+            raise ValueError("Error due to wrong signal type")
+
+        # Verify some things
+        assert len(w) == 1
+        assert issubclass(w[-1].category, WrongSignalTypeWarnging)
+        assert "unknown" in str(w[-1].message)
 
     shutil.rmtree(path=tdir, ignore_errors=True)
 

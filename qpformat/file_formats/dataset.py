@@ -178,7 +178,7 @@ class SeriesData(object):
         return thetime
 
     def saveh5(self, h5file):
-        """Save the data set as an hdf5 file (QPImage format)"""
+        """Save the data set as an hdf5 file (qpimage.QPSeries format)"""
         with qpimage.QPSeries(h5file=h5file,
                               h5mode="w",
                               identifier=self.identifier) as qps:
@@ -281,9 +281,8 @@ class SingleData(SeriesData):
 
 def hash_obj(data, maxlen=5):
     hasher = hashlib.md5()
-    for dd in data:
-        tohash = obj2bytes(dd)
-        hasher.update(tohash)
+    tohash = obj2bytes(data)
+    hasher.update(tohash)
     return hasher.hexdigest()[:maxlen]
 
 

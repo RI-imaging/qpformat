@@ -4,8 +4,29 @@ import shutil
 import tempfile
 
 import numpy as np
+import qpimage
 
 import qpformat.core
+
+
+def test_identifier():
+    data = np.ones((20, 20), dtype=float)
+    tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
+    np.save(tf, data)
+
+    ds1 = qpformat.load_data(path=tf)
+    assert ds1.identifier == "b92ea"
+
+    bg_data = ds1.get_qpimage(0)
+    ds2 = qpformat.load_data(path=tf, bg_data=bg_data)
+    assert ds2.background_identifier == "0515f"
+    assert ds2.identifier == "4b53f"
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
 
 
 def test_meta():
@@ -43,6 +64,64 @@ def test_repr():
         os.remove(tf)
     except OSError:
         pass
+
+
+def test_save():
+    data_dir = tempfile.mkdtemp(prefix="qpformat_test_data_")
+    data_dir = pathlib.Path(data_dir)
+
+    data1 = np.ones((20, 20), dtype=float)
+    data1 *= np.linspace(-.1, 3, 20).reshape(-1, 1)
+    np.save(data_dir / "data1.npy", data1)
+
+    data2 = data1 * np.linspace(1.33, 1.04, 20).reshape(1, -1)
+    np.save(data_dir / "data2.npy", data2)
+
+    # save as h5
+    ds = qpformat.load_data(path=data_dir)
+    save_dir = tempfile.mkdtemp(prefix="qpformat_test_data_save_")
+    save_path = pathlib.Path(save_dir) / "savetest.h5"
+    ds.saveh5(save_path)
+
+    # load h5
+    ds2 = qpformat.load_data(path=save_path)
+
+    assert ds.identifier == ds2.identifier
+    assert len(ds) == len(ds2)
+    assert np.all(ds.get_qpimage(0).pha == ds2.get_qpimage(0).pha)
+
+    shutil.rmtree(data_dir, ignore_errors=True)
+    shutil.rmtree(save_dir, ignore_errors=True)
+
+
+def test_save_one_bg():
+    """Test that if there is a single bg, it is stored somehow
+    in the output file"""
+    data_dir = tempfile.mkdtemp(prefix="qpformat_test_data_")
+    data_dir = pathlib.Path(data_dir)
+
+    data1 = np.ones((20, 20), dtype=float)
+    data1 *= np.linspace(-.1, 3, 20).reshape(-1, 1)
+    np.save(data_dir / "data1.npy", data1)
+
+    data2 = data1 * np.linspace(1.33, 1.04, 20).reshape(1, -1)
+    np.save(data_dir / "data2.npy", data2)
+
+    # save as h5
+    bg = qpimage.QPImage(data=data1, which_data="phase")
+    ds = qpformat.load_data(path=data_dir, bg_data=bg)
+    save_dir = tempfile.mkdtemp(prefix="qpformat_test_data_save_")
+    save_path = pathlib.Path(save_dir) / "savetest.h5"
+    ds.saveh5(save_path)
+
+    # load h5
+    ds2 = qpformat.load_data(path=save_path)
+    assert np.all(ds.get_qpimage(0).pha == ds2.get_qpimage(0).pha)
+    assert np.all(ds2.get_qpimage(0).pha == 0)
+    assert not np.all(ds2.get_qpimage(1).pha == 0)
+
+    shutil.rmtree(data_dir, ignore_errors=True)
+    shutil.rmtree(save_dir, ignore_errors=True)
 
 
 def test_set_bg():
@@ -124,6 +203,27 @@ def test_set_bg_series():
 
     shutil.rmtree(str(data_dir), ignore_errors=True)
     shutil.rmtree(str(bg_data_dir), ignore_errors=True)
+
+
+def test_set_bg_qpimage():
+    data = np.ones((20, 20), dtype=float)
+    data *= np.linspace(-.1, 3, 20).reshape(-1, 1)
+    f_data = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
+    np.save(f_data, data)
+
+    bg_data = np.ones((20, 20), dtype=float)
+    bg_data *= np.linspace(0, 1.1, 20).reshape(1, -1)
+    qpi = qpimage.QPImage(data=bg_data, which_data="phase")
+
+    # set bg with dataset
+    ds1 = qpformat.core.load_data(path=f_data, bg_data=qpi)
+    assert np.allclose(ds1.get_qpimage().pha, data - bg_data)
+
+    # cleanup
+    try:
+        os.remove(f_data)
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":
