@@ -9,24 +9,19 @@ import qpimage
 import qpformat.core
 
 
-def test_identifier():
-    data = np.ones((20, 20), dtype=float)
-    tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
-    np.save(tf, data)
+datapath = pathlib.Path(__file__).parent / "data"
 
-    ds1 = qpformat.load_data(path=tf)
-    assert ds1.identifier == "b92ea"
+
+def test_identifier():
+    path = datapath / "series_phasics.zip"
+
+    ds1 = qpformat.load_data(path=path)
+    assert ds1.identifier == "7fc65"
 
     bg_data = ds1.get_qpimage(0)
-    ds2 = qpformat.load_data(path=tf, bg_data=bg_data)
-    assert ds2.background_identifier == "0515f"
-    assert ds2.identifier == "4b53f"
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
+    ds2 = qpformat.load_data(path=path, bg_data=bg_data)
+    assert ds2.background_identifier == "3f328"
+    assert ds2.identifier == "1e92f"
 
 
 def test_meta():
