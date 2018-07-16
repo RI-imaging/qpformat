@@ -43,9 +43,8 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
 
     Returns
     -------
-    dataobj: `file_formats.Group` or `file_formats.Single`
-        A qpformat data object with unified access to the
-        experimental data.
+    dataobj: SeriesData or SingleData
+        Object that gives lazy access to the experimental data.
     """
     path = pathlib.Path(path).resolve()
     # sanity checks
