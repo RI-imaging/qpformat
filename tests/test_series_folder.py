@@ -16,9 +16,9 @@ def setup_folder_single_h5(size=2, tdir=None):
     files = []
     for ss in range(size):
         tpath = tdir / "data{:04d}.h5".format(ss)
-        files.append(str(tpath))
-        shutil.copy(str(path), str(tpath))
-    return str(tdir), files
+        files.append(tpath)
+        shutil.copy(path, tpath)
+    return tdir, files
 
 
 def setup_folder_single_holo(size=2, tdir=None):
@@ -29,9 +29,9 @@ def setup_folder_single_holo(size=2, tdir=None):
     files = []
     for ss in range(size):
         tpath = tdir / "data{:04d}.h5".format(ss)
-        files.append(str(tpath))
-        shutil.copy(str(path), str(tpath))
-    return str(tdir), files
+        files.append(tpath)
+        shutil.copy(path, tpath)
+    return tdir, files
 
 
 def setup_folder_single_phasics_tif(tdir=None):
@@ -40,11 +40,11 @@ def setup_folder_single_phasics_tif(tdir=None):
         tdir = tempfile.mkdtemp(prefix="qpformat_test_")
 
     files = []
-    with zipfile.ZipFile(str(path)) as arc:
+    with zipfile.ZipFile(path) as arc:
         for fn in arc.namelist():
             arc.extract(fn, path=tdir)
             if fn.startswith("SID PHA") and fn.endswith(".tif"):
-                files.append(str(pathlib.Path(tdir) / fn))
+                files.append(pathlib.Path(tdir) / fn)
     return tdir, files
 
 
@@ -54,7 +54,7 @@ def test_load_data():
     # check files in folder
     assert len(ds) == 2
     for ff in ds.files:
-        assert str(ff) in files
+        assert ff in files
     # names should be different
     assert ds.get_name(0) != ds.get_name(1)
     # data should be the same
@@ -82,7 +82,7 @@ def test_multiple_formats_phasics_tif():
     path, files = setup_folder_single_phasics_tif()
     ds = qpformat.load_data(path)
     for ff in ds.files:
-        assert str(ff) in files
+        assert ff in files
     assert ds.verify(ds.path)
     assert ds.__class__.__name__ == "SeriesFolder"
     shutil.rmtree(path, ignore_errors=True)
@@ -97,7 +97,7 @@ def test_multiple_formats_phasics_tif_ignore_h5():
     path, _files2 = setup_folder_single_h5(tdir=path)
     ds = qpformat.load_data(path)
     for ff in ds.files:
-        assert str(ff) in files1
+        assert ff in files1
     shutil.rmtree(path, ignore_errors=True)
 
 
@@ -110,7 +110,7 @@ def test_multiple_formats_error():
     """
     # combine a zip file with a regular hologram file
     path, _files2 = setup_folder_single_holo()
-    shutil.copy2(str(datapath / "series_phasics.zip"), path)
+    shutil.copy2(datapath / "series_phasics.zip", path)
     try:
         qpformat.load_data(path)
     except qpformat.file_formats.MultipleFormatsNotSupportedError:

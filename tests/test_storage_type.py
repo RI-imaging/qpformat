@@ -36,11 +36,11 @@ def test_bad_folder():
 def test_good_folder():
     path = pathlib.Path(__file__).parent / "data"
     dpath = pathlib.Path(tempfile.mkdtemp(prefix="qpformat_test_"))
-    shutil.copy(str(path / "single_qpimage.h5"), str(dpath / "1.h5"))
-    shutil.copy(str(path / "single_qpimage.h5"), str(dpath / "2.h5"))
+    shutil.copy(path / "single_qpimage.h5", dpath / "1.h5")
+    shutil.copy(path / "single_qpimage.h5", dpath / "2.h5")
     ds = qpformat.load_data(dpath)
     assert ds.storage_type == "phase,amplitude"
-    shutil.rmtree(str(dpath), ignore_errors=True)
+    shutil.rmtree(dpath, ignore_errors=True)
 
 
 if __name__ == "__main__":

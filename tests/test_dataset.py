@@ -201,8 +201,8 @@ def test_set_bg_series():
     assert np.allclose(ds1.get_qpimage(1).pha, data2 - bg_data2)
     assert not np.allclose(ds1.get_qpimage(0).pha, data2 - bg_data2)
 
-    shutil.rmtree(str(data_dir), ignore_errors=True)
-    shutil.rmtree(str(bg_data_dir), ignore_errors=True)
+    shutil.rmtree(data_dir, ignore_errors=True)
+    shutil.rmtree(bg_data_dir, ignore_errors=True)
 
 
 def test_set_bg_qpimage():
