@@ -5,5 +5,5 @@ Getting started
 .. toctree::
   :maxdepth: 2
 
-  installation
-  userapi
+  sec_installation
+  sec_userapi

@@ -18,7 +18,7 @@ from its hdf5-based data structure (e.g. elaborate background correction,
 meta data management, and transparent data storage). Furthermore, qpformat
 can manage large datasets (e.g. many holograms in one folder) without running
 out of memory by means of its lazily-evaluated
-:class:`SeriesData <qpformat.file_formats.SeriesData` class.
+:class:`SeriesData <qpformat.file_formats.SeriesData>` class.
 
 
 .. _supported_formats:

@@ -15,20 +15,19 @@ file format base classes
 ========================
 SeriesData
 ----------
-.. autoclass:: qpformat.file_formats.dataset.SeriesData
+.. autoclass:: qpformat.file_formats.SeriesData
     :members:
 
 SingleData
 ----------
-.. autoclass:: qpformat.file_formats.dataset.SingleData
+.. autoclass:: qpformat.file_formats.SingleData
     :inherited-members:
-
 
 
 file format readers
 ===================
-All file formats inherit from :class:`qpformat.file_formats.dataset.SeriesData`
-(and/or :class:`qpformat.file_formats.dataset.SingleData`).
+All file formats inherit from :class:`qpformat.file_formats.SeriesData`
+(and/or :class:`qpformat.file_formats.SingleData`).
 
 .. autodoc_qpformats::
 

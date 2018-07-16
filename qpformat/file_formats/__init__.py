@@ -3,6 +3,7 @@ from os.path import commonprefix
 import pathlib
 
 from .dataset import SeriesData, hash_obj
+from .dataset import SingleData  # noqa:F401 (user convenience)
 from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
 from .series_hdf5_qpimage import SeriesHdf5Qpimage
 from .series_zip_tif_holo import SeriesZipTifHolo
