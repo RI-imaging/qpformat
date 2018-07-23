@@ -34,7 +34,5 @@ deploy:
     secure: "bH5pfNRH7r2y1zKJCXDpbWvhtgI48Rke2utGhUt+vtzCl1xBRvsCTXytTPdgXICTDKnPluv2ir8wV0vfHwbuzhwek1JdujcQQEgaeWUOK5biZBaiGcZ+D554rcpJQsOHpKyJgxUniv+UkUAkgUeznXJBVCMMlPFxWOlTZfKtHrWVuNHnlynqQHeRPyvSveFUCT1+hxqlPC3OfoXOj8UZos1//yn0N1gdRe+91JaDTwYYiqzkoDap36fiswxk1qp7SO07cYja241lv8RAwEpQMaBJdslc62YgnKOyNE5e1cBum+Thtzo68r8NmqXIrsx5p8Tf5jQC+X41u9rVxjY98PdUik9mo8UmvEkbjWfp/HuceeuBeKjs+UAAudVNceul0m5rc2NMZrflm1zNhgEnbYHFngWJueowmiJ/I3In2ikb6dzCipQvXrEZ3t8fOftoSsIlT/tRX97NX5WuNwvrQLUMRU0nyToR7aY/nKKZ8D79MJazzrUjZhLiUYasI9YvjQH5kY4kddwzcsQNbvHXuqvh2paVeqn3BMRTV62k56c9sqWQtakEcynHuniqPwQ8WCZcGEpqmDoEbp4Ar5MiG1721BAPG5oIMNSGTkWy2q30BT8L7hf4yzCcpF6XMkDrXUspYhosVKFVTpzWynL45YCZ+r0BTQrZmF3g2aR2Iq0="
   on:
     tags: true
-    # limit to one version to avoid upload errors
-    python: 3.6
-    condition: "$TEST = PYTEST"
   distributions: "sdist bdist_wheel"
+  skip_existing: true
