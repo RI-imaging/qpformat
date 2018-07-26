@@ -59,7 +59,7 @@ qpi_foc.compute_bg(which_data="amplitude",
 amp_bin = qpi_foc.amp > 1  # bright regions
 qpi_foc.compute_bg(which_data="phase",
                    fit_profile="poly2o",
-                   from_binary=amp_bin,
+                   from_mask=amp_bin,
                    )
 
 # plot results
