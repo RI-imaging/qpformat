@@ -2,6 +2,8 @@ import os
 import pathlib
 import tempfile
 
+import numpy as np
+
 import qpimage
 import qpformat
 
@@ -22,8 +24,10 @@ def test_identifier():
         pass
 
     ds = qpformat.load_data(tf)
+    # individual identifiers are not extracted anymore as of
+    # qpformat version 0.3.4
     assert ds.get_identifier(0) != "an important string"
-    assert ds.get_identifier(1) == "an important string"
+    assert ds.get_identifier(1) != "an important string"
     assert ds.identifier in ds.get_identifier(0)
 
     # cleanup
@@ -48,7 +52,14 @@ def test_load_data():
     assert ds.path == pathlib.Path(tf)
     assert ds.get_time(1) == 0
     assert "SeriesHdf5Qpimage" in ds.__repr__()
-    assert ds.get_qpimage(1) == qpi
+    # individual identifiers are not extracted anymore as of
+    # qpformat version 0.3.4
+    qpd = ds.get_qpimage(1)
+    assert qpd != qpi
+    assert qpd.shape == qpi.shape
+    assert np.allclose(qpd.amp, qpi.amp)
+    assert np.allclose(qpd.pha, qpi.pha)
+
     # cleanup
     try:
         os.remove(tf)

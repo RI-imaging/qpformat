@@ -19,29 +19,6 @@ class SeriesHdf5Qpimage(SeriesData):
     def _qpseries(self):
         return qpimage.QPSeries(h5file=self.path, h5mode="r")
 
-    @property
-    def identifier(self):
-        # Qpformat generates a new identifier that also depends on the given
-        # keyword arguments. Thus, the identifiers of source and modified
-        # dataset must not be identical.
-        with self._qpseries() as qps:
-            identifier = qps.identifier
-        if identifier is None:
-            identifier = ""
-        else:
-            identifier += "_"
-        identifier += super(SeriesHdf5Qpimage, self).identifier
-        return identifier
-
-    def get_identifier(self, idx):
-        """Return an identifier for the data at index `idx`"""
-        with self._qpseries() as qps:
-            if "identifier" in qps[idx]:
-                identifier = qps[idx]["identifier"]
-            else:
-                identifier = super(SeriesHdf5Qpimage, self).get_identifier(idx)
-        return identifier
-
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         if self._bgdata:
@@ -55,6 +32,8 @@ class SeriesHdf5Qpimage(SeriesData):
             # Force meta data
             for key in self.meta_data:
                 qpi[key] = self.meta_data[key]
+            # set identifier
+            qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     def get_qpimage_raw(self, idx):
@@ -66,6 +45,7 @@ class SeriesHdf5Qpimage(SeriesData):
         # Force meta data
         for key in self.meta_data:
             qpi[key] = self.meta_data[key]
+        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @staticmethod

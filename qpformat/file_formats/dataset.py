@@ -29,13 +29,24 @@ class SeriesData(object):
     is_series = True
 
     def __init__(self, path, meta_data={}, holo_kw={}, as_type="float32"):
+        #: Enforced dtype via keyword arguments
         self.as_type = as_type
         if isinstance(path, (str, pathlib.Path)):
+            #: pathlib.Path to data file or BytesIO
             self.path = pathlib.Path(path).resolve()
         else:
             # _io.BytesIO
             self.path = path
+        # check for valid metadata keys
+        for key in meta_data:
+            if key not in qpimage.meta.DATA_KEYS:
+                msg = "Invalid metadata key `{}`!".format(key) \
+                      + "Valid keys: {}".format(sorted(qpimage.meta.DATA_KEYS))
+                raise ValueError(msg)
+        #: Enforced metadata via keyword arguments
         self.meta_data = copy.copy(meta_data)
+        #: Hologram retrieval; keyword arguments for
+        #: :func:`qpimage.holo.get_field`.
         self.holo_kw = holo_kw
         self._bgdata = []
         #: Unique string that identifies the background data that

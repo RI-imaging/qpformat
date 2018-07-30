@@ -1,3 +1,7 @@
+0.3.4
+ - fix: qpimage file formats: override identifiers (clean solution)
+ - fix: add check for valid meta_data keys
+ - docs: document attributes of SeriesData
 0.3.3
  - fix: qpimage file formats: identifiers were not unique, but simply
    copied from the input hdf5 file

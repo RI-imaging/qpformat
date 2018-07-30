@@ -12,23 +12,6 @@ class SingleHdf5Qpimage(SingleData):
     """
     storage_type = "phase,amplitude"
 
-    @property
-    def identifier(self):
-        # Qpformat generates a new identifier that also depends on the given
-        # keyword arguments. Thus, the identifiers of source and modified
-        # dataset must not be identical.
-        with qpimage.QPImage(h5file=self.path, h5mode="r") as qpi:
-            if "identifier" in qpi:
-                identifier = qpi["identifier"]
-            else:
-                identifier = ""
-        identifier += "_"
-        identifier += super(SingleHdf5Qpimage, self).identifier
-        return identifier
-
-    def get_identifier(self, idx=0):
-        return self.identifier
-
     def get_qpimage(self, idx=0):
         """Return background-corrected QPImage"""
         if self._bgdata:
@@ -44,6 +27,8 @@ class SingleHdf5Qpimage(SingleData):
             # Force meta data
             for key in self.meta_data:
                 qpi[key] = self.meta_data[key]
+            # set identifier
+            qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     def get_qpimage_raw(self, idx=0):

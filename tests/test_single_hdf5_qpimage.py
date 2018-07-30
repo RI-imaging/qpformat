@@ -2,6 +2,8 @@ import os
 import pathlib
 import tempfile
 
+import numpy as np
+
 import qpimage
 import qpformat
 
@@ -20,9 +22,9 @@ def test_identifier():
     ds2 = qpformat.load_data(tf)
 
     assert ds1.identifier != ds2.identifier
-    # Qpformat generates a new identifier that also depends on the given
-    # keyword arguments. Thus, the identifiers are not identical.
-    assert "an extremely important string" in ds2.identifier
+    # individual identifiers are not extracted anymore as of
+    # qpformat version 0.3.4
+    assert "an extremely important string" not in ds2.identifier
     assert ds1.identifier == ds1.get_identifier()
     assert ds2.identifier == ds2.get_identifier()
 
@@ -39,7 +41,14 @@ def test_load_data():
     assert ds.path == path.resolve()
     assert ds.get_time() == 0
     assert "SingleHdf5Qpimage" in ds.__repr__()
-    assert ds.get_qpimage() == qpimage.QPImage(h5file=path, h5mode="r")
+    # individual identifiers are not extracted anymore as of
+    # qpformat version 0.3.4
+    qpd = ds.get_qpimage()
+    qpi = qpimage.QPImage(h5file=path, h5mode="r")
+    assert qpd != qpi
+    assert qpd.shape == qpi.shape
+    assert np.allclose(qpd.amp, qpi.amp)
+    assert np.allclose(qpd.pha, qpi.pha)
 
 
 def test_meta_override():
