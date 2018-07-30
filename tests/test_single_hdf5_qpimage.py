@@ -20,7 +20,9 @@ def test_identifier():
     ds2 = qpformat.load_data(tf)
 
     assert ds1.identifier != ds2.identifier
-    assert ds2.identifier == "an extremely important string"
+    # Qpformat generates a new identifier that also depends on the given
+    # keyword arguments. Thus, the identifiers are not identical.
+    assert "an extremely important string" in ds2.identifier
     assert ds1.identifier == ds1.get_identifier()
     assert ds2.identifier == ds2.get_identifier()
 

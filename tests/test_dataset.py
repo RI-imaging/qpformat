@@ -81,7 +81,10 @@ def test_save():
     # load h5
     ds2 = qpformat.load_data(path=save_path)
 
-    assert ds.identifier == ds2.identifier
+    assert ds.identifier is not None
+    # Qpformat generates a new identifier that also depends on the given
+    # keyword arguments. Thus, the identifiers are not identical.
+    assert ds.identifier in ds2.identifier
     assert len(ds) == len(ds2)
     assert np.all(ds.get_qpimage(0).pha == ds2.get_qpimage(0).pha)
 

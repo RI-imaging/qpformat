@@ -21,10 +21,16 @@ class SeriesHdf5Qpimage(SeriesData):
 
     @property
     def identifier(self):
+        # Qpformat generates a new identifier that also depends on the given
+        # keyword arguments. Thus, the identifiers of source and modified
+        # dataset must not be identical.
         with self._qpseries() as qps:
             identifier = qps.identifier
         if identifier is None:
-            identifier = super(SeriesHdf5Qpimage, self).identifier
+            identifier = ""
+        else:
+            identifier += "_"
+        identifier += super(SeriesHdf5Qpimage, self).identifier
         return identifier
 
     def get_identifier(self, idx):

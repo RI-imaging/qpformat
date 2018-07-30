@@ -14,11 +14,16 @@ class SingleHdf5Qpimage(SingleData):
 
     @property
     def identifier(self):
+        # Qpformat generates a new identifier that also depends on the given
+        # keyword arguments. Thus, the identifiers of source and modified
+        # dataset must not be identical.
         with qpimage.QPImage(h5file=self.path, h5mode="r") as qpi:
             if "identifier" in qpi:
                 identifier = qpi["identifier"]
             else:
-                identifier = super(SingleHdf5Qpimage, self).identifier
+                identifier = ""
+        identifier += "_"
+        identifier += super(SingleHdf5Qpimage, self).identifier
         return identifier
 
     def get_identifier(self, idx=0):
