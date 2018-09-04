@@ -37,12 +37,9 @@ class SingleTifPhasics(SingleData):
     def __init__(self, path, meta_data={}, *args, **kwargs):
         if "wavelength" not in meta_data:
             # get wavelength if not given
-            wl_str = SingleTifPhasics._get_meta_data(path=path,
-                                                     section="analyse data",
-                                                     name="lambda(nm)")
-            if wl_str:
-                wavelength = float(wl_str) * 1e-9
-                meta_data["wavelength"] = wavelength
+            wl = self._get_wavelength(path)
+            if not np.isnan(wl):
+                meta_data["wavelength"] = wl
             else:
                 # We need the wavelength to convert OPD to phase
                 msg = "'wavelength' must be specified in `meta_data`!"
@@ -85,6 +82,16 @@ class SingleTifPhasics(SingleData):
             path = fspath(path)
         return tifffile.TiffFile(path)
 
+    def _get_wavelength(self, path):
+        wl_str = SingleTifPhasics._get_meta_data(path=path,
+                                                 section="analyse data",
+                                                 name="lambda(nm)")
+        if wl_str:
+            wavelength = float(wl_str) * 1e-9
+        else:
+            wavelength = np.nan
+        return wavelength
+
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
@@ -100,7 +107,29 @@ class SingleTifPhasics(SingleData):
             blc = INTENSITY_BASELINE_CLAMP
             inten = tf.pages[0].asarray() * (imax - imin) / isamp + imin - blc
             # Phase
-            phatags = tf.pages[2].tags
+            # The SID4Bio records two phase images, one in wavelengths and
+            # one in nanometers. Surprisingly, these two phase images are
+            # not derived from the same recording. The first image (pages[1])
+            # (in wavelengths) matches the intensity image (pages[0]). The
+            # second image (pages[2]) is recorded at a different time point.
+            # Initially, I thought it would be best to compute the phase
+            # directly from the measured value in nanometers (pages[2]) using
+            # the known wavelength given by the qpformat user. However, since
+            # phase and amplitude won't match up in that case, the wavelength
+            # phase image (pages[1]) has to be used. Since phasics uses its own
+            # wavelength (set by the user in the acquisition/extraction
+            # software) which might be wrong, I decided to first compute
+            # the phase in nanometers from tf.pages[1] using the phasics
+            # wavelength and then proceed as before, computing the phase
+            # in radians using the correct, user-given wavelength.
+            wl_phasics = self._get_wavelength(self.path)
+            if not np.isnan(wl_phasics):
+                # proceed with phase in wavelengths
+                phaid = 1
+            else:
+                # proceed with phase in nanometers
+                phaid = 2
+            phatags = tf.pages[phaid].tags
             pmin = phatags["61243"].value
             pmax = phatags["61242"].value
             psamp = phatags["max_sample_value"].value
@@ -108,8 +137,12 @@ class SingleTifPhasics(SingleData):
                 # no phase data
                 pha = np.zeros_like(inten)
             else:
-                # optical path difference is in nm
-                opd = tf.pages[2].asarray() * (pmax - pmin) / psamp + pmin
+                # optical path difference
+                opd = tf.pages[phaid].asarray() * (pmax - pmin) / psamp + pmin
+                if phaid == 1:  # convert [wavelengths] to [nm]
+                    assert not np.isnan(wl_phasics)
+                    opd *= wl_phasics * 1e9
+                # convert from [nm] to [rad]
                 pha = opd / (self.meta_data["wavelength"] * 1e9) * 2 * np.pi
 
         meta_data = copy.copy(self.meta_data)
@@ -154,6 +187,8 @@ class SingleTifPhasics(SingleData):
                 "61243" in tf.pages[0].tags and
                 "61242" in tf.pages[0].tags and
                 "61238" in tf.pages[0].tags and
+                "61243" in tf.pages[1].tags and
+                "61242" in tf.pages[1].tags and
                 "max_sample_value" in tf.pages[0].tags and
                 (tf.pages[0].tags["61242"].value !=
                  tf.pages[1].tags["61242"].value)):

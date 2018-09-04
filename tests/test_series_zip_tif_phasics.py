@@ -33,7 +33,7 @@ def test_data_content():
     qpi = ds.get_qpimage(0)
     assert qpi.meta["wavelength"] == 550e-9
     assert np.allclose(qpi.amp.max(), 183.96992660669972)
-    assert np.allclose(qpi.pha.max() - qpi.pha.min(), 0.189023369599572)
+    assert np.allclose(qpi.pha.max() - qpi.pha.min(), 0.18902349472045898)
 
 
 if __name__ == "__main__":

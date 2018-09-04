@@ -1,3 +1,9 @@
+0.3.5
+ - fix: single_tif_phaiscs (SID4Bio) contains two phase images, the second
+   of which is recorded at a different time point than the intensity
+   image. The first image is recorded in wavelengths and not in
+   nanometers and thus is converted using phasics metadata first.
+   If this metadata is not available, the second image is used.
 0.3.4
  - fix: qpimage file formats: override identifiers (clean solution)
  - fix: add check for valid meta_data keys
