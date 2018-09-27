@@ -51,6 +51,28 @@ def test_load_data():
     assert np.allclose(qpd.pha, qpi.pha)
 
 
+def test_meta_extraction():
+    path = datapath / "single_qpimage.h5"
+    tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
+    qpi = qpimage.QPImage(h5file=path, h5mode="r").copy()
+    qpi["wavelength"] = 345e-9
+    qpi["pixel size"] = .1e-6
+    qpi["medium index"] = 1.336
+    qpi.copy(tf)
+
+    ds = qpformat.load_data(tf)
+
+    assert ds.meta_data["wavelength"] == 345e-9
+    assert ds.meta_data["pixel size"] == .1e-6
+    assert ds.meta_data["medium index"] == 1.336
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
 def test_meta_override():
     path = datapath / "single_qpimage.h5"
     tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")

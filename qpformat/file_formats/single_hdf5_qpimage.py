@@ -12,6 +12,16 @@ class SingleHdf5Qpimage(SingleData):
     """
     storage_type = "phase,amplitude"
 
+    def __init__(self, *args, **kwargs):
+        super(SingleHdf5Qpimage, self).__init__(*args, **kwargs)
+        # update meta data
+        with h5py.File(self.path, mode="r") as h5:
+            attrs = dict(h5.attrs)
+        for key in qpimage.meta.DATA_KEYS:
+            if (key not in self.meta_data
+                    and key in attrs):
+                self.meta_data[key] = attrs[key]
+
     def get_qpimage(self, idx=0):
         """Return background-corrected QPImage"""
         if self._bgdata:

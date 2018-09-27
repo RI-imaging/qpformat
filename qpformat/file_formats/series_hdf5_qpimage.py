@@ -11,6 +11,13 @@ class SeriesHdf5Qpimage(SeriesData):
     def __init__(self, *args, **kwargs):
         super(SeriesHdf5Qpimage, self).__init__(*args, **kwargs)
         self._dataset = None
+        # update meta data
+        with h5py.File(self.path, mode="r") as h5:
+            attrs = dict(h5["qpi_0"].attrs)
+        for key in qpimage.meta.DATA_KEYS:
+            if (key not in self.meta_data
+                    and key in attrs):
+                self.meta_data[key] = attrs[key]
 
     def __len__(self):
         with self._qpseries() as qps:

@@ -67,6 +67,30 @@ def test_load_data():
         pass
 
 
+def test_meta_extraction():
+    path = datapath / "single_qpimage.h5"
+    tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
+    qpi = qpimage.QPImage(h5file=path, h5mode="r")
+    # generate qpseries hdf5 file
+    with qpimage.QPSeries(qpimage_list=[qpi, qpi],
+                          h5file=tf,
+                          h5mode="a",
+                          meta_data={"wavelength": 111e-9,
+                                     "pixel size": .12}):
+        pass
+
+    ds = qpformat.load_data(tf)
+
+    assert ds.meta_data["wavelength"] == 111e-9
+    assert ds.meta_data["pixel size"] == .12
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
 def test_meta_override():
     path = datapath / "single_qpimage.h5"
     tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
