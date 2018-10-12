@@ -106,6 +106,7 @@ class SingleTifPhasics(SingleData):
             isamp = inttags["max_sample_value"].value
             blc = INTENSITY_BASELINE_CLAMP
             inten = tf.pages[0].asarray() * (imax - imin) / isamp + imin - blc
+            inten[inten < 0] = 0
             # Phase
             # The SID4Bio records two phase images, one in wavelengths and
             # one in nanometers. Surprisingly, these two phase images are
