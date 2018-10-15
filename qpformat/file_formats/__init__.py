@@ -129,9 +129,20 @@ class SeriesFolder(SeriesData):
         return ds.storage_type
 
     def get_identifier(self, idx):
-        """Return an identifier for the data at index `idx`"""
+        """Return an identifier for the data at index `idx`
+
+        .. versionchanged:: 0.4.2
+            indexing starts at 1 instead of 0
+        """
         name = self._get_cropped_file_names()[idx]
-        return "{}:{}:{}".format(self.identifier, name, idx)
+        return "{}:{}:{}".format(self.identifier, name, idx + 1)
+
+    def get_name(self, idx):
+        """Return name of data at index `idx`
+
+        .. versionadded:: 0.4.2
+        """
+        return "{}".format(self.path / self.files[idx])
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""

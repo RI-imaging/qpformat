@@ -20,8 +20,8 @@ def test_identifier():
 
     bg_data = ds1.get_qpimage(0)
     ds2 = qpformat.load_data(path=path, bg_data=bg_data)
-    assert ds2.background_identifier == "3f328"
-    assert ds2.identifier == "1e92f"
+    assert ds2.background_identifier == "26461"
+    assert ds2.identifier == "67213"
 
 
 def test_meta():

@@ -142,12 +142,20 @@ class SeriesData(object):
         return idsum
 
     def get_identifier(self, idx):
-        """Return an identifier for the data at index `idx`"""
-        return "{}:{}".format(self.identifier, idx)
+        """Return an identifier for the data at index `idx`
+
+        .. versionchanged:: 0.4.2
+            indexing starts at 1 instead of 0
+        """
+        return "{}:{}".format(self.identifier, idx + 1)
 
     def get_name(self, idx):
-        """Return name of data at index `idx`"""
-        return "{}:{}".format(self.path, idx)
+        """Return name of data at index `idx`
+
+        .. versionchanged:: 0.4.2
+            indexing starts at 1 instead of 0
+        """
+        return "{}:{}".format(self.path, idx + 1)
 
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""

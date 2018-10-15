@@ -1,3 +1,6 @@
+0.4.2
+ - fix: implement `get_name` method for SeriesFolder format
+ - enh: start identifier/name indexing at 1 instead of 0
 0.4.1
  - fix: do not allow intensity values less than zero for SingleTifPhasics
 0.4.0
