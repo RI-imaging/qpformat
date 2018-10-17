@@ -36,6 +36,15 @@ def test_data_content():
     assert np.allclose(qpi.pha.max() - qpi.pha.min(), 0.18902349472045898)
 
 
+def test_returned_identifier():
+    path = datapath / "series_phasics.zip"
+    ds = qpformat.load_data(path)
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

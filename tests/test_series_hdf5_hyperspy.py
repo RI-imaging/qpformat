@@ -49,6 +49,16 @@ def test_basic():
     shutil.rmtree(path=tdir, ignore_errors=True)
 
 
+def test_returned_identifier():
+    tdir, hspyf = make_hyperspy()
+    ds = qpformat.load_data(hspyf)
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
+    shutil.rmtree(path=tdir, ignore_errors=True)
+
+
 def test_wrong_format():
     path = datapath / "single_qpimage.h5"
     ds = qpformat.load_data(path, fmt="SeriesHdf5HyperSpy")

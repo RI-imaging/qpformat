@@ -30,6 +30,15 @@ def test_load_data():
     assert qpi.shape == (238, 267)
 
 
+def test_returned_identifier():
+    path = datapath / "single_holo.tif"
+    ds = qpformat.load_data(path)
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

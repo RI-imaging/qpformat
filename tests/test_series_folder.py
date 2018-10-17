@@ -60,10 +60,8 @@ def test_load_data():
     # data should be the same
     qpi0 = ds.get_qpimage(0)
     qpi1 = ds.get_qpimage(1)
-    assert qpi0 != qpi1
+    assert qpi0 == qpi1
     assert qpi0["identifier"] != qpi1["identifier"]
-    qpi0["identifier"] = ""
-    qpi1["identifier"] = ""
     assert qpi0 == qpi1
     assert ds.get_qpimage_raw(0) == ds.get_qpimage_raw(1)
     assert ds.get_qpimage(0).shape == (50, 50)

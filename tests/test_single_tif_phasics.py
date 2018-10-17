@@ -65,6 +65,15 @@ def test_data_content():
     assert np.allclose(qpi.pha.max() - qpi.pha.min(), 4.168394088745117)
 
 
+def test_returned_identifier():
+    path = datapath / "single_phasics.tif"
+    ds = qpformat.load_data(path)
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

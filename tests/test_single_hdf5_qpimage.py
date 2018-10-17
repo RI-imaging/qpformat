@@ -41,11 +41,11 @@ def test_load_data():
     assert ds.path == path.resolve()
     assert ds.get_time() == 0
     assert "SingleHdf5Qpimage" in ds.__repr__()
-    # individual identifiers are not extracted anymore as of
-    # qpformat version 0.3.4
     qpd = ds.get_qpimage()
-    qpi = qpimage.QPImage(h5file=path, h5mode="r")
-    assert qpd != qpi
+    qpi = qpimage.QPImage(h5file=path, h5mode="r").copy()
+    qpi["identifier"] = "test"
+    assert qpd["identifier"] != qpi["identifier"]
+    assert qpd == qpi
     assert qpd.shape == qpi.shape
     assert np.allclose(qpd.amp, qpi.amp)
     assert np.allclose(qpd.pha, qpi.pha)
@@ -96,6 +96,15 @@ def test_meta_override():
         os.remove(tf)
     except OSError:
         pass
+
+
+def test_returned_identifier():
+    path = datapath / "single_qpimage.h5"
+    ds = qpformat.load_data(path)
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
 
 
 if __name__ == "__main__":

@@ -32,6 +32,8 @@ class SingleTifHolo(SingleData):
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
                               h5dtype=self.as_type)
+        # get identifier
+        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @staticmethod

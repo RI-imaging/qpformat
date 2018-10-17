@@ -60,7 +60,10 @@ class SeriesZipTifHolo(SeriesData):
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
-        return ds.get_qpimage_raw()
+        qpi = ds.get_qpimage_raw()
+        # set identifier
+        qpi["identifier"] = self.get_identifier(idx)
+        return qpi
 
     @staticmethod
     def verify(path):

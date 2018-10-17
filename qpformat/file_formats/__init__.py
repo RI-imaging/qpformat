@@ -147,7 +147,9 @@ class SeriesFolder(SeriesData):
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
-        return ds.get_qpimage_raw()
+        qpi = ds.get_qpimage_raw()
+        qpi["identifier"] = self.get_identifier(idx)
+        return qpi
 
     def get_time(self, idx):
         ds = self._get_dataset(idx)

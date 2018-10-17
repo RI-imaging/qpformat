@@ -38,6 +38,8 @@ class SingleNpyNumpy(SingleData):
                               which_data=self.storage_type,
                               meta_data=meta_data,
                               h5dtype=self.as_type)
+        # get identifier
+        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @staticmethod

@@ -52,6 +52,8 @@ class SingleHdf5Qpimage(SingleData):
         # Force meta data
         for key in self.meta_data:
             qpi[key] = self.meta_data[key]
+        # set identifier
+        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @staticmethod

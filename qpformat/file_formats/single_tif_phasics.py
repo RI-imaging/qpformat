@@ -153,6 +153,8 @@ class SingleTifPhasics(SingleData):
                               which_data="phase,intensity",
                               meta_data=meta_data,
                               h5dtype=self.as_type)
+        # set identifier
+        qpi["identifier"] = self.get_identifier()
         return qpi
 
     def get_time(self, idx=0):

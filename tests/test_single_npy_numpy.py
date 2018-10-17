@@ -44,6 +44,25 @@ def test_load_field():
         pass
 
 
+def test_returned_identifier():
+    # generate test data
+    tf = pathlib.Path(tempfile.mktemp(suffix=".npy", prefix="qpformat_test_"))
+    phase = np.ones((20, 20), dtype=float)
+    phase *= np.linspace(0, .3, 20).reshape(-1, 1)
+    np.save(tf, phase)
+
+    ds = qpformat.load_data(tf, as_type="float64")
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
+
+    try:
+        tf.unlink()
+    except OSError:
+        pass
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

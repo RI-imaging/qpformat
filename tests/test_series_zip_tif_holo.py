@@ -48,6 +48,20 @@ def test_load_data():
         pass
 
 
+def test_returned_identifier():
+    path = setup_test_zip()
+    ds = qpformat.load_data(path)
+    qpi = ds.get_qpimage(0)
+    assert "identifier" in qpi
+    qpiraw = ds.get_qpimage_raw(0)
+    assert "identifier" in qpiraw
+
+    try:
+        path.unlink()
+    except OSError:
+        pass
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

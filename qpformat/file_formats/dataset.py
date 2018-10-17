@@ -2,6 +2,7 @@ import abc
 import copy
 import functools
 import hashlib
+import io
 import pathlib
 
 import numpy as np
@@ -31,12 +32,13 @@ class SeriesData(object):
     def __init__(self, path, meta_data={}, holo_kw={}, as_type="float32"):
         #: Enforced dtype via keyword arguments
         self.as_type = as_type
-        if isinstance(path, (str, pathlib.Path)):
-            #: pathlib.Path to data file or BytesIO
-            self.path = pathlib.Path(path).resolve()
-        else:
-            # _io.BytesIO
+        if isinstance(path, io.IOBase):
+            # io.IOBase
             self.path = path
+        else:
+            #: pathlib.Path to data file or io.IOBase
+            self.path = pathlib.Path(path).resolve()
+
         # check for valid metadata keys
         for key in meta_data:
             if key not in qpimage.meta.DATA_KEYS:
@@ -113,8 +115,11 @@ class SeriesData(object):
     def _identifier_data(self):
         data = []
         # data
-        with self.path.open("rb") as fd:
-            data.append(fd.read(50 * 1024))
+        if isinstance(self.path, io.IOBase):
+            data.append(self.path.read(50 * 1024))
+        else:
+            with self.path.open("rb") as fd:
+                data.append(fd.read(50 * 1024))
         data += self._identifier_meta()
         return hash_obj(data)
 
@@ -161,6 +166,10 @@ class SeriesData(object):
         """Return background-corrected QPImage of data at index `idx`"""
         # raw data
         qpi = self.get_qpimage_raw(idx)
+        if "identifier" not in qpi:
+            msg = "`get_qpimage_raw` does not set 'identifier' " \
+                  + "in class '{}'!".format(self.__class__)
+            raise KeyError(msg)
         # bg data
         if self._bgdata:
             if len(self._bgdata) == 1:
@@ -176,13 +185,15 @@ class SeriesData(object):
                 # `self._bgdata` is a QPImage
                 bg = self._bgdata[bgidx]
             qpi.set_bg_data(bg_data=bg)
-        # set identifier
-        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @abc.abstractmethod
     def get_qpimage_raw(self, idx):
-        """Return QPImage without background correction"""
+        """Return QPImage without background correction
+
+        Note that this method must always return a QPImage instance with
+        the "identifier" metadata key set!
+        """
 
     def get_time(self, idx):
         """Return time of data at index `idx`

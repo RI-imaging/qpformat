@@ -93,6 +93,8 @@ class SeriesHdf5HyperSpy(SeriesData):
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
                               h5dtype=self.as_type)
+        # set identifier
+        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @staticmethod
