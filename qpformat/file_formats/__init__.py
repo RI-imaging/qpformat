@@ -58,10 +58,12 @@ class SeriesFolder(SeriesData):
                                               meta_data=self.meta_data,
                                               as_type=self.as_type)
         if len(self._dataset[idx]) != 1:
-            # TODO:
-            # - add enumeration within files
-            # - required for `self.get_*` functions
-            msg = "Multiple qpimages per SeriesFolder file not supported yet!"
+            msg = "Multiple images per file are not supported in the " \
+                  + "SeriesFolder file format! Besides the fact that it " \
+                  + "would add unnecessary complexity, it is also really a " \
+                  + "bad idea to do this. Please restructure your " \
+                  + "workflow accordingly. The offending file is " \
+                  + "'{}'.".format(self.files[idx])
             raise NotImplementedError(msg)
         return self._dataset[idx]
 
