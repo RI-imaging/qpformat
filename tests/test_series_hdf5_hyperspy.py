@@ -8,6 +8,7 @@ import h5py
 from skimage.external import tifffile
 
 import qpformat
+from qpformat.file_formats import WrongFileFormatError
 from qpformat.file_formats.series_hdf5_hyperspy import (
     HyperSpyNoDataFoundError, WrongSignalTypeWarnging)
 
@@ -61,10 +62,9 @@ def test_returned_identifier():
 
 def test_wrong_format():
     path = datapath / "single_qpimage.h5"
-    ds = qpformat.load_data(path, fmt="SeriesHdf5HyperSpy")
     try:
-        ds.get_qpimage(0)
-    except HyperSpyNoDataFoundError:
+        qpformat.load_data(path, fmt="SeriesHdf5HyperSpy")
+    except WrongFileFormatError:
         pass
     else:
         raise ValueError("qpimage data is not hyperspy data")

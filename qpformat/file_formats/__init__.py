@@ -27,6 +27,11 @@ class UnknownFileFormatError(BaseException):
     pass
 
 
+class WrongFileFormatError(BaseException):
+    """Used when a wrong file format is used"""
+    pass
+
+
 class SeriesFolder(SeriesData):
     """Folder-based wrapper file format"""
     # storage_type is implemented as a property

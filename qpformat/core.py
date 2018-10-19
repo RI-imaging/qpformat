@@ -2,7 +2,8 @@ import pathlib
 
 import qpimage
 
-from .file_formats import formats, formats_dict, UnknownFileFormatError
+from .file_formats import formats, formats_dict, UnknownFileFormatError, \
+    WrongFileFormatError
 
 
 def guess_format(path):
@@ -58,7 +59,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     else:
         if not formats_dict[fmt].verify(path):
             msg = "Wrong file format '{}' for '{}'!".format(fmt, path)
-            raise UnknownFileFormatError(msg)
+            raise WrongFileFormatError(msg)
 
     dataobj = formats_dict[fmt](path=path,
                                 meta_data=meta_data,
