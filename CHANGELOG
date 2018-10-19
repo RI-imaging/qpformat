@@ -1,3 +1,7 @@
+0.4.4
+ - fix: SeriesFolder file format should not support folders containing
+   no usable data
+ - fix: check file whether file format given by user is valid
 0.4.3
  - fix: "identifier" not always set for generated instances of QPImage
 0.4.2

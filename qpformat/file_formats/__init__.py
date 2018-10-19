@@ -164,9 +164,16 @@ class SeriesFolder(SeriesData):
         The folder file format is only valid when
         there is only one file format present.
         """
+        valid = True
         fifo = SeriesFolder._search_files(path)
+        # dataset size
+        if len(fifo) == 0:
+            valid = False
+        # number of different file formats
         fifmts = [ff[1] for ff in fifo]
-        return len(set(fifmts)) == 1
+        if len(set(fifmts)) != 1:
+            valid = False
+        return valid
 
 
 # the order is important

@@ -25,7 +25,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
         Path to experimental data file or folder
     fmt: str
         The file format to use (see `file_formats.formats`).
-        If set to `None`, the file format is be guessed.
+        If set to `None`, the file format is guessed.
     bg_data: str
         Path to background data file or `qpimage.QPImage`
     bg_fmt: str
@@ -55,6 +55,10 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
 
     if fmt is None:
         fmt = guess_format(path)
+    else:
+        if not formats_dict[fmt].verify(path):
+            msg = "Wrong file format '{}' for '{}'!".format(fmt, path)
+            raise UnknownFileFormatError(msg)
 
     dataobj = formats_dict[fmt](path=path,
                                 meta_data=meta_data,
