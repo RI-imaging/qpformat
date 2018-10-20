@@ -62,7 +62,6 @@ class SeriesZipTifPhasics(SeriesData):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
         qpi = ds.get_qpimage_raw()
-        # get identifier
         qpi["identifier"] = self.get_identifier(idx)
         return qpi
 

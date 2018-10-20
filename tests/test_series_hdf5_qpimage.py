@@ -53,7 +53,7 @@ def test_load_data():
     ds = qpformat.load_data(tf)
     assert len(ds) == 2
     assert ds.path == pathlib.Path(tf)
-    assert ds.get_time(1) == 0
+    assert np.isnan(ds.get_time(1))
     assert "SeriesHdf5Qpimage" in ds.__repr__()
     qpd = ds.get_qpimage(1)
     assert qpd["identifier"] != qpi1["identifier"]

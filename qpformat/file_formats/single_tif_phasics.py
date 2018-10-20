@@ -92,6 +92,26 @@ class SingleTifPhasics(SingleData):
             wavelength = np.nan
         return wavelength
 
+    def get_time(self, idx=0):
+        """Return the time of the tif data since the epoch
+
+        The time is stored in the "61238" tag.
+        """
+        timestr = SingleTifPhasics._get_meta_data(path=self.path,
+                                                  section="acquisition info",
+                                                  name="date & heure")
+        if timestr is not None:
+            timestr = timestr.split(".")
+            # '2016-04-29_17h31m35s.00827'
+            structtime = time.strptime(timestr[0],
+                                       "%Y-%m-%d_%Hh%Mm%Ss")
+            fracsec = float(timestr[1]) * 1e-5
+            # use calendar, because we need UTC
+            thetime = calendar.timegm(structtime) + fracsec
+        else:
+            thetime = np.nan
+        return thetime
+
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
@@ -156,26 +176,6 @@ class SingleTifPhasics(SingleData):
         # set identifier
         qpi["identifier"] = self.get_identifier()
         return qpi
-
-    def get_time(self, idx=0):
-        """Return the time of the tif data since the epoch
-
-        The time is stored in the "61238" tag.
-        """
-        timestr = SingleTifPhasics._get_meta_data(path=self.path,
-                                                  section="acquisition info",
-                                                  name="date & heure")
-        if timestr is not None:
-            timestr = timestr.split(".")
-            # '2016-04-29_17h31m35s.00827'
-            structtime = time.strptime(timestr[0],
-                                       "%Y-%m-%d_%Hh%Mm%Ss")
-            fracsec = float(timestr[1]) * 1e-5
-            # use calendar, because we need UTC
-            thetime = calendar.timegm(structtime) + fracsec
-        else:
-            thetime = 0
-        return thetime
 
     @staticmethod
     def verify(path):

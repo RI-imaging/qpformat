@@ -1,3 +1,8 @@
+0.5.0
+ - feat: use file modification time as fallback for TIFF files when
+   the file format does not implement `get_time`
+ - fix: return "nan" instead of "0" when the time is not defined for
+   a measurement
 0.4.4
  - fix: SeriesFolder file format should not support folders containing
    no usable data

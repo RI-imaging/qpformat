@@ -1,6 +1,9 @@
 import io
 import functools
+import time
 import zipfile
+
+import numpy as np
 
 from .dataset import SeriesData
 from .single_tif_holo import SingleTifHolo
@@ -57,12 +60,32 @@ class SeriesZipTifHolo(SeriesData):
             self._files = SeriesZipTifHolo._index_files(self.path)
         return self._files
 
+    def get_time(self, idx):
+        """Time for each TIFF file
+
+        If there are no metadata keyword arguments defined for the
+        TIFF file format, then the zip file `date_time` value is
+        used.
+        """
+        # first try to get the time from the TIFF file
+        # (possible meta data keywords)
+        ds = self._get_dataset(idx)
+        thetime = ds.get_time()
+        if np.isnan(thetime):
+            # use zipfile date_time
+            zf = zipfile.ZipFile(self.path)
+            info = zf.getinfo(self.files[idx])
+            timetuple = tuple(list(info.date_time) + [0, 0, 0])
+            thetime = time.mktime(timetuple)
+        return thetime
+
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
         qpi = ds.get_qpimage_raw()
         # set identifier
         qpi["identifier"] = self.get_identifier(idx)
+        qpi["time"] = self.get_time(idx)
         return qpi
 
     @staticmethod

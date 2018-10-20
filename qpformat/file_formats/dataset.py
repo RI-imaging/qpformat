@@ -162,6 +162,18 @@ class SeriesData(object):
         """
         return "{}:{}".format(self.path, idx + 1)
 
+    def get_time(self, idx):
+        """Return time of data at index `idx`
+
+        Returns nan if the time is not defined"""
+        # raw data
+        qpi = self.get_qpimage_raw(idx)
+        if "time" in qpi.meta:
+            thetime = qpi.meta["time"]
+        else:
+            thetime = np.nan
+        return thetime
+
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         # raw data
@@ -194,18 +206,6 @@ class SeriesData(object):
         Note that this method must always return a QPImage instance with
         the "identifier" metadata key set!
         """
-
-    def get_time(self, idx):
-        """Return time of data at index `idx`
-
-        """
-        # raw data
-        qpi = self.get_qpimage_raw(idx)
-        if "time" in qpi.meta:
-            thetime = qpi.meta["time"]
-        else:
-            thetime = 0
-        return thetime
 
     def saveh5(self, h5file):
         """Save the data set as an hdf5 file (qpimage.QPSeries format)"""
@@ -305,8 +305,12 @@ class SingleData(SeriesData):
         """QPImage without background correction"""
 
     def get_time(self, idx=0):
-        """Time of QPImage"""
-        return super(SingleData, self).get_time(idx=0)
+        """Time of the data
+
+        Returns nan if the time is not defined
+        """
+        thetime = super(SingleData, self).get_time(idx=0)
+        return thetime
 
 
 def hash_obj(data, maxlen=5):

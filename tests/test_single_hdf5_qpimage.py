@@ -39,7 +39,7 @@ def test_load_data():
     path = datapath / "single_qpimage.h5"
     ds = qpformat.load_data(path)
     assert ds.path == path.resolve()
-    assert ds.get_time() == 0
+    assert np.isnan(ds.get_time()), "original file has no time metadata"
     assert "SingleHdf5Qpimage" in ds.__repr__()
     qpd = ds.get_qpimage()
     qpi = qpimage.QPImage(h5file=path, h5mode="r").copy()

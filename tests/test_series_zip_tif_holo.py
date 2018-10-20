@@ -34,6 +34,14 @@ def test_basic():
         pass
 
 
+def test_time():
+    path = setup_test_zip(2)
+    ds = qpformat.load_data(path)
+    ds.get_time(0)
+    # this is the creation date of "singel_holo.tif"
+    assert ds.get_time(0) == 1529500484
+
+
 def test_load_data():
     num = 5
     path = setup_test_zip(num)
