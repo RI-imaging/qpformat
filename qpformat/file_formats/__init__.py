@@ -94,7 +94,8 @@ class SeriesFolder(SeriesData):
             if fp.is_dir():
                 continue
             for fmt in formats:
-                if fmt.verify(fp):
+                # series data is not supported in SeriesFolder
+                if not fmt.is_series and fmt.verify(fp):
                     fifo.append((fp, fmt.__name__))
                     break
 
