@@ -41,6 +41,11 @@ def test_time():
     # this is the creation date of "singel_holo.tif"
     assert ds.get_time(0) == 1529500484
 
+    try:
+        path.unlink()
+    except OSError:
+        pass
+
 
 def test_load_data():
     num = 5
