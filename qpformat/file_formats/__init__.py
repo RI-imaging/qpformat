@@ -87,10 +87,15 @@ class SeriesFolder(SeriesData):
     @staticmethod
     @lru_cache(maxsize=32)
     def _search_files(path):
+        """Search a folder for data files
+
+        .. versionchanged:: 0.6.0
+            `path` is not searched recursively anymore
+        """
         path = pathlib.Path(path)
         fifo = []
 
-        for fp in path.rglob("*"):
+        for fp in path.glob("*"):
             if fp.is_dir():
                 continue
             for fmt in formats:

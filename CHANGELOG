@@ -1,3 +1,6 @@
+0.6.0
+ - BREAKING CHANGE: SeriesFolder file format does not load data files
+   recursively anymore
 0.5.1
  - fix: falsely detected datasets in SeriesFolder file format
 0.5.0
