@@ -5,16 +5,6 @@ import shutil
 import qpformat
 
 
-def test_bad_folder():
-    path = pathlib.Path(__file__).parent / "data"
-    try:
-        qpformat.load_data(path)
-    except qpformat.file_formats.MultipleFormatsNotSupportedError:
-        pass
-    else:
-        raise ValueError("Multiple formats not supported")
-
-
 def test_good_folder():
     path = pathlib.Path(__file__).parent / "data"
     dpath = pathlib.Path(tempfile.mkdtemp(prefix="qpformat_test_"))

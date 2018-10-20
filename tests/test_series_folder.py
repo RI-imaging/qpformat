@@ -107,19 +107,32 @@ def test_multiple_formats_error():
     and test_multiple_formats_phasics_tif
     should not be supported.
     """
-    # combine a zip file with a regular hologram file
     path, _files2 = setup_folder_single_holo()
-    shutil.copy2(datapath / "series_phasics.zip", path)
+    other_fmt_path = path / "single_holo.npy"
+    np.save(other_fmt_path, np.zeros((10, 10)))
     try:
         qpformat.load_data(path)
     except qpformat.file_formats.MultipleFormatsNotSupportedError:
         pass
     else:
-        assert False, "Multiple formats should raise error!"
+        assert False, "multiple formats should not be supported"
+    shutil.rmtree(path, ignore_errors=True)
+
+
+def test_series_format_ignored():
+    """Series file formats are ignored in SeriesFolder"""
+    # combine a zip file with a regular hologram file
+    path, _files2 = setup_folder_single_holo()
+    bad_path = datapath / "series_phasics.zip"
+    shutil.copy2(bad_path, path)
+    ds = qpformat.load_data(path)
+    assert len(ds) == 2
+    assert bad_path not in ds.files
     shutil.rmtree(path, ignore_errors=True)
 
 
 if __name__ == "__main__":
+    test_multiple_formats_error()
     # Run all tests
     loc = locals()
     for key in list(loc.keys()):
