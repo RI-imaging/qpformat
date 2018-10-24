@@ -14,7 +14,11 @@ from .single_tif_holo import SingleTifHolo
 from .single_tif_phasics import SingleTifPhasics
 
 
-class MultipleFormatsNotSupportedError(BaseException):
+class BadFileFormatError(BaseException):
+    """Base class for file format errors"""
+
+
+class MultipleFormatsNotSupportedError(BadFileFormatError):
     """Used when a folder contains series file formats
 
     (see `GitHub issue #1 <https://github.com/RI-imaging/qpformat/issues/1>`__)
@@ -22,12 +26,12 @@ class MultipleFormatsNotSupportedError(BaseException):
     pass
 
 
-class UnknownFileFormatError(BaseException):
+class UnknownFileFormatError(BadFileFormatError):
     """Used when a file format could not be detected"""
     pass
 
 
-class WrongFileFormatError(BaseException):
+class WrongFileFormatError(BadFileFormatError):
     """Used when a wrong file format is used"""
     pass
 
