@@ -1,5 +1,6 @@
 import pathlib
 
+import numpy as np
 import qpimage
 
 from .file_formats import formats, formats_dict, UnknownFileFormatError, \
@@ -53,6 +54,11 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
         if kk not in qpimage.meta.DATA_KEYS:
             msg = "Meta data key not allowed: {}".format(kk)
             raise ValueError(msg)
+
+    # ignore None or nan values in meta_data
+    for kk in list(meta_data.keys()):
+        if meta_data[kk] in [np.nan, None]:
+            meta_data.pop(kk)
 
     if fmt is None:
         fmt = guess_format(path)

@@ -40,6 +40,26 @@ def test_meta():
         pass
 
 
+def test_meta_None():
+    data = np.ones((20, 20), dtype=float)
+    tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
+    np.save(tf, data)
+
+    ds = qpformat.load_data(path=tf, meta_data={"time": 47,
+                                                "medium index": None,
+                                                "wavelength": np.nan})
+
+    assert "time" in ds.meta_data
+    assert "medium index" not in ds.meta_data
+    assert "wavelength" not in ds.meta_data
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
 def test_repr():
     data = np.ones((20, 20), dtype=float)
     tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
