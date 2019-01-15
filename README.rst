@@ -30,9 +30,9 @@ Testing
     python setup.py test
     
 
-.. |PyPI Version| image:: http://img.shields.io/pypi/v/qpformat.svg
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/qpformat.svg
    :target: https://pypi.python.org/pypi/qpformat
-.. |Tests Status| image:: http://img.shields.io/travis/RI-imaging/qpformat.svg?label=tests
+.. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/qpformat.svg?label=tests
    :target: https://travis-ci.org/RI-imaging/qpformat
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpformat/master.svg
    :target: https://codecov.io/gh/RI-imaging/qpformat
