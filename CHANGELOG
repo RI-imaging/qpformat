@@ -1,5 +1,7 @@
 0.7.0
+ - feat: added command-line entry point "qpinfo"
  - feat: support subjoined QPSeries file format
+ - docs: minor update
 0.6.4
  - fix: ignore None or nan values in given meta data
 0.6.3

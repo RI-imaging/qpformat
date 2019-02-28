@@ -57,7 +57,7 @@ class SeriesData(object):
 
     def __repr__(self):
         rep = "QPFormat '{}'".format(self.__class__.__name__) \
-              + ", {} event(s)".format(len(self)) \
+              + ", {} image(s)".format(len(self)) \
               + "\nfile: {}".format(self.path)
 
         meta = []

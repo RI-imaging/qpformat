@@ -33,6 +33,11 @@ setup(
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
     python_requires='>=3.6, <4',
+    entry_points={
+       "console_scripts": [
+           "qpinfo = qpformat.cli:qpinfo",
+            ],
+       },
     keywords=["data file format",
               "digital holographic microscopy",
               "quantitative phase imaging",
