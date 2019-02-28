@@ -185,6 +185,31 @@ def test_subjoined_load_data():
         pass
 
 
+def test_subjoined_meta_extraction():
+    path = datapath / "single_qpimage.h5"
+    tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_")
+    qpi = qpimage.QPImage(h5file=path, h5mode="r")
+
+    # generate subjoined qpseries hdf5 file
+    with h5py.File(tf, mode="w") as h5:
+        qps = h5.require_group("qpseries")
+        qpimage.QPSeries(qpimage_list=[qpi, qpi],
+                         h5file=qps,
+                         meta_data={"wavelength": 111e-9,
+                                    "pixel size": .12})
+
+    ds = qpformat.load_data(tf)
+
+    assert ds.meta_data["wavelength"] == 111e-9
+    assert ds.meta_data["pixel size"] == .12
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()
