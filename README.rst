@@ -4,13 +4,15 @@ qpformat
 |PyPI Version| |Tests Status| |Coverage Status| |Docs Status|
 
 
-**qpformat** is a Python3 library for opening quantitative phase imaging data file formats.
+**qpformat** is a Python library for opening quantitative phase imaging
+data file formats.
 
 
 Documentation
 -------------
 
-The documentation, including the reference and examples, is available at `qpformat.readthedocs.io <https://qpformat.readthedocs.io/en/stable/>`__.
+The documentation, including the reference and examples, is available at
+`qpformat.readthedocs.io <https://qpformat.readthedocs.io/en/stable/>`__.
 
 
 Installation

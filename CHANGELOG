@@ -1,3 +1,5 @@
+0.7.1
+ - docs: fix missing changelog files
 0.7.0
  - feat: added command-line entry point "qpinfo"
  - feat: support subjoined QPSeries file format
