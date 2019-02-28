@@ -2,6 +2,7 @@ import os
 import pathlib
 import tempfile
 
+import h5py
 import numpy as np
 
 import qpimage
@@ -144,6 +145,38 @@ def test_returned_identifier():
     assert "identifier" in qpi
     qpiraw = ds.get_qpimage_raw(0)
     assert "identifier" in qpiraw
+
+    # cleanup
+    try:
+        os.remove(tf)
+    except OSError:
+        pass
+
+
+def test_subjoined_load_data():
+    path = datapath / "single_qpimage.h5"
+    tf = tempfile.mktemp(suffix=".h5", prefix="qpformat_test_subjoined")
+    qpi1 = qpimage.QPImage(h5file=path, h5mode="r").copy()
+    qpi2 = qpi1.copy()
+    qpi1["identifier"] = "test100"
+    qpi2["identifier"] = "test200"
+    # generate subjoined qpseries hdf5 file
+    with h5py.File(tf, mode="w") as h5:
+        qps = h5.require_group("qpseries")
+        qpimage.QPSeries(qpimage_list=[qpi1, qpi2],
+                         h5file=qps)
+
+    ds = qpformat.load_data(tf)
+    assert len(ds) == 2
+    assert ds.path == pathlib.Path(tf)
+    assert np.isnan(ds.get_time(1))
+    assert "SeriesHdf5QpimageSubjoined" in ds.__repr__()
+    qpd = ds.get_qpimage(1)
+    assert qpd["identifier"] != qpi1["identifier"]
+    assert qpd == qpi1
+    assert qpd.shape == qpi1.shape
+    assert np.allclose(qpd.amp, qpi1.amp)
+    assert np.allclose(qpd.pha, qpi1.pha)
 
     # cleanup
     try:
