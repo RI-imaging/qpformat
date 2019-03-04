@@ -207,8 +207,21 @@ class SeriesData(object):
         the "identifier" metadata key set!
         """
 
-    def saveh5(self, h5file):
-        """Save the data set as an hdf5 file (qpimage.QPSeries format)"""
+    def saveh5(self, h5file, count=None, max_count=None):
+        """Save the data set as an hdf5 file (qpimage.QPSeries format)
+
+        Parameters
+        ----------
+        h5file: str, pathlib.Path, or h5py.Group
+            Where to store the series data
+        count, max_count: multiprocessing.Value
+            Can be used to monitor the progress of the algorithm.
+            Initially, the value of `max_count.value` is incremented
+            by the total number of steps. At each step, the value
+            of `count.value` is incremented.
+        """
+        if max_count is not None:
+            max_count.value += len(self)
         with qpimage.QPSeries(h5file=h5file,
                               h5mode="w",
                               identifier=self.identifier) as qps:
@@ -222,6 +235,8 @@ class SeriesData(object):
                     # hard-link the background data
                     qpiraw = self.get_qpimage_raw(ii)
                     qps.add_qpimage(qpiraw, bg_from_idx=0)
+                if count is not None:
+                    count.value += 1
 
     def set_bg(self, dataset):
         """Set background data

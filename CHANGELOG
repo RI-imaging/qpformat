@@ -1,3 +1,6 @@
+0.8.0
+ - feat: allow tracking the progress of SeriesData.saveh5 using
+   multiprocessing.Value objects
 0.7.1
  - docs: fix missing changelog files
 0.7.0
