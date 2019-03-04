@@ -207,13 +207,17 @@ class SeriesData(object):
         the "identifier" metadata key set!
         """
 
-    def saveh5(self, h5file, count=None, max_count=None):
+    def saveh5(self, h5file, qpi_slice=None, count=None, max_count=None):
         """Save the data set as an hdf5 file (qpimage.QPSeries format)
 
         Parameters
         ----------
         h5file: str, pathlib.Path, or h5py.Group
             Where to store the series data
+        qpi_slice: slice
+            If not None, only store a slice of each QPImage
+            in `h5file`. A value of None is equivalent to
+            ``(slice(0, -1), slice(0, -1))``.
         count, max_count: multiprocessing.Value
             Can be used to monitor the progress of the algorithm.
             Initially, the value of `max_count.value` is incremented
@@ -230,10 +234,14 @@ class SeriesData(object):
                     # initial image or series data where each image
                     # has a unique background image
                     qpi = self.get_qpimage(ii)
+                    if qpi_slice is not None:
+                        qpi = qpi[qpi_slice]
                     qps.add_qpimage(qpi)
                 else:
                     # hard-link the background data
                     qpiraw = self.get_qpimage_raw(ii)
+                    if qpi_slice is not None:
+                        qpiraw = qpiraw[qpi_slice]
                     qps.add_qpimage(qpiraw, bg_from_idx=0)
                 if count is not None:
                     count.value += 1

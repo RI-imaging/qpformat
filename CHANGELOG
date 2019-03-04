@@ -1,3 +1,6 @@
+0.9.0
+ - feat: allow to specify a slice in SeriesData.saveh5 (useful
+   when only a specific region needs to be extracted)
 0.8.0
  - feat: allow tracking the progress of SeriesData.saveh5 using
    multiprocessing.Value objects
