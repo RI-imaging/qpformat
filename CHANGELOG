@@ -1,6 +1,8 @@
 0.10.0
  - feat: allow to specify a time interval or a series slice in
    SeriesData.saveh5
+ - fix: seel to zero before computing a data identifier for an
+   io.IOBase object
 0.9.0
  - feat: allow to specify a slice in SeriesData.saveh5 (useful
    when only a specific region needs to be extracted)

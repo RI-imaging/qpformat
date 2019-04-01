@@ -116,6 +116,7 @@ class SeriesData(object):
         data = []
         # data
         if isinstance(self.path, io.IOBase):
+            self.path.seek(0)
             data.append(self.path.read(50 * 1024))
         else:
             with self.path.open("rb") as fd:
