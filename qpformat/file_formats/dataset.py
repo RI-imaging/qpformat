@@ -207,42 +207,69 @@ class SeriesData(object):
         the "identifier" metadata key set!
         """
 
-    def saveh5(self, h5file, qpi_slice=None, count=None, max_count=None):
+    def saveh5(self, h5file, qpi_slice=None, series_slice=None,
+               time_interval=None, count=None, max_count=None):
         """Save the data set as an hdf5 file (qpimage.QPSeries format)
 
         Parameters
         ----------
         h5file: str, pathlib.Path, or h5py.Group
             Where to store the series data
-        qpi_slice: slice
+        qpi_slice: tuple of (slice, slice)
             If not None, only store a slice of each QPImage
             in `h5file`. A value of None is equivalent to
             ``(slice(0, -1), slice(0, -1))``.
+        series_slice: slice
+            If None, save the entire series, otherwise only save
+            the images specified by this slice.
+        time_interval: tuple of (float, float)
+            If not None, only stores QPImages that were recorded
+            within the given time interval.
         count, max_count: multiprocessing.Value
             Can be used to monitor the progress of the algorithm.
             Initially, the value of `max_count.value` is incremented
             by the total number of steps. At each step, the value
             of `count.value` is incremented.
         """
+        # set up slice to export
+        if series_slice is None:
+            sl = range(len(self))
+        else:
+            sl = range(series_slice.start, series_slice.stop)
+        # set up time interval
+        if time_interval is None:
+            ta = -np.inf
+            tb = np.inf
+        else:
+            ta, tb = time_interval
+        # set max_count according to slice
         if max_count is not None:
-            max_count.value += len(self)
+            max_count.value += len(sl)
+
         with qpimage.QPSeries(h5file=h5file,
                               h5mode="w",
                               identifier=self.identifier) as qps:
-            for ii in range(len(self)):
-                if ii == 0 or len(self._bgdata) != 1:
-                    # initial image or series data where each image
-                    # has a unique background image
-                    qpi = self.get_qpimage(ii)
-                    if qpi_slice is not None:
-                        qpi = qpi[qpi_slice]
-                    qps.add_qpimage(qpi)
+            increment = 0
+            for ii in sl:
+                ti = self.get_time(ii)
+                if ti < ta or ti > tb:
+                    # Not part of the series
+                    pass
                 else:
-                    # hard-link the background data
-                    qpiraw = self.get_qpimage_raw(ii)
-                    if qpi_slice is not None:
-                        qpiraw = qpiraw[qpi_slice]
-                    qps.add_qpimage(qpiraw, bg_from_idx=0)
+                    increment += 1
+                    if increment == 1 or len(self._bgdata) != 1:
+                        # initial image or series data where each image
+                        # has a unique background image
+                        qpi = self.get_qpimage(ii)
+                        if qpi_slice is not None:
+                            qpi = qpi[qpi_slice]
+                        qps.add_qpimage(qpi)
+                    else:
+                        # hard-link the background data
+                        qpiraw = self.get_qpimage_raw(ii)
+                        if qpi_slice is not None:
+                            qpiraw = qpiraw[qpi_slice]
+                        qps.add_qpimage(qpiraw, bg_from_idx=0)
                 if count is not None:
                     count.value += 1
 
