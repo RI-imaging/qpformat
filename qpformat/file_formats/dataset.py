@@ -231,6 +231,12 @@ class SeriesData(object):
             Initially, the value of `max_count.value` is incremented
             by the total number of steps. At each step, the value
             of `count.value` is incremented.
+
+        Notes
+        -----
+        The series "identifier" meta data is only set when all
+        of `qpi_slice`, `series_slice`, and `time_interval`
+        are None.
         """
         # set up slice to export
         if series_slice is None:
@@ -247,9 +253,19 @@ class SeriesData(object):
         if max_count is not None:
             max_count.value += len(sl)
 
-        with qpimage.QPSeries(h5file=h5file,
-                              h5mode="w",
-                              identifier=self.identifier) as qps:
+        qpskw = {"h5file": h5file,
+                 "h5mode": "w",
+                 }
+
+        if (qpi_slice is not None and
+            series_slice is not None and
+                time_interval is not None):
+            # Only add series identifier if series complete.
+            # (We assume that if any of the above kwargs is set,
+            # the series data is somehow modified)
+            qpskw["identifier"] = self.identifier
+
+        with qpimage.QPSeries(**qpskw) as qps:
             increment = 0
             for ii in sl:
                 ti = self.get_time(ii)
