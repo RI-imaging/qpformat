@@ -3,7 +3,7 @@
 Sometimes the data recorded are not in a file format supported
 by qpformat or it is not feasible to implement a reader
 class for a very unique data set. In this example, QPI data,
-stored as a tuple of files ("\*_intensity.txt" and "\*_phase.txt")
+stored as a tuple of files ("_intensity.txt" and "_phase.txt")
 with commas as decimal separators, are converted to the numpy
 file format which is supported by qpformat.
 
