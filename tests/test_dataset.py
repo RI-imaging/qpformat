@@ -12,6 +12,43 @@ import qpformat.core
 datapath = pathlib.Path(__file__).parent / "data"
 
 
+def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
+                    wavelength=550e-9, num=1):
+    x = np.arange(size).reshape(-1, 1)
+    y = np.arange(size).reshape(1, -1)
+    cx = 80
+    cy = 120
+    r = np.sqrt((x - cx)**2 + (y - cy)**2)
+    pha = (r < radius_px) * 1.3
+    amp = .5 + np.roll(pha, 10) / pha.max()
+    qpi = qpimage.QPImage(data=(pha, amp),
+                          which_data="phase,amplitude",
+                          meta_data={"pixel size": pxsize,
+                                     "medium index": medium_index,
+                                     "wavelength": wavelength})
+    path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_convert")
+    dout = tempfile.mkdtemp(prefix="drymass_test_sphere_")
+    with qpimage.QPSeries(h5file=path, h5mode="w") as qps:
+        for ii in range(num):
+            qps.add_qpimage(qpi, identifier="test_{}".format(ii))
+    return qpi, path, dout
+
+
+def test_change_wavelength():
+    _qpi, path, dout = setup_test_data()
+
+    ds1 = qpformat.load_data(path, meta_data={"wavelength": 500e-9})
+    ds2 = qpformat.load_data(path, meta_data={"wavelength": 333e-9})
+
+    assert ds1.identifier != ds2.identifier, "should be different identifiers"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
 def test_identifier():
     path = datapath / "series_phasics.zip"
 
