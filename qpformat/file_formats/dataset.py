@@ -257,9 +257,9 @@ class SeriesData(object):
                  "h5mode": "w",
                  }
 
-        if (qpi_slice is not None and
-            series_slice is not None and
-                time_interval is not None):
+        if (qpi_slice is None and
+            series_slice is None and
+                time_interval is None):
             # Only add series identifier if series complete.
             # (We assume that if any of the above kwargs is set,
             # the series data is somehow modified)

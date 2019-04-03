@@ -176,6 +176,37 @@ def test_save_one_bg():
     shutil.rmtree(save_dir, ignore_errors=True)
 
 
+def test_save_identifier():
+    """Test that identifier is saved only when full series was saved"""
+    data_dir = tempfile.mkdtemp(prefix="qpformat_test_data_")
+    data_dir = pathlib.Path(data_dir)
+
+    data1 = np.ones((20, 20), dtype=float)
+    data1 *= np.linspace(-.1, 3, 20).reshape(-1, 1)
+    np.save(data_dir / "data1.npy", data1)
+
+    data2 = data1 * np.linspace(1.33, 1.04, 20).reshape(1, -1)
+    np.save(data_dir / "data2.npy", data2)
+
+    # save as h5
+    bg = qpimage.QPImage(data=data1, which_data="phase")
+    ds = qpformat.load_data(path=data_dir, bg_data=bg)
+    save_dir = tempfile.mkdtemp(prefix="qpformat_test_data_save_")
+    save_path1 = pathlib.Path(save_dir) / "savetest1.h5"
+    save_path2 = pathlib.Path(save_dir) / "savetest2.h5"
+    ds.saveh5(save_path1)
+    ds.saveh5(save_path2, qpi_slice=(slice(0, 10), slice(0, 10)))
+
+    # load h5
+    with qpimage.QPSeries(h5file=save_path1) as qps1:
+        assert qps1.identifier is not None
+    with qpimage.QPSeries(h5file=save_path2) as qps2:
+        assert qps2.identifier is None
+
+    shutil.rmtree(data_dir, ignore_errors=True)
+    shutil.rmtree(save_dir, ignore_errors=True)
+
+
 def test_set_bg():
     data = np.ones((20, 20), dtype=float)
     data *= np.linspace(-.1, 3, 20).reshape(-1, 1)
