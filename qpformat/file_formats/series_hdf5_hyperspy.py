@@ -73,7 +73,7 @@ class SeriesHdf5HyperSpy(SeriesData):
         with h5py.File(name=self.path, mode="r") as h5:
             exp = h5["Experiments"][name]
             # hologram data
-            data = exp["data"].value
+            data = exp["data"][:]
             # resolution
             rx = exp["axis-0"].attrs["scale"]
             ry = exp["axis-1"].attrs["scale"]
