@@ -5,6 +5,8 @@
    io.IOBase object
  - fix: only write series identifier in SeriesData.saveh5 if
    the keyword arguments for slice extraction are not set
+ - ref: fix deprecated `.value` (h5py)
+ - tests: fix date extraction from zip file
 0.9.0
  - feat: allow to specify a slice in SeriesData.saveh5 (useful
    when only a specific region needs to be extracted)
