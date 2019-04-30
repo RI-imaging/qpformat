@@ -23,6 +23,7 @@ class SeriesHdf5Qpimage(SeriesData):
             attrs = dict(h5["qpi_0"].attrs)
         for key in qpimage.meta.DATA_KEYS:
             if (key not in self.meta_data
+                    and key not in ["time"]  # do not override time
                     and key in attrs):
                 self.meta_data[key] = attrs[key]
 
