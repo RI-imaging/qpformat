@@ -19,7 +19,7 @@ from skimage.external import tifffile
 # File names ending with these strings are ignored
 ignore_endswith = ['.bmp', '.npy', '.opj', '.png', '.pptx', '.py', '.svg',
                    '.tif', '.txt', '_RIdist', '_parameter', '_parameter_old',
-                   '_phase', 'n_array', 'n_array_real', '~']
+                   '_phase', 'n_array', 'n_array_real', '~', ".dat"]
 # uncomment this line to keep background hologram files
 ignore_endswith += ['_bg']
 
