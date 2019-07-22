@@ -35,6 +35,7 @@ class SeriesZipTifHolo(SeriesData):
             fd = io.BytesIO(pt.read())
             self._dataset[idx] = SingleTifHolo(path=fd,
                                                meta_data=self.meta_data,
+                                               as_type=self.as_type,
                                                holo_kw=self.holo_kw)
         return self._dataset[idx]
 

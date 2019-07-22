@@ -31,7 +31,8 @@ class SeriesZipTifPhasics(SeriesData):
             pt = zf.open(self.files[idx])
             fd = io.BytesIO(pt.read())
             self._dataset[idx] = SingleTifPhasics(path=fd,
-                                                  meta_data=self.meta_data)
+                                                  meta_data=self.meta_data,
+                                                  as_type=self.as_type)
         assert len(self._dataset[idx]) == 1, "unknown phasics tif file"
         return self._dataset[idx]
 
