@@ -119,6 +119,20 @@ def test_multiple_formats_error():
     shutil.rmtree(path, ignore_errors=True)
 
 
+def test_series_format_holo_kw():
+    """Siedband kwarg should be passed to subformats"""
+    # combine a zip file with a regular hologram file
+    path, _files2 = setup_folder_single_holo()
+    bad_path = datapath / "series_phasics.zip"
+    shutil.copy2(bad_path, path)
+    ds1 = qpformat.load_data(path, holo_kw={"sideband": 1})
+    ds2 = qpformat.load_data(path, holo_kw={"sideband": -1})
+    p1 = ds1.get_qpimage(0)
+    p2 = ds2.get_qpimage(0)
+    assert np.all(p1.pha + p2.pha == 0)
+    shutil.rmtree(path, ignore_errors=True)
+
+
 def test_series_format_ignored():
     """Series file formats are ignored in SeriesFolder"""
     # combine a zip file with a regular hologram file

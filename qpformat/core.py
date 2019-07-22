@@ -36,6 +36,9 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
         is be guessed.
     meta_data: dict
         Meta data (see `qpimage.meta.DATA_KEYS`)
+    holo_kw: dict
+        Keyword arguments for hologram data; See
+        :func:`qpimage.holo.get_field` for valid keyword arguments.
     as_type: str
         Defines the data type that the input data is casted to.
         The default is "float32" which saves memory. If high

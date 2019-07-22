@@ -65,7 +65,8 @@ class SeriesFolder(SeriesData):
             format_class = formats_dict[self._formats[idx]]
             self._dataset[idx] = format_class(path=self._files[idx],
                                               meta_data=self.meta_data,
-                                              as_type=self.as_type)
+                                              as_type=self.as_type,
+                                              holo_kw=self.holo_kw)
         if len(self._dataset[idx]) != 1:
             msg = "Multiple images per file are not supported in the " \
                   + "SeriesFolder file format! Besides the fact that it " \
