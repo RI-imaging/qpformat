@@ -17,9 +17,13 @@ import numpy as np
 from skimage.external import tifffile
 
 # File names ending with these strings are ignored
+# (these are files related to previous analyses)
 ignore_endswith = ['.bmp', '.npy', '.opj', '.png', '.pptx', '.py', '.svg',
-                   '.tif', '.txt', '_RIdist', '_parameter', '_parameter_old',
-                   '_phase', 'n_array', 'n_array_real', '~', ".dat"]
+                   '.tif', '.txt', '_RIdist', '_parameter', '_parameter_2',
+                   '_parameter_3', '_parameter_4', '_parameterdrymass',
+                   '_parameter_old', '_phase', 'n_array', 'n_array_1',
+                   'n_array_drymass1', 'n_array_drymass2', 'n_array_real',
+                   '~', '.dat']
 # uncomment this line to keep background hologram files
 ignore_endswith += ['_bg']
 
