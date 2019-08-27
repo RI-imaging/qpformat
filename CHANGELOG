@@ -1,3 +1,5 @@
+0.10.4
+ - fix: missing keyword argument `idx` in `SingleTifHolo.get_time`
 0.10.3
  - fix: Correctly pass precision to phasics and hologram zip file
    formats

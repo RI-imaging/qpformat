@@ -23,7 +23,7 @@ class SingleTifHolo(SingleData):
             path = fspath(path)
         return tifffile.TiffFile(path)
 
-    def get_time(self):
+    def get_time(self, idx=0):
         """Time of the TIFF file
 
         Currently, only the file modification time is supported.
