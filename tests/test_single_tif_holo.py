@@ -19,7 +19,7 @@ def test_basic():
 def test_identifier():
     path = datapath / "single_holo.tif"
     ds = qpformat.load_data(path, holo_kw={"sideband": 1})
-    assert ds.identifier == "e9d9d"
+    assert ds.identifier == "b65c8"
 
 
 def test_load_data():

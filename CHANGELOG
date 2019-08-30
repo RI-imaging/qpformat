@@ -1,9 +1,9 @@
-0.10.4
- - fix: missing keyword argument `idx` in `SingleTifHolo.get_time`
- - example: add conversion script to hdf5 qpimage data
 0.10.3
- - fix: Correctly pass precision to phasics and hologram zip file
+ - fix: missing keyword argument `idx` in `SingleTifHolo.get_time`
+ - fix: correctly pass precision to phasics and hologram zip file
    formats
+ - fix: add file size to dataset identifier hashing process
+ - example: add conversion script to hdf5 qpimage data
 0.10.2
  - fix: SeriesFolder did not pass on holo_kw when loading hologram data
 0.10.1

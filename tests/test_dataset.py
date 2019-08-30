@@ -53,12 +53,12 @@ def test_identifier():
     path = datapath / "series_phasics.zip"
 
     ds1 = qpformat.load_data(path=path)
-    assert ds1.identifier == "7fc65"
+    assert ds1.identifier == "49bbc"
 
     bg_data = ds1.get_qpimage(0)
     ds2 = qpformat.load_data(path=path, bg_data=bg_data)
-    assert ds2.background_identifier == "26461"
-    assert ds2.identifier == "67213"
+    assert ds2.background_identifier == "bf13f"
+    assert ds2.identifier == "b6d1c"
 
 
 def test_meta():

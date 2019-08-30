@@ -121,6 +121,7 @@ class SeriesData(object):
         else:
             with self.path.open("rb") as fd:
                 data.append(fd.read(50 * 1024))
+            data.append(self.path.stat().st_size)
         data += self._identifier_meta()
         return hash_obj(data)
 
@@ -398,6 +399,8 @@ def obj2bytes(data):
         tohash.append(data)
     elif isinstance(data, np.ndarray):
         tohash.append(data.tobytes())
+    elif isinstance(data, int):
+        tohash.append(bytes(data))
     else:
         msg = "No rule to convert to bytes: {}".format(data)
         raise NotImplementedError(msg)
