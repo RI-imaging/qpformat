@@ -26,7 +26,7 @@ setup(
     install_requires=["h5py>=2.7.0",
                       "nrefocus>=0.1.5",
                       "numpy>=1.12.0",
-                      "qpimage>=0.5.0",
+                      "qpimage>=0.6.1",
                       "scikit-image>=0.11.0",
                       "scipy>=0.18.0",
                       ],
