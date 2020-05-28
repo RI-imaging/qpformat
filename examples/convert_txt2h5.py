@@ -30,7 +30,7 @@ def load_file(path):
     path = pathlib.Path(path)
     data = path.open().readlines()
     # remove comments and empty lines
-    data = [l for l in data if len(l.strip()) and not l.startswith("#")]
+    data = [ll for ll in data if len(ll.strip()) and not ll.startswith("#")]
     # determine data shape
     n = len(data)
     m = len(data[0].strip().split())
