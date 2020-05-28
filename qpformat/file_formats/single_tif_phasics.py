@@ -6,13 +6,18 @@ import xml.etree.ElementTree as ET
 
 import numpy as np
 import qpimage
-from skimage.external import tifffile
+import tifffile
 
 from .dataset import SingleData
 
 
 # baseline clamp intensity normalization for phasics tif files
 INTENSITY_BASELINE_CLAMP = 150
+
+# https://www.loc.gov/preservation/digital/formats/content/tiff_tags.shtml
+TIFF_TAGS = {
+    "MaxSampleValue": 281,
+    }
 
 
 class LoadTifPhasicsError(BaseException):
@@ -52,7 +57,7 @@ class SingleTifPhasics(SingleData):
     @staticmethod
     def _get_meta_data(path, section, name):
         with SingleTifPhasics._get_tif(path) as tf:
-            meta = tf.pages[0].tags["61238"].as_str()
+            meta = tf.pages[0].tags[61238].value
 
         meta = meta.strip("'b")
         meta = meta.replace("\\n", "\n")
@@ -123,7 +128,7 @@ class SingleTifPhasics(SingleData):
             inttags = tf.pages[0].tags
             imin = inttags["61243"].value
             imax = inttags["61242"].value
-            isamp = inttags["max_sample_value"].value
+            isamp = inttags[TIFF_TAGS["MaxSampleValue"]].value
             blc = INTENSITY_BASELINE_CLAMP
             inten = tf.pages[0].asarray() * (imax - imin) / isamp + imin - blc
             inten[inten < 0] = 0
@@ -153,7 +158,7 @@ class SingleTifPhasics(SingleData):
             phatags = tf.pages[phaid].tags
             pmin = phatags["61243"].value
             pmax = phatags["61242"].value
-            psamp = phatags["max_sample_value"].value
+            psamp = phatags[TIFF_TAGS["MaxSampleValue"]].value
             if psamp == 0 or pmin == pmax:
                 # no phase data
                 pha = np.zeros_like(inten)
@@ -183,17 +188,18 @@ class SingleTifPhasics(SingleData):
         valid = False
         try:
             tf = SingleTifPhasics._get_tif(path)
-        except (ValueError, IsADirectoryError):
+        except (ValueError, IsADirectoryError, KeyError,
+                tifffile.tifffile.TiffFileError):
             pass
         else:
-            if (len(tf) == 3 and
-                "61243" in tf.pages[0].tags and
-                "61242" in tf.pages[0].tags and
-                "61238" in tf.pages[0].tags and
-                "61243" in tf.pages[1].tags and
-                "61242" in tf.pages[1].tags and
-                "max_sample_value" in tf.pages[0].tags and
-                (tf.pages[0].tags["61242"].value !=
-                 tf.pages[1].tags["61242"].value)):
+            if (len(tf.pages) == 3 and
+                61243 in tf.pages[0].tags and
+                61242 in tf.pages[0].tags and
+                61238 in tf.pages[0].tags and
+                61243 in tf.pages[1].tags and
+                61242 in tf.pages[1].tags and
+                TIFF_TAGS["MaxSampleValue"] in tf.pages[0].tags and
+                (tf.pages[0].tags[61242].value !=
+                 tf.pages[1].tags[61242].value)):
                 valid = True
         return valid

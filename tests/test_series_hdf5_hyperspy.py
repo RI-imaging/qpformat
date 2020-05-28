@@ -5,7 +5,7 @@ import shutil
 import warnings
 
 import h5py
-from skimage.external import tifffile
+import tifffile
 
 import qpformat
 from qpformat.file_formats import WrongFileFormatError

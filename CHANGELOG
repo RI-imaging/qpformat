@@ -1,3 +1,7 @@
+0.10.5
+ - setup: bump qpimage from 0.6.1 to 0.6.2
+ - setup: change dependency of scikit-image to tifffile 2020.5.25
+ - ref: make code work with latest version of tifffile
 0.10.4
  - setup: bump qpimage from 0.5.0 to 0.6.1
 0.10.3

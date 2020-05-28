@@ -4,7 +4,7 @@ import pathlib
 
 import numpy as np
 import qpimage
-from skimage.external import tifffile
+import tifffile
 
 from .dataset import SingleData
 
@@ -59,9 +59,10 @@ class SingleTifHolo(SingleData):
         valid = False
         try:
             tf = SingleTifHolo._get_tif(path)
-        except (ValueError, IsADirectoryError):
+        except (ValueError, IsADirectoryError, KeyError,
+                tifffile.tifffile.TiffFileError):
             pass
         else:
-            if len(tf) == 1:
+            if len(tf.pages) == 1:
                 valid = True
         return valid
