@@ -35,7 +35,7 @@ Testing
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/qpformat.svg
    :target: https://pypi.python.org/pypi/qpformat
 .. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/qpformat.svg?label=tests
-   :target: https://travis-ci.org/RI-imaging/qpformat
+   :target: https://travis-ci.com/RI-imaging/qpformat
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpformat/master.svg
    :target: https://codecov.io/gh/RI-imaging/qpformat
 .. |Docs Status| image:: https://readthedocs.org/projects/qpformat/badge/?version=latest
