@@ -60,7 +60,8 @@ def test_meta():
 
     ds = qpformat.load_data(path=tf, meta_data={"time": 47})
     assert ds.get_time() == 47
-    assert tf in ds.get_name()
+    # use `.name` because of short-hand paths on Windows
+    assert pathlib.Path(tf).name in ds.get_name()
 
 
 def test_meta_none():
