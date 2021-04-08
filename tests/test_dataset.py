@@ -60,14 +60,10 @@ def test_meta():
 
     ds = qpformat.load_data(path=tf, meta_data={"time": 47})
     assert ds.get_time() == 47
-    for pp in ds.get_name():
-        if pp.samefile(tf):
-            break
-    else:
-        assert False, "{} not in {}".format(tf, ds.get_name())
+    assert tf in ds.get_name()
 
 
-def test_meta_None():
+def test_meta_none():
     data = np.ones((20, 20), dtype=float)
     tf = tempfile.mktemp(prefix="qpformat_test_", suffix=".npy")
     np.save(tf, data)
