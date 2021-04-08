@@ -34,7 +34,7 @@ def test_basic():
     assert ds.storage_type == "hologram"
     assert len(ds) == num
     assert ds.is_series
-    assert ds.path == path
+    assert ds.path.same_file(path)
     assert "SeriesZipTifHolo" in ds.__repr__()
 
     try:

@@ -68,7 +68,11 @@ def test_meta():
 
     ds = qpformat.load_data(path=tf, meta_data={"time": 47})
     assert ds.get_time() == 47
-    assert tf in ds.get_name()
+    for pp in ds.get_name():
+        if pp.same_file(tf):
+            break
+    else:
+        assert False, "{} not in {}".format(tf, ds.get_name())
 
     # cleanup
     try:
