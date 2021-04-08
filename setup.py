@@ -10,7 +10,7 @@ name = 'qpformat'
 year = "2017"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-from _version import version
+from _version import version  # noqa: E402
 
 setup(
     name=name,
@@ -40,7 +40,7 @@ setup(
               "digital holographic microscopy",
               "quantitative phase imaging",
               ],
-    classifiers= [
+    classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Intended Audience :: Science/Research'

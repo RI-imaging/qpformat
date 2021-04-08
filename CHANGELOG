@@ -1,5 +1,7 @@
 0.10.7
  - ci: migrate to GHA
+ - docs: fix sphinx build
+ - setup: setup.py test is deprecated
 0.10.6
  - maintenance release
 0.10.5
