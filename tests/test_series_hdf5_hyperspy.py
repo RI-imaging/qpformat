@@ -1,7 +1,6 @@
 import os
 import pathlib
 import tempfile
-import shutil
 import warnings
 
 import h5py
