@@ -25,7 +25,7 @@ class Base(Directive):
     optional_arguments = 0
 
     def generate_rst(self):
-        pass        
+        pass
 
     def run(self):
         rst = self.generate_rst()
@@ -48,7 +48,7 @@ class AutodocFormats(Base):
         for key in sorted(formats_dict.keys()):
             # get any public methods that are not in the base class
             cdir = [a for a in dir(formats_dict[key]) if not a.startswith("_")]
-            cdir = [a for a in cdir if not a in refdir]
+            cdir = [a for a in cdir if a not in refdir]
             # get important public attributes
             udcand = ["is_series", "storage_type"]
             udir = [a for a in udcand if hasattr(formats_dict[key], a)]
@@ -86,9 +86,11 @@ class Formats(Base):
             datatype = cl.storage_type
             if not isinstance(datatype, str):
                 datatype = "*multiple*"
-            rst.append("    :class:`{key}<qpformat.file_formats.{key}>`\t {type}\t {doc}".format(
-                key=key, type=datatype, doc=cl.__doc__.split("\n", 1)[0]))
-        
+            rst.append(
+                "    :class:`{key}<qpformat.file_formats.{key}>"
+                "`\t {type}\t {doc}".format(
+                    key=key, type=datatype, doc=cl.__doc__.split("\n", 1)[0]))
+
         rst.append("")
 
         return rst
