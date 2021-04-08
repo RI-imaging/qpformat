@@ -42,12 +42,6 @@ def test_change_wavelength():
 
     assert ds1.identifier != ds2.identifier, "should be different identifiers"
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_identifier():
     path = datapath / "series_phasics.zip"
@@ -69,16 +63,10 @@ def test_meta():
     ds = qpformat.load_data(path=tf, meta_data={"time": 47})
     assert ds.get_time() == 47
     for pp in ds.get_name():
-        if pp.same_file(tf):
+        if pp.samefile(tf):
             break
     else:
         assert False, "{} not in {}".format(tf, ds.get_name())
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_meta_None():
@@ -93,12 +81,6 @@ def test_meta_None():
     assert "time" in ds.meta_data
     assert "medium index" not in ds.meta_data
     assert "wavelength" not in ds.meta_data
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_repr():
@@ -115,11 +97,6 @@ def test_repr():
                                                  "pixel size": 15})
     assert "λ=1" in ds2.__repr__()
     assert "1px=15" in ds2.__repr__()
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_save():
@@ -145,9 +122,6 @@ def test_save():
     assert ds.identifier is not None
     assert len(ds) == len(ds2)
     assert np.all(ds.get_qpimage(0).pha == ds2.get_qpimage(0).pha)
-
-    shutil.rmtree(data_dir, ignore_errors=True)
-    shutil.rmtree(save_dir, ignore_errors=True)
 
 
 def test_save_one_bg():
@@ -176,9 +150,6 @@ def test_save_one_bg():
     assert np.all(ds2.get_qpimage(0).pha == 0)
     assert not np.all(ds2.get_qpimage(1).pha == 0)
 
-    shutil.rmtree(data_dir, ignore_errors=True)
-    shutil.rmtree(save_dir, ignore_errors=True)
-
 
 def test_save_identifier():
     """Test that identifier is saved only when full series was saved"""
@@ -206,9 +177,6 @@ def test_save_identifier():
         assert qps1.identifier is not None
     with qpimage.QPSeries(h5file=save_path2) as qps2:
         assert qps2.identifier is None
-
-    shutil.rmtree(data_dir, ignore_errors=True)
-    shutil.rmtree(save_dir, ignore_errors=True)
 
 
 def test_set_bg():
@@ -249,13 +217,6 @@ def test_set_bg():
     else:
         assert False, "ndarray cannot be used to set bg data"
 
-    # cleanup
-    try:
-        os.remove(f_data)
-        os.remove(f_bg_data)
-    except OSError:
-        pass
-
 
 def test_set_bg_series():
     data_dir = tempfile.mkdtemp(prefix="qpformat_test_data_")
@@ -288,9 +249,6 @@ def test_set_bg_series():
     assert np.allclose(ds1.get_qpimage(1).pha, data2 - bg_data2)
     assert not np.allclose(ds1.get_qpimage(0).pha, data2 - bg_data2)
 
-    shutil.rmtree(data_dir, ignore_errors=True)
-    shutil.rmtree(bg_data_dir, ignore_errors=True)
-
 
 def test_set_bg_qpimage():
     data = np.ones((20, 20), dtype=float)
@@ -305,12 +263,6 @@ def test_set_bg_qpimage():
     # set bg with dataset
     ds1 = qpformat.core.load_data(path=f_data, bg_data=qpi)
     assert np.allclose(ds1.get_qpimage().pha, data - bg_data)
-
-    # cleanup
-    try:
-        os.remove(f_data)
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ datapath = pathlib.Path(__file__).parent / "data"
 
 def assert_path_in_list(path, path_list):
     for ff in path_list:
-        if path.same_file(ff):
+        if path.samefile(ff):
             break
     else:
         assert False, "{} not in {}".format(path, path_list)
@@ -78,7 +78,6 @@ def test_load_data():
     # format should be right
     assert ds.verify(ds.path)
     assert ds.__class__.__name__ == "SeriesFolder"
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_multiple_formats_phasics_tif():
@@ -92,7 +91,6 @@ def test_multiple_formats_phasics_tif():
         assert_path_in_list(ff, files)
     assert ds.verify(ds.path)
     assert ds.__class__.__name__ == "SeriesFolder"
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_multiple_formats_phasics_tif_ignore_h5():
@@ -105,7 +103,6 @@ def test_multiple_formats_phasics_tif_ignore_h5():
     ds = qpformat.load_data(path)
     for ff in ds.files:
         assert_path_in_list(ff, files1)
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_multiple_formats_error():
@@ -124,7 +121,6 @@ def test_multiple_formats_error():
         pass
     else:
         assert False, "multiple formats should not be supported"
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_series_format_holo_kw():
@@ -138,7 +134,6 @@ def test_series_format_holo_kw():
     p1 = ds1.get_qpimage(0)
     p2 = ds2.get_qpimage(0)
     assert np.all(p1.pha + p2.pha == 0)
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_series_format_ignored():
@@ -150,7 +145,6 @@ def test_series_format_ignored():
     ds = qpformat.load_data(path)
     assert len(ds) == 2
     assert bad_path not in ds.files
-    shutil.rmtree(path, ignore_errors=True)
 
 
 if __name__ == "__main__":

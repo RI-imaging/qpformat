@@ -31,12 +31,6 @@ def test_identifier():
     assert ds.get_identifier(1) != "an important string"
     assert ds.identifier in ds.get_identifier(0)
 
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
-
 
 def test_load_data():
     path = datapath / "single_qpimage.h5"
@@ -53,7 +47,7 @@ def test_load_data():
 
     ds = qpformat.load_data(tf)
     assert len(ds) == 2
-    assert ds.path.same_file(pathlib.Path(tf))
+    assert ds.path.samefile(pathlib.Path(tf))
     assert np.isnan(ds.get_time(1))
     assert "SeriesHdf5Qpimage" in ds.__repr__()
     qpd = ds.get_qpimage(1)
@@ -62,12 +56,6 @@ def test_load_data():
     assert qpd.shape == qpi1.shape
     assert np.allclose(qpd.amp, qpi1.amp)
     assert np.allclose(qpd.pha, qpi1.pha)
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_meta_extraction():
@@ -86,12 +74,6 @@ def test_meta_extraction():
 
     assert ds.meta_data["wavelength"] == 111e-9
     assert ds.meta_data["pixel size"] == .12
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_meta_override():
@@ -122,12 +104,6 @@ def test_meta_override():
     assert qpi_ds["wavelength"] == wl
     assert qpi_ds["pixel size"] == px
 
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
-
 
 def test_returned_identifier():
     path = datapath / "single_qpimage.h5"
@@ -146,12 +122,6 @@ def test_returned_identifier():
     qpiraw = ds.get_qpimage_raw(0)
     assert "identifier" in qpiraw
 
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
-
 
 def test_subjoined_load_data():
     path = datapath / "single_qpimage.h5"
@@ -168,7 +138,7 @@ def test_subjoined_load_data():
 
     ds = qpformat.load_data(tf)
     assert len(ds) == 2
-    assert ds.path.same_file(pathlib.Path(tf))
+    assert ds.path.samefile(pathlib.Path(tf))
     assert np.isnan(ds.get_time(1))
     assert "SeriesHdf5QpimageSubjoined" in ds.__repr__()
     qpd = ds.get_qpimage(1)
@@ -177,12 +147,6 @@ def test_subjoined_load_data():
     assert qpd.shape == qpi1.shape
     assert np.allclose(qpd.amp, qpi1.amp)
     assert np.allclose(qpd.pha, qpi1.pha)
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_subjoined_meta_extraction():
@@ -202,12 +166,6 @@ def test_subjoined_meta_extraction():
 
     assert ds.meta_data["wavelength"] == 111e-9
     assert ds.meta_data["pixel size"] == .12
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

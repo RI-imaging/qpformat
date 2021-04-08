@@ -15,13 +15,8 @@ def test_load_phase():
 
     ds = qpformat.load_data(tf, as_type="float64")
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
-    assert ds.path.same_file(tf)
+    assert ds.path.samefile(tf)
     assert "SingleNpyNumpy" in ds.__repr__()
-
-    try:
-        tf.unlink()
-    except OSError:
-        pass
 
 
 def test_load_field():
@@ -38,11 +33,6 @@ def test_load_field():
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
     assert np.allclose(ds.get_qpimage().amp, amplitude, atol=1e-15, rtol=0)
 
-    try:
-        tf.unlink()
-    except OSError:
-        pass
-
 
 def test_returned_identifier():
     # generate test data
@@ -56,11 +46,6 @@ def test_returned_identifier():
     assert "identifier" in qpi
     qpiraw = ds.get_qpimage_raw(0)
     assert "identifier" in qpiraw
-
-    try:
-        tf.unlink()
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

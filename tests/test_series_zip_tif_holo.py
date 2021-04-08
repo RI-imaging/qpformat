@@ -34,13 +34,8 @@ def test_basic():
     assert ds.storage_type == "hologram"
     assert len(ds) == num
     assert ds.is_series
-    assert ds.path.same_file(path)
+    assert ds.path.samefile(path)
     assert "SeriesZipTifHolo" in ds.__repr__()
-
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_time():
@@ -49,11 +44,6 @@ def test_time():
     ds.get_time(0)
     # this is the creation date of "single_holo.tif"
     assert ds.get_time(0) == DATATIME - UTCOFFSET
-
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_load_data():
@@ -64,11 +54,6 @@ def test_load_data():
     qpi = ds.get_qpimage(0)
     assert qpi.shape == (238, 267)
 
-    try:
-        path.unlink()
-    except OSError:
-        pass
-
 
 def test_returned_identifier():
     path = setup_test_zip()
@@ -77,11 +62,6 @@ def test_returned_identifier():
     assert "identifier" in qpi
     qpiraw = ds.get_qpimage_raw(0)
     assert "identifier" in qpiraw
-
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

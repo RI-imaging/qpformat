@@ -47,8 +47,6 @@ def test_basic():
     assert len(ds) == 1
     assert qpi["pixel size"] == 0.107e-6
 
-    shutil.rmtree(path=tdir, ignore_errors=True)
-
 
 def test_returned_identifier():
     tdir, hspyf = make_hyperspy()
@@ -57,7 +55,6 @@ def test_returned_identifier():
     assert "identifier" in qpi
     qpiraw = ds.get_qpimage_raw(0)
     assert "identifier" in qpiraw
-    shutil.rmtree(path=tdir, ignore_errors=True)
 
 
 def test_wrong_format():
@@ -89,8 +86,6 @@ def test_wrong_signal_type():
         assert len(w) == 1
         assert issubclass(w[-1].category, WrongSignalTypeWarnging)
         assert "unknown" in str(w[-1].message)
-
-    shutil.rmtree(path=tdir, ignore_errors=True)
 
 
 if __name__ == "__main__":

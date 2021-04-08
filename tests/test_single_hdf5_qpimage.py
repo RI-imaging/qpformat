@@ -28,12 +28,6 @@ def test_identifier():
     assert ds1.identifier == ds1.get_identifier()
     assert ds2.identifier == ds2.get_identifier()
 
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
-
 
 def test_load_data():
     path = datapath / "single_qpimage.h5"
@@ -66,12 +60,6 @@ def test_meta_extraction():
     assert ds.meta_data["pixel size"] == .1e-6
     assert ds.meta_data["medium index"] == 1.336
 
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
-
 
 def test_meta_override():
     path = datapath / "single_qpimage.h5"
@@ -90,12 +78,6 @@ def test_meta_override():
     qpi_ds = ds.get_qpimage(0)
     assert qpi_ds["wavelength"] == wl
     assert qpi_ds["pixel size"] == px
-
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_returned_identifier():

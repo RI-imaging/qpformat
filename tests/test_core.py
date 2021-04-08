@@ -15,11 +15,6 @@ def test_wrong_file_format():
         pass
     else:
         assert False, "Unknown file format was loaded!"
-    # cleanup
-    try:
-        os.remove(tf)
-    except OSError:
-        pass
 
 
 def test_load_with_bg():
@@ -38,12 +33,6 @@ def test_load_with_bg():
                                  as_type="float64")
     qpi = ds.get_qpimage()
     assert np.allclose(qpi.pha, data - bg_data, atol=1e-15, rtol=0)
-    # cleanup
-    try:
-        os.remove(f_data)
-        os.remove(f_bg_data)
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

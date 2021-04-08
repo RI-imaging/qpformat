@@ -12,7 +12,6 @@ def test_good_folder():
     shutil.copy(path / "single_qpimage.h5", dpath / "2.h5")
     ds = qpformat.load_data(dpath)
     assert ds.storage_type == "phase,amplitude"
-    shutil.rmtree(dpath, ignore_errors=True)
 
 
 def test_phasics():
