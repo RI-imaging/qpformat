@@ -106,3 +106,5 @@ _version_save.py
 examples/*.tif
 examples/*.hdf5
 .pytest_cache
+
+.idea
