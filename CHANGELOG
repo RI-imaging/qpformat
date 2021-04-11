@@ -1,3 +1,6 @@
+0.10.8
+ - fix: wavelength could not be extracted for some phasics files
+   (section name "analyse data" vs "analyse data v1")
 0.10.7
  - ci: migrate to GHA
  - docs: fix sphinx build

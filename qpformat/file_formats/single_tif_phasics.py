@@ -58,7 +58,6 @@ class SingleTifPhasics(SingleData):
     def _get_meta_data(path, section, name):
         with SingleTifPhasics._get_tif(path) as tf:
             meta = tf.pages[0].tags[61238].value
-
         meta = meta.strip("'b")
         meta = meta.replace("\\n", "\n")
         meta = meta.replace("\\r", "")
@@ -88,11 +87,13 @@ class SingleTifPhasics(SingleData):
         return tifffile.TiffFile(path)
 
     def _get_wavelength(self, path):
-        wl_str = SingleTifPhasics._get_meta_data(path=path,
-                                                 section="analyse data",
-                                                 name="lambda(nm)")
-        if wl_str:
-            wavelength = float(wl_str) * 1e-9
+        for section in ["analyse data", "analyse data v1"]:
+            wl_str = SingleTifPhasics._get_meta_data(path=path,
+                                                     section=section,
+                                                     name="lambda(nm)")
+            if wl_str:
+                wavelength = float(wl_str) * 1e-9
+                break
         else:
             wavelength = np.nan
         return wavelength
