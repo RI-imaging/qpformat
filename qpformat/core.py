@@ -23,7 +23,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
 
     Parameters
     ----------
-    path: str
+    path: str or pathlib.Path
         Path to experimental data file or folder
     fmt: str
         The file format to use (see `file_formats.formats`).
