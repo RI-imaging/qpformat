@@ -107,11 +107,12 @@ class SingleTifPhasics(SingleData):
                                                   section="acquisition info",
                                                   name="date & heure")
         if timestr is not None:
-            timestr = timestr.split(".")
+            timestr = timestr.replace(",", ".")
+            timestrf, timeus = timestr.split(".")
             # '2016-04-29_17h31m35s.00827'
-            structtime = time.strptime(timestr[0],
+            structtime = time.strptime(timestrf,
                                        "%Y-%m-%d_%Hh%Mm%Ss")
-            fracsec = float(timestr[1]) * 1e-5
+            fracsec = float(timeus) * 1e-5
             # use calendar, because we need UTC
             thetime = calendar.timegm(structtime) + fracsec
         else:

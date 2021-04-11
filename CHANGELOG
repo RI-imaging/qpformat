@@ -1,6 +1,8 @@
 0.10.8
  - fix: wavelength could not be extracted for some phasics files
    (section name "analyse data" vs "analyse data v1")
+ - fix: time could not be parsed due to comma instead of dot
+   in phasics meta data
 0.10.7
  - ci: migrate to GHA
  - docs: fix sphinx build
