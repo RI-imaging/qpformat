@@ -24,11 +24,9 @@ setup(
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["h5py>=2.7.0",
-                      "nrefocus>=0.1.5",
                       "numpy>=1.12.0",
                       "qpimage>=0.6.2",
                       "tifffile>=2020.5.25",
-                      "scipy>=0.18.0",
                       ],
     python_requires='>=3.6, <4',
     entry_points={
