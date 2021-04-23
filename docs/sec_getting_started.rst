@@ -6,13 +6,8 @@ Getting started
 Installing qpformat
 ===================
 
-qpformat is written in pure Python and supports Python version 3.5
-and higher. qpformat depends on several other scientific Python packages,
-including:
-
- - `numpy <https://docs.scipy.org/doc/numpy/>`_,
- - `scipy <https://docs.scipy.org/doc/scipy/reference/>`_,
- - `qpimage <https://qpimage.readthedocs.io/en/stable/>`_ (phase data manipulation),
+qpformat is written in pure Python and supports Python version 3.6
+and higher.
 
 To install qpformat, use one of the following methods
 (package dependencies will be installed automatically):
@@ -20,8 +15,7 @@ To install qpformat, use one of the following methods
 * from `PyPI <https://pypi.python.org/pypi/qpformat>`_:
     ``pip install qpformat``
 * from `sources <https://github.com/RI-imaging/qpformat>`_:
-    ``pip install -e .`` or
-    ``python setup.py install``
+    ``pip install -e .``
 
 
 User API
