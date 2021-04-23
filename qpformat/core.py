@@ -18,7 +18,7 @@ def guess_format(path):
 
 
 def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
-              meta_data={}, holo_kw={}, as_type="float32"):
+              meta_data=None, holo_kw=None, as_type="float32"):
     """Load experimental data
 
     Parameters
@@ -28,7 +28,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     fmt: str
         The file format to use (see `file_formats.formats`).
         If set to `None`, the file format is guessed.
-    bg_data: str
+    bg_data: str or pathlib.Path
         Path to background data file or `qpimage.QPImage`
     bg_fmt: str
         The file format to use (see `file_formats.formats`)
@@ -51,6 +51,10 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     dataobj: SeriesData or SingleData
         Object that gives lazy access to the experimental data.
     """
+    if holo_kw is None:
+        holo_kw = {}
+    if meta_data is None:
+        meta_data = {}
     path = pathlib.Path(path).resolve()
     # sanity checks
     for kk in meta_data:
