@@ -43,7 +43,7 @@ class SingleTifHolo(SingleData):
         with SingleTifHolo._get_tif(self.path) as tf:
             holo = tf.pages[0].asarray()
         meta_data = copy.copy(self.meta_data)
-        qpi = qpimage.QPImage(data=(holo),
+        qpi = qpimage.QPImage(data=holo,
                               which_data="hologram",
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
