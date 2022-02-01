@@ -25,7 +25,7 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["h5py>=2.7.0",
                       "numpy>=1.12.0",
-                      "qpimage>=0.6.2",
+                      "qpimage>=0.7.4",
                       "tifffile>=2020.5.25",
                       ],
     python_requires='>=3.6, <4',
