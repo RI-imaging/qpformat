@@ -62,13 +62,12 @@ class SingleTifPhasics(SingleData):
         meta = meta.replace("\\n", "\n")
         meta = meta.replace("\\r", "")
         root = ET.fromstring("<root>\n" + meta + "</root>")
-        for phadata in root.getchildren():
-            for cluster in phadata.getchildren():
-                sec = cluster.getchildren()[0].text
-                for child in cluster.getchildren():
-                    gchild = child.getchildren()
-                    if len(gchild) == 2:
-                        nm, val = gchild
+        for phadata in root:
+            for cluster in phadata:
+                sec = cluster[0].text
+                for child in cluster:
+                    if len(child) == 2:
+                        nm, val = child
                         # print(sec, nm.text, val.text)
                         if (sec.lower() == section and
                                 nm.text.lower() == name):

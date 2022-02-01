@@ -1,5 +1,6 @@
 0.11.0
  - feat: implement FDTD/Meep reader for data from ODTbrain paper
+ - fix: remove call to deprecated Element.getchildren
  - setup: bump qpimage from 0.6.2 to 0.7.4 (new metadata keys)
 0.10.9
  - ref: minor code cleanup
