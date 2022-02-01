@@ -29,8 +29,12 @@ class SeriesData(object):
     __meta__ = abc.ABCMeta
     is_series = True
 
-    def __init__(self, path, meta_data={}, holo_kw={}, as_type="float32"):
+    def __init__(self, path, meta_data=None, holo_kw=None, as_type="float32"):
         #: Enforced dtype via keyword arguments
+        if holo_kw is None:
+            holo_kw = {}
+        if meta_data is None:
+            meta_data = {}
         self.as_type = as_type
         if isinstance(path, io.IOBase):
             # io.IOBase
@@ -148,6 +152,17 @@ class SeriesData(object):
                               self.background_identifier])
         return idsum
 
+    @property
+    @functools.lru_cache()
+    def shape(self):
+        """Return dataset shape (lenght, image0, image1).
+
+        This should be overridden by the subclass, because by default
+        the first qpimage is used for that.
+        """
+        qpi0 = self.get_qpimage_raw(0)
+        return len(self), qpi0.shape[0], qpi0.shape[1]
+
     def get_identifier(self, idx):
         """Return an identifier for the data at index `idx`
 
@@ -211,7 +226,7 @@ class SeriesData(object):
 
     def saveh5(self, h5file, qpi_slice=None, series_slice=None,
                time_interval=None, count=None, max_count=None):
-        """Save the data set as an hdf5 file (qpimage.QPSeries format)
+        """Save the data set as an HDF5 file (qpimage.QPSeries format)
 
         Parameters
         ----------

@@ -4,6 +4,7 @@ import pathlib
 
 from .dataset import SeriesData, hash_obj
 from .dataset import SingleData  # noqa:F401 (user convenience)
+from .series_hdf5_generic import SeriesHDF5SinogramMeep
 from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
 from .series_hdf5_qpimage import SeriesHdf5Qpimage, SeriesHdf5QpimageSubjoined
 from .series_zip_tif_holo import SeriesZipTifHolo
@@ -193,17 +194,19 @@ class SeriesFolder(SeriesData):
 
 
 # the order is important
-formats = [SeriesFolder,
-           SingleHdf5Qpimage,
-           SingleTifPhasics,
-           SingleTifHolo,
-           SingleNpyNumpy,
-           SeriesHdf5HyperSpy,
-           SeriesHdf5Qpimage,
-           SeriesHdf5QpimageSubjoined,
-           SeriesZipTifPhasics,
-           SeriesZipTifHolo,  # after phasics, b/c phasics has extra keywords
-           ]
+formats = [
+    SeriesFolder,
+    SingleHdf5Qpimage,
+    SingleTifPhasics,
+    SingleTifHolo,
+    SingleNpyNumpy,
+    SeriesHDF5SinogramMeep,
+    SeriesHdf5HyperSpy,
+    SeriesHdf5Qpimage,
+    SeriesHdf5QpimageSubjoined,
+    SeriesZipTifPhasics,
+    SeriesZipTifHolo,  # after phasics, b/c phasics has extra keywords
+    ]
 
 # convenience dictionary
 formats_dict = {}
