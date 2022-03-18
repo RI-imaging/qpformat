@@ -10,7 +10,7 @@ def test_basic():
     path = datapath / "single_holo.tif"
     ds = qpformat.load_data(path)
     # basic tests
-    assert ds.storage_type == "hologram"
+    assert ds.storage_type == "raw-oah"
     assert not ds.is_series
     assert ds.path == path.resolve()
     assert "SingleTifHolo" in ds.__repr__()

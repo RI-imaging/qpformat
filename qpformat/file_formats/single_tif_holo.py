@@ -11,7 +11,7 @@ from .dataset import SingleData
 
 class SingleTifHolo(SingleData):
     """Off-axis hologram image (TIFF format)"""
-    storage_type = "hologram"
+    storage_type = "raw-oah"
 
     @staticmethod
     def _get_tif(path):
@@ -44,7 +44,7 @@ class SingleTifHolo(SingleData):
             holo = tf.pages[0].asarray()
         meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=holo,
-                              which_data="hologram",
+                              which_data="raw-oah",
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
                               h5dtype=self.as_type)

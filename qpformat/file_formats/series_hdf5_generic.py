@@ -33,8 +33,6 @@ class SeriesHDF5SinogramGeneric(SeriesData):
             indices = sorted(h5["sinogram"].keys(), key=lambda x: int(x))
 
         if not indices:
-            # if this error is raised, the signal_type is probably not
-            # set to "hologram".
             raise NoSinogramDataFoundError(
                 f"No sinogram data found in '{self.path}'!")
         return indices

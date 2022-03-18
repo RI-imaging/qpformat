@@ -31,7 +31,7 @@ def test_basic():
     path = setup_test_zip(num)
     ds = qpformat.load_data(path)
     # basic tests
-    assert ds.storage_type == "hologram"
+    assert ds.storage_type == "raw-oah"
     assert len(ds) == num
     assert ds.is_series
     assert ds.path.samefile(path)

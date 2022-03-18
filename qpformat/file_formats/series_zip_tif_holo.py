@@ -15,7 +15,7 @@ class SeriesZipTifHolo(SeriesData):
     The data are stored as multiple TIFF files
     (:class:`qpformat.file_formats.SingleTifHolo`) in a zip file.
     """
-    storage_type = "hologram"
+    storage_type = "raw-oah"
 
     def __init__(self, *args, **kwargs):
         super(SeriesZipTifHolo, self).__init__(*args, **kwargs)

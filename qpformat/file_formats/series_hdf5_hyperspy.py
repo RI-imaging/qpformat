@@ -21,13 +21,13 @@ class SeriesHdf5HyperSpy(SeriesData):
     HyperSpy has its :ref:`own implementation
     <hyperspy:electron-holography-label>` to read this file format.
     """
-    storage_type = "hologram"
+    storage_type = "raw-oah"
 
     def __len__(self):
         return len(self._get_experiments())
 
     def _check_experiment(self, name):
-        """Check the signal type of the experiment
+        """Check the signal type "hologram" of the experiment
 
         Returns
         -------
@@ -89,7 +89,7 @@ class SeriesHdf5HyperSpy(SeriesData):
         meta_data.update(self.meta_data)
 
         qpi = qpimage.QPImage(data=data,
-                              which_data="hologram",
+                              which_data="raw-oah",
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
                               h5dtype=self.as_type)

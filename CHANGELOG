@@ -1,3 +1,5 @@
+0.11.1
+ - setup: migrate from qpimage 0.7.4 to 0.7.6
 0.11.0
  - feat: implement FDTD/Meep reader for data from ODTbrain paper
  - fix: remove call to deprecated Element.getchildren
