@@ -1,5 +1,8 @@
-0.11.1
- - setup: migrate from qpimage 0.7.4 to 0.7.6
+0.12.0
+ - feat: implement reader for new HDF5-based raw off-axis hologram
+   file format
+ - fix: support optional meta data keys from qpimage
+ - setup: migrate from qpimage 0.7.4 to 0.7.7
 0.11.0
  - feat: implement FDTD/Meep reader for data from ODTbrain paper
  - fix: remove call to deprecated Element.getchildren

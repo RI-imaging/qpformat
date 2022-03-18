@@ -35,7 +35,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
         for the background. If set to `None`, the file format
         is be guessed.
     meta_data: dict
-        Meta data (see `qpimage.meta.DATA_KEYS`)
+        Meta data (see `qpimage.meta.META_KEYS`)
     holo_kw: dict
         Keyword arguments for hologram data; See
         :func:`qpimage.holo.get_field` for valid keyword arguments.
@@ -58,7 +58,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     path = pathlib.Path(path).resolve()
     # sanity checks
     for kk in meta_data:
-        if kk not in qpimage.meta.DATA_KEYS:
+        if kk not in qpimage.meta.META_KEYS:
             msg = "Meta data key not allowed: {}".format(kk)
             raise ValueError(msg)
 

@@ -17,7 +17,7 @@ class SingleHdf5Qpimage(SingleData):
         # update meta data
         with h5py.File(self.path, mode="r") as h5:
             attrs = dict(h5.attrs)
-        for key in qpimage.meta.DATA_KEYS:
+        for key in qpimage.meta.META_KEYS:
             if (key not in self.meta_data
                     and key in attrs):
                 self.meta_data[key] = attrs[key]
@@ -71,4 +71,5 @@ class SingleHdf5Qpimage(SingleData):
                 "bg_data" in h5["phase"] and
                     "bg_data" in h5["amplitude"]):
                 valid = True
+            h5.close()
         return valid

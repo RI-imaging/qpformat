@@ -21,7 +21,7 @@ class SeriesHdf5Qpimage(SeriesData):
         # update meta data
         with h5py.File(self.path, mode="r") as h5:
             attrs = dict(h5["qpi_0"].attrs)
-        for key in qpimage.meta.DATA_KEYS:
+        for key in qpimage.meta.META_KEYS:
             if (key not in self.meta_data
                     and key not in ["time"]  # do not override time
                     and key in attrs):
@@ -86,7 +86,7 @@ class SeriesHdf5QpimageSubjoined(SeriesHdf5Qpimage):
         # update meta data
         with h5py.File(self.path, mode="r") as h5:
             attrs = dict(h5["qpseries/qpi_0"].attrs)
-        for key in qpimage.meta.DATA_KEYS:
+        for key in qpimage.meta.META_KEYS:
             if (key not in self.meta_data
                     and key in attrs):
                 self.meta_data[key] = attrs[key]

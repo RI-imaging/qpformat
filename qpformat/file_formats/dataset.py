@@ -45,9 +45,9 @@ class SeriesData(object):
 
         # check for valid metadata keys
         for key in meta_data:
-            if key not in qpimage.meta.DATA_KEYS:
+            if key not in qpimage.meta.META_KEYS:
                 msg = "Invalid metadata key `{}`!".format(key) \
-                      + "Valid keys: {}".format(sorted(qpimage.meta.DATA_KEYS))
+                      + "Valid keys: {}".format(sorted(qpimage.meta.META_KEYS))
                 raise ValueError(msg)
         #: Enforced metadata via keyword arguments
         self.meta_data = copy.copy(meta_data)
@@ -58,27 +58,30 @@ class SeriesData(object):
         #: Unique string that identifies the background data that
         #: was set using `set_bg`.
         self.background_identifier = None
+        #: the file format name
+        self.format = self.__class__.__name__
 
     def __repr__(self):
-        rep = "QPFormat '{}'".format(self.__class__.__name__) \
-              + ", {} image(s)".format(len(self)) \
-              + "\nfile: {}".format(self.path)
+        rep = f"QPFormat '{self.format}'" \
+              + f", {len(self)} image(s)" \
+              + f"at {hex(id(self))}" \
+              + "\nfile: {self.path}"
 
         meta = []
         if "wavelength" in self.meta_data:
             wl = self.meta_data["wavelength"]
-            if wl < 2000e-9 and wl > 10e-9:
+            if 2000e-9 > wl > 10e-9:
                 # convenience for light microscopy
-                meta.append("λ={:.1f}nm".format(wl * 1e9))
+                meta.append(f"λ={wl * 1e9:.1f}nm")
             else:
-                meta.append("λ={:.2e}m".format(wl))
+                meta.append(f"λ={wl:.2e}m")
         if "pixel size" in self.meta_data:
             pxm = self.meta_data["pixel size"]
-            if pxm < 1e-3 and pxm > 1e-8:
+            if 1e-3 > pxm > 1e-8:
                 # convenience for light microscopy
-                meta.append("1px={}µm".format(pxm * 1e6))
+                meta.append(f"1px={pxm * 1e6}µm")
             else:
-                meta.append("1px={}m".format(pxm))
+                meta.append(f"1px={pxm}m")
         rep = ", ".join([rep] + meta)
         return rep
 
