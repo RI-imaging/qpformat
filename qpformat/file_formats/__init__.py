@@ -32,6 +32,7 @@ class WrongFileFormatError(BadFileFormatError):
 class SeriesFolder(SeriesData):
     """Folder-based wrapper file format"""
     # storage_type is implemented as a property
+    priority = -3  # higher than zip file format (issues on Windows)
 
     def __init__(self, *args, **kwargs):
         super(SeriesFolder, self).__init__(*args, **kwargs)
