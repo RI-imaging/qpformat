@@ -111,4 +111,5 @@ class SeriesHdf5HyperSpy(SeriesData):
                 h5.attrs["file_format"].lower() == "hyperspy" and
                     "Experiments" in h5):
                 valid = True
+            h5.close()
         return valid

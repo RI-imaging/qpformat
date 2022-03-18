@@ -1,6 +1,7 @@
 import copy
-import h5py
 
+import h5py
+import numpy as np
 import qpimage
 
 from ..dataset import SingleData
@@ -25,7 +26,7 @@ class SingleHDF5RawOAH(SingleData):
         """Time for each dataset"""
         with h5py.File(self.path) as h5:
             ds = h5["0"]
-            thetime = ds.attrs.get("time", 0)
+            thetime = ds.attrs.get("time", np.nan)
         return thetime
 
     def get_qpimage_raw(self, idx=0):

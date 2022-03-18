@@ -113,4 +113,5 @@ class SeriesHdf5QpimageSubjoined(SeriesHdf5Qpimage):
                 "bg_data" in qpi0["phase"] and
                     "bg_data" in qpi0["amplitude"]):
                 valid = True
+            h5.close()
         return valid

@@ -203,4 +203,5 @@ class SingleTifPhasics(SingleData):
                 (tf.pages[0].tags[61242].value !=
                  tf.pages[1].tags[61242].value)):
                 valid = True
+            tf.close()
         return valid

@@ -65,4 +65,6 @@ class SingleTifHolo(SingleData):
         else:
             if len(tf.pages) == 1:
                 valid = True
+            if not hasattr(path, "seek"):
+                tf.close()
         return valid
