@@ -28,6 +28,7 @@ class SeriesData(object):
     """
     __meta__ = abc.ABCMeta
     is_series = True
+    priority = 0  # decrease to get higher priority
 
     def __init__(self, path, meta_data=None, holo_kw=None, as_type="float32"):
         #: Enforced dtype via keyword arguments

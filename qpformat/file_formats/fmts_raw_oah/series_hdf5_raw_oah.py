@@ -1,46 +1,53 @@
 import copy
-import h5py
+import functools
 
+import h5py
 import qpimage
 
-from .dataset import SingleData
+from ..dataset import SeriesData
 
 
-class SingleHDF5RawOAH(SingleData):
-    """Raw off-axis holography data stored in an HDF5 file"""
+class SeriesHDF5RawOAH(SeriesData):
+    """Raw off-axis holography series data stored in an HDF5 file"""
     storage_type = "raw-oah"
+    priority = -10  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
-        super(SingleHDF5RawOAH, self).__init__(*args, **kwargs)
-        # update meta data
-        with h5py.File(self.path, mode="r") as h5:
-            attrs = dict(h5["0"].attrs)
-        for key in qpimage.meta.META_KEYS:
-            if (key not in self.meta_data
-                    and key in attrs):
-                self.meta_data[key] = attrs[key]
+        super(SeriesHDF5RawOAH, self).__init__(*args, **kwargs)
 
-    def get_time(self, idx=0):
+    @functools.cache
+    def __len__(self):
+        with h5py.File(self.path) as h5:
+            return len(h5)
+
+    def get_time(self, idx):
         """Time for each dataset"""
         with h5py.File(self.path) as h5:
-            ds = h5["0"]
+            ds = h5[str(idx)]
             thetime = ds.attrs.get("time", 0)
         return thetime
 
-    def get_qpimage_raw(self, idx=0):
+    def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
-        # Load experimental data
         with h5py.File(self.path) as h5:
-            holo = h5["0"][:]
-        meta_data = copy.copy(self.meta_data)
-        qpi = qpimage.QPImage(data=holo,
+            ds = h5[str(idx)]
+            attrs = dict(ds.attrs)
+            data = ds[:]
+
+        meta_data = copy.deepcopy(self.meta_data)
+        for key in qpimage.meta.META_KEYS:
+            if (key not in self.meta_data
+                    and key in attrs):
+                meta_data[key] = attrs[key]
+
+        qpi = qpimage.QPImage(data=data,
                               which_data="raw-oah",
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
                               h5dtype=self.as_type)
         # set identifier
-        qpi["identifier"] = self.get_identifier()
-        qpi["time"] = self.get_time()
+        qpi["identifier"] = self.get_identifier(idx)
+        qpi["time"] = self.get_time(idx)
         return qpi
 
     @staticmethod
@@ -55,8 +62,7 @@ class SingleHDF5RawOAH(SingleData):
             if (h5.attrs.get("file_format", "") == "qpformat"
                 and h5.attrs.get("imaging_modality", "") ==
                     "off-axis holography"
-                    and "0" in h5
-                    and "1" not in h5):
+                    and "0" in h5 and "1" in h5):
                 valid = True
             h5.close()
         return valid

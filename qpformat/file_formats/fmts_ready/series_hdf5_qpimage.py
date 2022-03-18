@@ -1,12 +1,13 @@
 import h5py
 import qpimage
 
-from .dataset import SeriesData
+from ..dataset import SeriesData
 
 
 class SeriesHdf5Qpimage(SeriesData):
     """Qpimage series (HDF5 format)"""
     storage_type = "phase,amplitude"
+    priority = -9  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
         super(SeriesHdf5Qpimage, self).__init__(*args, **kwargs)

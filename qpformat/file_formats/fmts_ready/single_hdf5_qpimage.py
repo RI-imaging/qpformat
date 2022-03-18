@@ -1,7 +1,7 @@
 import h5py
 import qpimage
 
-from .dataset import SingleData
+from ..dataset import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):
@@ -11,6 +11,7 @@ class SingleHdf5Qpimage(SingleData):
     information.
     """
     storage_type = "phase,amplitude"
+    priority = -9  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
         super(SingleHdf5Qpimage, self).__init__(*args, **kwargs)

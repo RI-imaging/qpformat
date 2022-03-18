@@ -6,7 +6,7 @@ import numpy as np
 import qpimage
 import tifffile
 
-from .dataset import SingleData
+from ..dataset import SingleData
 
 
 class SingleTifHolo(SingleData):

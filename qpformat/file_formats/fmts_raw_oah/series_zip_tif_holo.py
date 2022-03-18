@@ -5,7 +5,7 @@ import zipfile
 
 import numpy as np
 
-from .dataset import SeriesData
+from ..dataset import SeriesData
 from .single_tif_holo import SingleTifHolo
 
 

@@ -4,17 +4,7 @@ import pathlib
 
 from .dataset import SeriesData, hash_obj
 from .dataset import SingleData  # noqa:F401 (user convenience)
-from .series_hdf5_generic import SeriesHDF5SinogramMeep
-from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
-from .series_hdf5_raw_oah import SeriesHDF5RawOAH
-from .series_hdf5_qpimage import SeriesHdf5Qpimage, SeriesHdf5QpimageSubjoined
-from .series_zip_tif_holo import SeriesZipTifHolo
-from .series_zip_tif_phasics import SeriesZipTifPhasics
-from .single_hdf5_qpimage import SingleHdf5Qpimage
-from .single_hdf5_raw_oah import SingleHDF5RawOAH
-from .single_npy_numpy import SingleNpyNumpy
-from .single_tif_holo import SingleTifHolo
-from .single_tif_phasics import SingleTifPhasics
+from . import fmts_ready, fmts_raw_oah
 
 
 class BadFileFormatError(BaseException):
@@ -196,21 +186,11 @@ class SeriesFolder(SeriesData):
 
 
 # the order is important
-formats = [
-    SeriesFolder,
-    SingleHdf5Qpimage,
-    SingleTifPhasics,
-    SingleTifHolo,
-    SingleNpyNumpy,
-    SeriesHDF5SinogramMeep,
-    SeriesHdf5HyperSpy,
-    SeriesHDF5RawOAH,
-    SeriesHdf5Qpimage,
-    SeriesHdf5QpimageSubjoined,
-    SingleHDF5RawOAH,
-    SeriesZipTifPhasics,
-    SeriesZipTifHolo,  # after phasics, b/c phasics has extra keywords
-    ]
+formats = sorted(
+    [SeriesFolder]
+    + fmts_ready.registered_formats
+    + fmts_raw_oah.registered_formats,
+    key=lambda x: x.priority)
 
 # convenience dictionary
 formats_dict = {}

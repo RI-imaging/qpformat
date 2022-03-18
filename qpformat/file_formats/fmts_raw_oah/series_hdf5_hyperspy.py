@@ -4,7 +4,7 @@ import warnings
 import h5py
 import qpimage
 
-from .dataset import SeriesData
+from ..dataset import SeriesData
 
 
 class HyperSpyNoDataFoundError(BaseException):
@@ -22,6 +22,7 @@ class SeriesHdf5HyperSpy(SeriesData):
     <hyperspy:electron-holography-label>` to read this file format.
     """
     storage_type = "raw-oah"
+    priority = -9  # higher priority, because it's fast
 
     def __len__(self):
         return len(self._get_experiments())

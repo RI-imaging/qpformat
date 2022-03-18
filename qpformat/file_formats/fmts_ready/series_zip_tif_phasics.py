@@ -2,7 +2,7 @@ import io
 import functools
 import zipfile
 
-from .dataset import SeriesData
+from ..dataset import SeriesData
 from .single_tif_phasics import SingleTifPhasics
 
 
@@ -13,6 +13,7 @@ class SeriesZipTifPhasics(SeriesData):
     (:class:`qpformat.file_formats.SingleTifPhasics`) in a zip file.
     """
     storage_type = "phase,intensity"
+    priority = -1  # should get higher priority than SeriesZipTifHolo
 
     def __init__(self, *args, **kwargs):
         super(SeriesZipTifPhasics, self).__init__(*args, **kwargs)

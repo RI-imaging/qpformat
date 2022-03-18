@@ -5,7 +5,7 @@ import h5py
 import numpy as np
 import qpimage
 
-from .dataset import SeriesData
+from ..dataset import SeriesData
 
 
 class NoSinogramDataFoundError(BaseException):
@@ -19,6 +19,7 @@ class SeriesHDF5GenericWarning(UserWarning):
 class SeriesHDF5SinogramGeneric(SeriesData):
     """Base class for HDF5-based raw sinogram QPI data
     """
+    priority = -9  # higher priority, because it's fast
 
     def __len__(self):
         return len(self._get_data_indices())

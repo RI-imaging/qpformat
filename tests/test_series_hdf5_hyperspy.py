@@ -8,7 +8,7 @@ import tifffile
 
 import qpformat
 from qpformat.file_formats import WrongFileFormatError
-from qpformat.file_formats.series_hdf5_hyperspy import (
+from qpformat.file_formats.fmts_raw_oah.series_hdf5_hyperspy import (
     HyperSpyNoDataFoundError, WrongSignalTypeWarnging)
 
 datapath = pathlib.Path(__file__).parent / "data"
