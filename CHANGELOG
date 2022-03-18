@@ -2,6 +2,7 @@
  - feat: implement reader for new HDF5-based raw off-axis hologram
    file format
  - fix: support optional meta data keys from qpimage
+ - setup: drop support for all Python versions below 3.9
  - setup: migrate from qpimage 0.7.4 to 0.7.7
 0.11.0
  - feat: implement FDTD/Meep reader for data from ODTbrain paper

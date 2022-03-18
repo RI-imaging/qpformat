@@ -28,7 +28,7 @@ setup(
                       "qpimage>=0.7.7",
                       "tifffile>=2020.5.25",
                       ],
-    python_requires='>=3.6, <4',
+    python_requires='>=3.9, <4',
     entry_points={
        "console_scripts": [
            "qpinfo = qpformat.cli:qpinfo",
