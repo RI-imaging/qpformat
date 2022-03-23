@@ -3,10 +3,10 @@ import functools
 import zipfile
 
 from ..series_base import SeriesData
-from .single_tif_phasics import SingleTifPhasics
+from .single_phase_phasics_tif import SinglePhasePhasicsTif
 
 
-class SeriesZipTifPhasics(SeriesData):
+class SeriesPhasePhasicsZipTif(SeriesData):
     """Phasics series data (zipped "SID PHA*.tif" files)
 
     The data are stored as multiple TIFF files
@@ -16,7 +16,7 @@ class SeriesZipTifPhasics(SeriesData):
     priority = -1  # should get higher priority than SeriesZipTifHolo
 
     def __init__(self, *args, **kwargs):
-        super(SeriesZipTifPhasics, self).__init__(*args, **kwargs)
+        super(SeriesPhasePhasicsZipTif, self).__init__(*args, **kwargs)
         self._files = None
         self._dataset = None
 
@@ -31,9 +31,10 @@ class SeriesZipTifPhasics(SeriesData):
             zf = zipfile.ZipFile(self.path)
             pt = zf.open(self.files[idx])
             fd = io.BytesIO(pt.read())
-            self._dataset[idx] = SingleTifPhasics(path=fd,
-                                                  meta_data=self.meta_data,
-                                                  as_type=self.as_type)
+            self._dataset[idx] = SinglePhasePhasicsTif(
+                path=fd,
+                meta_data=self.meta_data,
+                as_type=self.as_type)
         assert len(self._dataset[idx]) == 1, "unknown phasics tif file"
         return self._dataset[idx]
 
@@ -49,7 +50,7 @@ class SeriesZipTifPhasics(SeriesData):
             for name in names:
                 with zf.open(name) as pt:
                     fd = io.BytesIO(pt.read())
-                    if SingleTifPhasics.verify(fd):
+                    if SinglePhasePhasicsTif.verify(fd):
                         phasefiles.append(name)
             return phasefiles
 
@@ -57,7 +58,7 @@ class SeriesZipTifPhasics(SeriesData):
     def files(self):
         """List of Phasics tif file names in the input zip file"""
         if self._files is None:
-            self._files = SeriesZipTifPhasics._index_files(self.path)
+            self._files = SeriesPhasePhasicsZipTif._index_files(self.path)
         return self._files
 
     def get_qpimage_raw(self, idx):
@@ -87,7 +88,7 @@ class SeriesZipTifPhasics(SeriesData):
             for name in names:
                 with zf.open(name) as pt:
                     fd = io.BytesIO(pt.read())
-                    if SingleTifPhasics.verify(fd):
+                    if SinglePhasePhasicsTif.verify(fd):
                         valid = True
                         break
             zf.close()

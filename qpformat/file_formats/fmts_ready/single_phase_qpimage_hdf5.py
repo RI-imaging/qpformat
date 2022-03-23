@@ -4,7 +4,7 @@ import qpimage
 from ..single_base import SingleData
 
 
-class SingleHdf5Qpimage(SingleData):
+class SinglePhaseQpimageHDF5(SingleData):
     """Qpimage single (HDF5 format)
 
     See the documentation of :ref:`qpimage <qpimage:index>` for more
@@ -14,7 +14,7 @@ class SingleHdf5Qpimage(SingleData):
     priority = -9  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
-        super(SingleHdf5Qpimage, self).__init__(*args, **kwargs)
+        super(SinglePhaseQpimageHDF5, self).__init__(*args, **kwargs)
         # update meta data
         with h5py.File(self.path, mode="r") as h5:
             attrs = dict(h5.attrs)
@@ -28,7 +28,7 @@ class SingleHdf5Qpimage(SingleData):
         if self._bgdata:
             # The user has explicitly chosen different background data
             # using `get_qpimage_raw`.
-            qpi = super(SingleHdf5Qpimage, self).get_qpimage()
+            qpi = super(SinglePhaseQpimageHDF5, self).get_qpimage()
         else:
             # We can use the background data stored in the qpimage hdf5 file
             qpi = qpimage.QPImage(h5file=self.path,

@@ -16,7 +16,7 @@ def test_load_phase():
     ds = qpformat.load_data(tf, as_type="float64")
     assert np.allclose(ds.get_qpimage().pha, phase, atol=1e-15, rtol=0)
     assert ds.path.samefile(tf)
-    assert "SingleNpyNumpy" in ds.__repr__()
+    assert "SingleFieldPhaseNumpyNpy" in ds.__repr__()
 
 
 def test_load_field():

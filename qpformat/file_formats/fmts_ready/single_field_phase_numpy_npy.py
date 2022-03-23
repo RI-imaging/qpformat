@@ -8,7 +8,7 @@ import qpimage
 from ..single_base import SingleData
 
 
-class SingleNpyNumpy(SingleData):
+class SingleFieldPhaseNumpyNpy(SingleData):
     """Numpy complex field or phase data (numpy binary format)
 
     The experimental data given in `path` consist of a single

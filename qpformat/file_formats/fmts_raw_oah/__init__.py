@@ -1,14 +1,7 @@
-from .series_hdf5_hyperspy import SeriesHdf5HyperSpy
-from .series_hdf5_raw_oah import SeriesHDF5RawOAH
-from .series_zip_tif_holo import SeriesZipTifHolo
-from .single_hdf5_raw_oah import SingleHDF5RawOAH
-from .single_tif_holo import SingleTifHolo
+# flake8:  noqa: F401
+from . import series_raw_oah_hyperspy_hdf5
+from . import series_raw_oah_qpformat_hdf5
+from . import series_raw_oah_tif_zip
 
-
-registered_formats = [
-    SeriesHDF5RawOAH,
-    SeriesHdf5HyperSpy,
-    SeriesZipTifHolo,
-    SingleHDF5RawOAH,
-    SingleTifHolo,
-]
+from . import single_raw_oah_qpformat_hdf5
+from . import single_raw_oah_tif

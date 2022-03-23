@@ -17,14 +17,14 @@ INTENSITY_BASELINE_CLAMP = 150
 # https://www.loc.gov/preservation/digital/formats/content/tiff_tags.shtml
 TIFF_TAGS = {
     "MaxSampleValue": 281,
-    }
+}
 
 
 class LoadTifPhasicsError(BaseException):
     pass
 
 
-class SingleTifPhasics(SingleData):
+class SinglePhasePhasicsTif(SingleData):
     """Phasics image ("SID PHA*.tif")
 
     Notes
@@ -39,7 +39,9 @@ class SingleTifPhasics(SingleData):
     """
     storage_type = "phase,intensity"
 
-    def __init__(self, path, meta_data={}, *args, **kwargs):
+    def __init__(self, path, meta_data=None, *args, **kwargs):
+        if meta_data is None:
+            meta_data = {}
         if "wavelength" not in meta_data:
             # get wavelength if not given
             wl = self._get_wavelength(path)
@@ -50,13 +52,13 @@ class SingleTifPhasics(SingleData):
                 msg = "'wavelength' must be specified in `meta_data`!"
                 raise LoadTifPhasicsError(msg)
 
-        super(SingleTifPhasics, self).__init__(path=path,
-                                               meta_data=meta_data,
-                                               *args, **kwargs)
+        super(SinglePhasePhasicsTif, self).__init__(path=path,
+                                                    meta_data=meta_data,
+                                                    *args, **kwargs)
 
     @staticmethod
     def _get_meta_data(path, section, name):
-        with SingleTifPhasics._get_tif(path) as tf:
+        with SinglePhasePhasicsTif._get_tif(path) as tf:
             meta = tf.pages[0].tags[61238].value
         meta = meta.strip("'b")
         meta = meta.replace("\\n", "\n")
@@ -87,9 +89,9 @@ class SingleTifPhasics(SingleData):
 
     def _get_wavelength(self, path):
         for section in ["analyse data", "analyse data v1"]:
-            wl_str = SingleTifPhasics._get_meta_data(path=path,
-                                                     section=section,
-                                                     name="lambda(nm)")
+            wl_str = SinglePhasePhasicsTif._get_meta_data(path=path,
+                                                          section=section,
+                                                          name="lambda(nm)")
             if wl_str:
                 wavelength = float(wl_str) * 1e-9
                 break
@@ -102,9 +104,10 @@ class SingleTifPhasics(SingleData):
 
         The time is stored in the "61238" tag.
         """
-        timestr = SingleTifPhasics._get_meta_data(path=self.path,
-                                                  section="acquisition info",
-                                                  name="date & heure")
+        timestr = SinglePhasePhasicsTif._get_meta_data(
+            path=self.path,
+            section="acquisition info",
+            name="date & heure")
         if timestr is not None:
             timestr = timestr.replace(",", ".")
             timestrf, timeus = timestr.split(".")
@@ -121,7 +124,7 @@ class SingleTifPhasics(SingleData):
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
-        with SingleTifPhasics._get_tif(self.path) as tf:
+        with SinglePhasePhasicsTif._get_tif(self.path) as tf:
             # page 0 contains intensity
             # page 1 contains phase in nm
             # page 2 contains phase in wavelengths
@@ -188,7 +191,7 @@ class SingleTifPhasics(SingleData):
         """Verify that `path` is a phasics phase/intensity TIFF file"""
         valid = False
         try:
-            tf = SingleTifPhasics._get_tif(path)
+            tf = SinglePhasePhasicsTif._get_tif(path)
         except (ValueError, IsADirectoryError, KeyError,
                 tifffile.tifffile.TiffFileError):
             pass

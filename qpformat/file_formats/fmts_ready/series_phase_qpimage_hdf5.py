@@ -4,13 +4,13 @@ import qpimage
 from ..series_base import SeriesData
 
 
-class SeriesHdf5Qpimage(SeriesData):
+class SeriesPhaseQpimageHDF5(SeriesData):
     """Qpimage series (HDF5 format)"""
     storage_type = "phase,amplitude"
     priority = -9  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
-        super(SeriesHdf5Qpimage, self).__init__(*args, **kwargs)
+        super(SeriesPhaseQpimageHDF5, self).__init__(*args, **kwargs)
         self._dataset = None
         self._init_meta()
 
@@ -36,7 +36,7 @@ class SeriesHdf5Qpimage(SeriesData):
         if self._bgdata:
             # The user has explicitly chosen different background data
             # using `get_qpimage_raw`.
-            qpi = super(SeriesHdf5Qpimage, self).get_qpimage(idx)
+            qpi = super(SeriesPhaseQpimageHDF5, self).get_qpimage(idx)
         else:
             # We can use the background data stored in the qpimage hdf5 file
             with self._qpseries() as qps:
@@ -80,7 +80,7 @@ class SeriesHdf5Qpimage(SeriesData):
         return valid
 
 
-class SeriesHdf5QpimageSubjoined(SeriesHdf5Qpimage):
+class SeriesPhaseQpimageSubjoinedHDF5(SeriesPhaseQpimageHDF5):
     """Subjoined qpimage series (HDF5 format), may contain other data"""
 
     def _init_meta(self):

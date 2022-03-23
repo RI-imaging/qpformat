@@ -10,7 +10,7 @@ datapath = pathlib.Path(__file__).parent / "data"
 
 def test_series_raw_oah():
     ds = qpformat.load_data(datapath / "series_hdf5_raw-oah.h5")
-    assert ds.format == "SeriesHDF5RawOAH"
+    assert ds.format == "SeriesRawOAHQpformatHDF5"
     assert len(ds) == 2
     qpi1 = ds.get_qpimage(0)
     qpi2 = ds.get_qpimage(1)

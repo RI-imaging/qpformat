@@ -8,7 +8,7 @@ import tifffile
 
 import qpformat
 from qpformat.file_formats import WrongFileFormatError
-from qpformat.file_formats.fmts_raw_oah.series_hdf5_hyperspy import (
+from qpformat.file_formats.fmts_raw_oah.series_raw_oah_hyperspy_hdf5 import (
     HyperSpyNoDataFoundError, WrongSignalTypeWarnging)
 
 datapath = pathlib.Path(__file__).parent / "data"
@@ -59,7 +59,7 @@ def test_returned_identifier():
 def test_wrong_format():
     path = datapath / "single_qpimage.h5"
     try:
-        qpformat.load_data(path, fmt="SeriesHdf5HyperSpy")
+        qpformat.load_data(path, fmt="SeriesRawOAHHyperSpyHDF5")
     except WrongFileFormatError:
         pass
     else:

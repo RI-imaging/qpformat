@@ -59,7 +59,7 @@ def test_user_defined_wavelength():
 def test_wrong_format():
     path = data_dir / "single_qpimage.h5"
     try:
-        qpformat.load_data(path, fmt="SeriesHDF5SinogramMeep")
+        qpformat.load_data(path, fmt="SeriesFieldSinogramMeepHDF5")
     except WrongFileFormatError:
         pass
     else:

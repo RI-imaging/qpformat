@@ -20,7 +20,7 @@ def test_load_data():
     path = datapath / "series_phasics.zip"
     ds = qpformat.load_data(path)
     assert ds.path == path.resolve()
-    assert "SeriesZipTifPhasics" in ds.__repr__()
+    assert "SeriesPhasePhasicsZipTif" in ds.__repr__()
 
 
 def test_data_content():

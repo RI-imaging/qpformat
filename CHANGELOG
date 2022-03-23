@@ -1,3 +1,8 @@
+0.13.0
+ - BREAKING CHANGE: renamed all file format classes
+ - feat: add file format class for QLSI data
+ - setup: bump qpimage from 0.7.7 to 0.8.0
+ - ref: simplify submodule structure and detection of file formats
 0.12.1
  - maintenance release
 0.12.0

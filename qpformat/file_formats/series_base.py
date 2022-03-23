@@ -12,26 +12,27 @@ from .util import hash_obj
 
 class SeriesData(object):
     """Series data file format base class
-
-    Parameters
-    ----------
-    path: str or pathlib.Path
-        Path to the experimental data file.
-    meta_data: dict
-        Dictionary containing meta data.
-        see :py:class:`qpimage.META_KEYS`.
-    as_type: str
-        Defines the data type that the input data is casted to.
-        The default is "float32" which saves memory. If high
-        numerical accuracy is required (does not apply for a
-        simple 2D phase analysis), set this to double precision
-        ("float64").
     """
     __meta__ = abc.ABCMeta
     is_series = True
     priority = 0  # decrease to get higher priority
 
     def __init__(self, path, meta_data=None, holo_kw=None, as_type="float32"):
+        """
+        Parameters
+        ----------
+        path: str or pathlib.Path
+            Path to the experimental data file.
+        meta_data: dict
+            Dictionary containing meta data.
+            see :py:class:`qpimage.META_KEYS`.
+        as_type: str
+            Defines the data type that the input data is casted to.
+            The default is "float32" which saves memory. If high
+            numerical accuracy is required (does not apply for a
+            simple 2D phase analysis), set this to double precision
+            ("float64").
+        """
         #: Enforced dtype via keyword arguments
         if holo_kw is None:
             holo_kw = {}

@@ -15,7 +15,7 @@ class WrongSignalTypeWarnging(UserWarning):
     pass
 
 
-class SeriesHdf5HyperSpy(SeriesData):
+class SeriesRawOAHHyperSpyHDF5(SeriesData):
     """HyperSpy hologram series (HDF5 format)
 
     HyperSpy has its :ref:`own implementation

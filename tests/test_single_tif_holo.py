@@ -13,7 +13,7 @@ def test_basic():
     assert ds.storage_type == "raw-oah"
     assert not ds.is_series
     assert ds.path == path.resolve()
-    assert "SingleTifHolo" in ds.__repr__()
+    assert "SingleRawOAHTif" in ds.__repr__()
 
 
 def test_identifier():

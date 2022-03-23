@@ -16,13 +16,61 @@ class SeriesHDF5GenericWarning(UserWarning):
     pass
 
 
-class SeriesHDF5SinogramGeneric(SeriesData):
-    """Base class for HDF5-based raw sinogram QPI data
+class SeriesFieldSinogramMeepHDF5(SeriesData):
+    """sinograms extracted from Meep/FDTD simulations
+
+    I introduced this format in 2022 as part of my efforts to make
+    the finite-difference time domain simulations from the ODTbrain
+    manuscript :cite:`Mueller2015` publicly available.
+
+    The HDF5 file contains a "background" and a "sinogram" group.
+    The subgroups of "sinogram" are enumerated starting with "0".
+    Each of them contain the complex "field" at a plane behind the
+    scattering phantom as an HDF5 Dataset. The location of the plane
+    (and all other relevant metadata) is stored in the attributes
+    of this Dataset. In the same group, there are also the C++
+    "simulation_code" and the log "simulation_output" which can
+    be used to reproduce the simulation.
     """
     priority = -9  # higher priority, because it's fast
+    storage_type = "field"
+
+    def __init__(self, path, meta_data=None, *args, **kwargs):
+        """Initialize with default wavelength of 500nm"""
+        if meta_data is None:
+            meta_data = {}
+        if "wavelength" not in meta_data:
+            meta_data["wavelength"] = 500e-9
+        super(SeriesFieldSinogramMeepHDF5, self).__init__(
+            path=path, meta_data=meta_data, *args, **kwargs)
+
+        # set background data
+        with h5py.File(path, "r") as h5:
+            if "background" in h5:
+                bgds = h5["background"]["field"]
+                meta_data = self._get_metadata(bgds)
+                qpi_bg = qpimage.QPImage(data=bgds[:],
+                                         which_data="field",
+                                         meta_data=meta_data,
+                                         h5dtype=self.as_type)
+                self.set_bg(qpi_bg)
 
     def __len__(self):
         return len(self._get_data_indices())
+
+    @property
+    @functools.lru_cache()
+    def shape(self):
+        with h5py.File(name=self.path, mode="r") as h5:
+            group = h5["sinogram"]["0"]
+            if "field" in group:
+                dssh = group["field"].shape
+                return len(self), dssh[0], dssh[1]
+            else:
+                # Fallback to expensive shape computation
+                warnings.warn(f"Using fallback `shape` for '{self.path}'!",
+                              SeriesHDF5GenericWarning)
+                return super(SeriesData, self).shape
 
     @functools.lru_cache()
     def _get_data_indices(self):
@@ -39,90 +87,17 @@ class SeriesHDF5SinogramGeneric(SeriesData):
         return indices
 
     def _get_metadata(self, dataset):
-        """Return the metadata of the specified `h5py.Dataset`"""
-        meta = qpimage.meta.MetaDict()
-        for key in qpimage.META_KEYS:
-            if key in dataset.attrs:
-                meta[key] = dataset.attrs[key]
-        return meta
-
-    @staticmethod
-    def verify(path):
-        """Verify that `path` has generic sinogram data"""
-        valid = False
-        try:
-            h5 = h5py.File(path, mode="r")
-        except (OSError, IsADirectoryError):
-            pass
-        else:
-            if ("file_format" in h5.attrs
-                and "qpformat" in h5.attrs["file_format"].lower()
-                    and "sinogram" in h5):
-                valid = True
-            h5.close()
-        return valid
-
-    @property
-    @functools.lru_cache()
-    def shape(self):
-        with h5py.File(name=self.path, mode="r") as h5:
-            group = h5["sinogram"]["0"]
-            for key in ["field", "phase", "amplitude", "intensity"]:
-                if key in group:
-                    return len(self), group[key].shape[0], group[key].shape[1]
-            else:
-                # Fallback to expensive shape computation
-                warnings.warn(f"Using fallback `shape` for '{self.path}'!",
-                              SeriesHDF5GenericWarning)
-                return super(SeriesHDF5SinogramGeneric, self).shape
-
-
-class SeriesHDF5SinogramMeep(SeriesHDF5SinogramGeneric):
-    """sinograms extracted from Meep/FDTD simulations
-
-    I introduced this format in 2022 as part of my efforts to make
-    the finite-difference time domain simulations from the ODTbrain
-    manuscript :cite:`Mueller2015` publicly available.
-
-    The HDF5 file contains a "background" and a "sinogram" group.
-    The subgroups of "sinogram" are enumerated starting with "0".
-    Each of them contain the complex "field" at a plane behind the
-    scattering phantom as an HDF5 Dataset. The location of the plane
-    (and all other relevant metadata) is stored in the attributes
-    of this Dataset. In the same group, there are also the C++
-    "simulation_code" and the log "simulation_output" which can
-    be used to reproduce the simulation.
-    """
-    storage_type = "field"
-
-    def __init__(self, path, meta_data=None, *args, **kwargs):
-        """Initialize with default wavelength of 500nm"""
-        if meta_data is None:
-            meta_data = {}
-        if "wavelength" not in meta_data:
-            meta_data["wavelength"] = 500e-9
-        super(SeriesHDF5SinogramMeep, self).__init__(
-            path=path, meta_data=meta_data, *args, **kwargs)
-
-        # set background data
-        with h5py.File(path, "r") as h5:
-            if "background" in h5:
-                bgds = h5["background"]["field"]
-                meta_data = self._get_metadata(bgds)
-                qpi_bg = qpimage.QPImage(data=bgds[:],
-                                         which_data="field",
-                                         meta_data=meta_data,
-                                         h5dtype=self.as_type)
-                self.set_bg(qpi_bg)
-
-    def _get_metadata(self, dataset):
         """Return simulation-specific metadata
 
         This uses the metadata previously extracted
         from the simulation and set in `dataset.attrs`
         to populate the QPI metadata.
         """
-        meta = super(SeriesHDF5SinogramMeep, self)._get_metadata(dataset)
+        meta = qpimage.meta.MetaDict()
+        for key in qpimage.META_KEYS:
+            if key in dataset.attrs:
+                meta[key] = dataset.attrs[key]
+
         meta.update(self.meta_data)
         if "ACQUISITION_PHI" in dataset.attrs:
             meta["angle"] = dataset.attrs["ACQUISITION_PHI"]
@@ -164,7 +139,18 @@ class SeriesHDF5SinogramMeep(SeriesHDF5SinogramGeneric):
         The "file_format" attribute of the HDF5 file must contain
         the strings "qpformat" and "meep".
         """
-        valid = SeriesHDF5SinogramGeneric.verify(path)
+        valid = False
+        try:
+            h5 = h5py.File(path, mode="r")
+        except (OSError, IsADirectoryError):
+            pass
+        else:
+            if ("file_format" in h5.attrs
+                    and "qpformat" in h5.attrs["file_format"].lower()
+                    and "sinogram" in h5):
+                valid = True
+            h5.close()
+
         if valid:
             with h5py.File(path, "r") as h5:
                 valid = "meep" in h5.attrs["file_format"].lower()

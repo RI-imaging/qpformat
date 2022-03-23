@@ -7,10 +7,10 @@ import numpy as np
 
 from ..series_base import SeriesData
 
-from .single_tif_holo import SingleTifHolo
+from .single_raw_oah_tif import SingleRawOAHTif
 
 
-class SeriesZipTifHolo(SeriesData):
+class SeriesRawOAHZipTif(SeriesData):
     """Off-axis hologram series (zipped TIFF files)
 
     The data are stored as multiple TIFF files
@@ -19,7 +19,7 @@ class SeriesZipTifHolo(SeriesData):
     storage_type = "raw-oah"
 
     def __init__(self, *args, **kwargs):
-        super(SeriesZipTifHolo, self).__init__(*args, **kwargs)
+        super(SeriesRawOAHZipTif, self).__init__(*args, **kwargs)
         self._files = None
         self._dataset = None
 
@@ -34,10 +34,10 @@ class SeriesZipTifHolo(SeriesData):
             zf = zipfile.ZipFile(self.path)
             pt = zf.open(self.files[idx])
             fd = io.BytesIO(pt.read())
-            self._dataset[idx] = SingleTifHolo(path=fd,
-                                               meta_data=self.meta_data,
-                                               as_type=self.as_type,
-                                               holo_kw=self.holo_kw)
+            self._dataset[idx] = SingleRawOAHTif(path=fd,
+                                                 meta_data=self.meta_data,
+                                                 as_type=self.as_type,
+                                                 holo_kw=self.holo_kw)
         return self._dataset[idx]
 
     @staticmethod
@@ -51,7 +51,7 @@ class SeriesZipTifHolo(SeriesData):
             for name in names:
                 with zf.open(name) as pt:
                     fd = io.BytesIO(pt.read())
-                    if SingleTifHolo.verify(fd):
+                    if SingleRawOAHTif.verify(fd):
                         phasefiles.append(name)
             return phasefiles
 
@@ -59,7 +59,7 @@ class SeriesZipTifHolo(SeriesData):
     def files(self):
         """List of hologram data file names in the input zip file"""
         if self._files is None:
-            self._files = SeriesZipTifHolo._index_files(self.path)
+            self._files = SeriesRawOAHZipTif._index_files(self.path)
         return self._files
 
     def get_time(self, idx):
@@ -104,7 +104,7 @@ class SeriesZipTifHolo(SeriesData):
             for name in names:
                 with zf.open(name) as pt:
                     fd = io.BytesIO(pt.read())
-                    if SingleTifHolo.verify(fd):
+                    if SingleRawOAHTif.verify(fd):
                         valid = True
                         break
             zf.close()

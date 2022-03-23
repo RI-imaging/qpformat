@@ -7,13 +7,13 @@ import qpimage
 from ..single_base import SingleData
 
 
-class SingleHDF5RawOAH(SingleData):
-    """Raw off-axis holography data stored in an HDF5 file"""
-    storage_type = "raw-oah"
+class SingleRawQLSIQpformatHDF5(SingleData):
+    """Raw quadriwave lateral shearing interferometry data (HDF5)"""
+    storage_type = "raw-qlsi"
     priority = -10  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
-        super(SingleHDF5RawOAH, self).__init__(*args, **kwargs)
+        super(SingleRawQLSIQpformatHDF5, self).__init__(*args, **kwargs)
         # update meta data
         with h5py.File(self.path, mode="r") as h5:
             attrs = dict(h5["0"].attrs)
@@ -36,7 +36,7 @@ class SingleHDF5RawOAH(SingleData):
             holo = h5["0"][:]
         meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=holo,
-                              which_data="raw-oah",
+                              which_data="raw-qlsi",
                               meta_data=meta_data,
                               holo_kw=self.holo_kw,
                               h5dtype=self.as_type)
@@ -56,7 +56,7 @@ class SingleHDF5RawOAH(SingleData):
         else:
             if (h5.attrs.get("file_format", "") == "qpformat"
                 and h5.attrs.get("imaging_modality", "") ==
-                    "off-axis holography"
+                    "quadriwave lateral shearing interferometry"
                     and "0" in h5
                     and "1" not in h5):
                 valid = True

@@ -35,7 +35,7 @@ def test_basic():
     assert len(ds) == num
     assert ds.is_series
     assert ds.path.samefile(path)
-    assert "SeriesZipTifHolo" in ds.__repr__()
+    assert "SeriesRawOAHZipTif" in ds.__repr__()
 
 
 def test_time():

@@ -9,7 +9,7 @@ import tifffile
 from ..single_base import SingleData
 
 
-class SingleTifHolo(SingleData):
+class SingleRawOAHTif(SingleData):
     """Off-axis hologram image (TIFF format)"""
     storage_type = "raw-oah"
 
@@ -40,7 +40,7 @@ class SingleTifHolo(SingleData):
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         # Load experimental data
-        with SingleTifHolo._get_tif(self.path) as tf:
+        with SingleRawOAHTif._get_tif(self.path) as tf:
             holo = tf.pages[0].asarray()
         meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=holo,
@@ -58,7 +58,7 @@ class SingleTifHolo(SingleData):
         """Verify that `path` is a valid TIFF file"""
         valid = False
         try:
-            tf = SingleTifHolo._get_tif(path)
+            tf = SingleRawOAHTif._get_tif(path)
         except (ValueError, IsADirectoryError, KeyError,
                 tifffile.tifffile.TiffFileError):
             pass

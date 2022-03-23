@@ -8,13 +8,13 @@ import qpimage
 from ..series_base import SeriesData
 
 
-class SeriesHDF5RawOAH(SeriesData):
-    """Raw off-axis holography series data stored in an HDF5 file"""
+class SeriesRawOAHQpformatHDF5(SeriesData):
+    """Raw off-axis holography series data (HDF5)"""
     storage_type = "raw-oah"
     priority = -10  # higher priority, because it's fast
 
     def __init__(self, *args, **kwargs):
-        super(SeriesHDF5RawOAH, self).__init__(*args, **kwargs)
+        super(SeriesRawOAHQpformatHDF5, self).__init__(*args, **kwargs)
 
     @functools.cache
     def __len__(self):

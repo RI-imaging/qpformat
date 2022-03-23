@@ -117,7 +117,8 @@ def test_multiple_formats_error():
     np.save(other_fmt_path, np.zeros((10, 10)))
     try:
         qpformat.load_data(path)
-    except qpformat.file_formats.MultipleFormatsNotSupportedError:
+    except qpformat.file_formats.fmt_series_folder.\
+            MultipleFormatsNotSupportedError:
         pass
     else:
         assert False, "multiple formats should not be supported"
