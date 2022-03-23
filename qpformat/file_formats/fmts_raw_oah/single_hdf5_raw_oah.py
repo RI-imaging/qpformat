@@ -4,7 +4,7 @@ import h5py
 import numpy as np
 import qpimage
 
-from ..dataset import SingleData
+from ..single_base import SingleData
 
 
 class SingleHDF5RawOAH(SingleData):

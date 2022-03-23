@@ -2,7 +2,7 @@ import io
 import functools
 import zipfile
 
-from ..dataset import SeriesData
+from ..series_base import SeriesData
 from .single_tif_phasics import SingleTifPhasics
 
 

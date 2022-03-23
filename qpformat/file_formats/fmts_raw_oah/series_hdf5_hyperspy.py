@@ -4,7 +4,7 @@ import warnings
 import h5py
 import qpimage
 
-from ..dataset import SeriesData
+from ..series_base import SeriesData
 
 
 class HyperSpyNoDataFoundError(BaseException):

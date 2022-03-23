@@ -1,7 +1,7 @@
 import h5py
 import qpimage
 
-from ..dataset import SeriesData
+from ..series_base import SeriesData
 
 
 class SeriesHdf5Qpimage(SeriesData):

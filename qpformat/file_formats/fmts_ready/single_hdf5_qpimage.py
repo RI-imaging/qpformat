@@ -1,7 +1,7 @@
 import h5py
 import qpimage
 
-from ..dataset import SingleData
+from ..single_base import SingleData
 
 
 class SingleHdf5Qpimage(SingleData):

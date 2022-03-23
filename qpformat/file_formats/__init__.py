@@ -2,8 +2,9 @@ from functools import lru_cache
 from os.path import commonprefix
 import pathlib
 
-from .dataset import SeriesData, hash_obj
-from .dataset import SingleData  # noqa:F401 (user convenience)
+from .series_base import SeriesData
+from .single_base import SingleData  # noqa:F401 (user convenience)
+from .util import hash_obj
 from . import fmts_ready, fmts_raw_oah
 
 
