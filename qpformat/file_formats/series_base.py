@@ -54,7 +54,7 @@ class SeriesData(object):
                     if holo_kw[key] in [-1, 1]:
                         qpretrieve_kw["invert_phase"] = holo_kw[key] == -1
                     else:
-                        qpretrieve_kw["sideband_freq"] = holo_kw[key]
+                        qpretrieve_kw["sideband_freq"] = tuple(holo_kw[key])
                         qpretrieve_kw["invert_phase"] = False
                 elif key == "zero_pad":
                     qpretrieve_kw["padding"] = holo_kw["zero_pad"]
