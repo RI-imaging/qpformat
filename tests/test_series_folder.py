@@ -6,7 +6,7 @@ import zipfile
 import numpy as np
 import qpformat
 
-datapath = pathlib.Path(__file__).parent / "data"
+data_path = pathlib.Path(__file__).parent / "data"
 
 
 def assert_path_in_list(path, path_list):
@@ -18,7 +18,7 @@ def assert_path_in_list(path, path_list):
 
 
 def setup_folder_single_h5(size=2, tdir=None):
-    path = datapath / "single_qpimage.h5"
+    path = data_path / "single_qpimage.h5"
     if tdir is None:
         tdir = tempfile.mkdtemp(prefix="qpformat_test_")
     tdir = pathlib.Path(tdir)
@@ -31,7 +31,7 @@ def setup_folder_single_h5(size=2, tdir=None):
 
 
 def setup_folder_single_holo(size=2, tdir=None):
-    path = datapath / "single_holo.tif"
+    path = data_path / "single_holo.tif"
     if tdir is None:
         tdir = tempfile.mkdtemp(prefix="qpformat_test_")
     tdir = pathlib.Path(tdir)
@@ -44,7 +44,7 @@ def setup_folder_single_holo(size=2, tdir=None):
 
 
 def setup_folder_single_phasics_tif(tdir=None):
-    path = datapath / "series_phasics.zip"
+    path = data_path / "series_phasics.zip"
     if tdir is None:
         tdir = tempfile.mkdtemp(prefix="qpformat_test_")
 
@@ -124,34 +124,26 @@ def test_multiple_formats_error():
         assert False, "multiple formats should not be supported"
 
 
-def test_series_format_holo_kw():
+def test_series_format_qpretrieve_kw():
     """Siedband kwarg should be passed to subformats"""
-    # combine a zip file with a regular hologram file
     path, _files2 = setup_folder_single_holo()
-    bad_path = datapath / "series_phasics.zip"
-    shutil.copy2(bad_path, path)
-    ds1 = qpformat.load_data(path, holo_kw={"sideband": 1})
-    ds2 = qpformat.load_data(path, holo_kw={"sideband": -1})
+    ds1 = qpformat.load_data(path, qpretrieve_kw={"invert_phase": False})
+    ds2 = qpformat.load_data(path, qpretrieve_kw={"invert_phase": True})
     p1 = ds1.get_qpimage(0)
     p2 = ds2.get_qpimage(0)
     assert np.all(p1.pha + p2.pha == 0)
 
 
-def test_series_format_ignored():
-    """Series file formats are ignored in SeriesFolder"""
-    # combine a zip file with a regular hologram file
-    path, _files2 = setup_folder_single_holo()
-    bad_path = datapath / "series_phasics.zip"
-    shutil.copy2(bad_path, path)
-    ds = qpformat.load_data(path)
-    assert len(ds) == 2
-    assert bad_path not in ds.files
-
-
-if __name__ == "__main__":
-    test_multiple_formats_error()
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
+def test_series_in_folder_format():
+    tmp = pathlib.Path(tempfile.mkdtemp(prefix="qpformat_"))
+    path = data_path / "series_phasics.zip"
+    shutil.copy2(path, tmp / "1.zip")
+    shutil.copy2(path, tmp / "2.zip")
+    ds1 = qpformat.load_data(tmp / "1.zip")
+    ds_d = qpformat.load_data(tmp)
+    assert len(ds1) * 2 == len(ds_d)
+    for ii in range(len(ds1)):
+        print(ii)
+        assert np.all(ds1.get_qpimage(ii).pha == ds_d.get_qpimage(ii).pha)
+        assert np.all(ds1.get_qpimage(ii).pha
+                      == ds_d.get_qpimage(ii + len(ds1)).pha)

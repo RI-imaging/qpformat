@@ -44,7 +44,7 @@ class SeriesRawOAHQpformatHDF5(SeriesData):
         qpi = qpimage.QPImage(data=data,
                               which_data="raw-oah",
                               meta_data=meta_data,
-                              holo_kw=self.holo_kw,
+                              qpretrieve_kw=self.qpretrieve_kw,
                               h5dtype=self.as_type)
         # set identifier
         qpi["identifier"] = self.get_identifier(idx)

@@ -3,6 +3,7 @@ import copy
 import functools
 import io
 import pathlib
+import warnings
 
 import numpy as np
 import qpimage
@@ -17,7 +18,8 @@ class SeriesData(object):
     is_series = True
     priority = 0  # decrease to get higher priority
 
-    def __init__(self, path, meta_data=None, holo_kw=None, as_type="float32"):
+    def __init__(self, path, meta_data=None, holo_kw=None, qpretrieve_kw=None,
+                 as_type="float32"):
         """
         Parameters
         ----------
@@ -26,6 +28,12 @@ class SeriesData(object):
         meta_data: dict
             Dictionary containing meta data.
             see :py:class:`qpimage.META_KEYS`.
+        holo_kw: dict
+            Deprecated, please use `qpretrieve_kw` instead!
+        qpretrieve_kw: dict
+            Keyword arguments passed to
+            :ref:`qpretrieve <qpretrieve:index>` for
+            phase retrieval from interferometric data.
         as_type: str
             Defines the data type that the input data is casted to.
             The default is "float32" which saves memory. If high
@@ -33,11 +41,30 @@ class SeriesData(object):
             simple 2D phase analysis), set this to double precision
             ("float64").
         """
-        #: Enforced dtype via keyword arguments
-        if holo_kw is None:
-            holo_kw = {}
+        if qpretrieve_kw is None:
+            qpretrieve_kw = {}
+
+        if holo_kw is not None:
+            warnings.warn(
+                "`holo_kw` is deprecated! Please use `qpretrieve_kw` instead",
+                DeprecationWarning)
+            # map deprecated parameters to `qpretrieve_kw`
+            for key in holo_kw:
+                if key == "sideband":
+                    if holo_kw[key] in [-1, 1]:
+                        qpretrieve_kw["invert_phase"] = holo_kw[key] == -1
+                    else:
+                        qpretrieve_kw["sideband_freq"] = holo_kw[key]
+                        qpretrieve_kw["invert_phase"] = False
+                elif key == "zero_pad":
+                    qpretrieve_kw["padding"] = holo_kw["zero_pad"]
+                else:
+                    qpretrieve_kw[key] = holo_kw[key]
+
         if meta_data is None:
             meta_data = {}
+
+        #: Enforced dtype via keyword arguments
         self.as_type = as_type
         if isinstance(path, io.IOBase):
             # io.IOBase
@@ -54,9 +81,8 @@ class SeriesData(object):
                 raise ValueError(msg)
         #: Enforced metadata via keyword arguments
         self.meta_data = copy.copy(meta_data)
-        #: Hologram retrieval; keyword arguments for
-        #: :func:`qpimage.holo.get_field`.
-        self.holo_kw = holo_kw
+        #: Keyword arguments for interferometric phase retrieval
+        self.qpretrieve_kw = qpretrieve_kw
         self._bgdata = []
         #: Unique string that identifies the background data that
         #: was set using `set_bg`.
@@ -142,10 +168,9 @@ class SeriesData(object):
         for key in sorted(list(self.meta_data.keys())):
             value = self.meta_data[key]
             data.append("{}={}".format(key, value))
-        # hologram info
-        for key in sorted(list(self.holo_kw.keys())):
-            value = self.holo_kw[key]
-            data.append("{}={}".format(key, value))
+        # qpretrieve keywords
+        for key in sorted(list(self.qpretrieve_kw.keys())):
+            data.append(f"{key}={self.qpretrieve_kw[key]}")
         return hash_obj(data)
 
     @property

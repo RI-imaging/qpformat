@@ -34,10 +34,11 @@ class SeriesRawOAHZipTif(SeriesData):
             zf = zipfile.ZipFile(self.path)
             pt = zf.open(self.files[idx])
             fd = io.BytesIO(pt.read())
-            self._dataset[idx] = SingleRawOAHTif(path=fd,
-                                                 meta_data=self.meta_data,
-                                                 as_type=self.as_type,
-                                                 holo_kw=self.holo_kw)
+            self._dataset[idx] = SingleRawOAHTif(
+                path=fd,
+                meta_data=self.meta_data,
+                as_type=self.as_type,
+                qpretrieve_kw=self.qpretrieve_kw)
         return self._dataset[idx]
 
     @staticmethod

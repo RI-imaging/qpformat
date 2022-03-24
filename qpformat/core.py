@@ -18,7 +18,8 @@ def guess_format(path):
 
 
 def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
-              meta_data=None, holo_kw=None, as_type="float32"):
+              meta_data=None, holo_kw=None, qpretrieve_kw=None,
+              as_type="float32"):
     """Load experimental data
 
     Parameters
@@ -33,12 +34,15 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     bg_fmt: str
         The file format to use (see `file_formats.formats`)
         for the background. If set to `None`, the file format
-        is be guessed.
+        is guessed.
     meta_data: dict
         Meta data (see `qpimage.meta.META_KEYS`)
     holo_kw: dict
-        Keyword arguments for hologram data; See
-        :func:`qpimage.holo.get_field` for valid keyword arguments.
+        Deprecated, please use `qpretrieve_kw` instead!
+    qpretrieve_kw: dict
+        Keyword arguments passed to
+        :ref:`qpretrieve <qpretrieve:index>` for
+        phase retrieval from interferometric data.
     as_type: str
         Defines the data type that the input data is casted to.
         The default is "float32" which saves memory. If high
@@ -51,8 +55,6 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     dataobj: SeriesData or SingleData
         Object that gives lazy access to the experimental data.
     """
-    if holo_kw is None:
-        holo_kw = {}
     if meta_data is None:
         meta_data = {}
     path = pathlib.Path(path).resolve()
@@ -77,6 +79,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     dataobj = formats_dict[fmt](path=path,
                                 meta_data=meta_data,
                                 holo_kw=holo_kw,
+                                qpretrieve_kw=qpretrieve_kw,
                                 as_type=as_type)
 
     if bg_data is not None:
@@ -91,6 +94,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
                 bgobj = formats_dict[bg_fmt](path=bg_path,
                                              meta_data=meta_data,
                                              holo_kw=holo_kw,
+                                             qpretrieve_kw=qpretrieve_kw,
                                              as_type=as_type)
                 dataobj.set_bg(bgobj)
 

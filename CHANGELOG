@@ -1,8 +1,10 @@
 0.13.0
  - BREAKING CHANGE: renamed all file format classes
  - feat: add file format class for QLSI data
- - setup: bump qpimage from 0.7.7 to 0.8.0
+ - feat: support series files in SeriesFolder format
+ - setup: bump qpimage from 0.7.7 to 0.8.3
  - ref: simplify submodule structure and detection of file formats
+ - ref: deprecate `holo_kw`
 0.12.1
  - maintenance release
 0.12.0

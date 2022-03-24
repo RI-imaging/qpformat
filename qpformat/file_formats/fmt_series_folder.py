@@ -25,14 +25,14 @@ class SeriesFolder(SeriesData):
         super(SeriesFolder, self).__init__(*args, **kwargs)
         self._files = None
         self._formats = None
-        self._dataset = None
-
+        self._series = None
         self.format_dict = get_format_dict()
 
+    @lru_cache()
     def __len__(self):
-        return len(self.files)
+        return len(self._get_sub_image_mapping())
 
-    @lru_cache(maxsize=32)
+    @lru_cache()
     def _get_cropped_file_names(self):
         """self.files with common path prefix/suffix removed"""
         files = [ff.name for ff in self.files]
@@ -41,26 +41,29 @@ class SeriesFolder(SeriesData):
         cropped = [f[len(prefix):-len(suffix)] for f in files]
         return cropped
 
-    def _get_dataset(self, idx):
-        if self._dataset is None:
-            self._dataset = [None] * len(self)
-        if self._dataset[idx] is None:
-            format_class = self.format_dict[self._formats[idx]]
-            self._dataset[idx] = format_class(path=self._files[idx],
-                                              meta_data=self.meta_data,
-                                              as_type=self.as_type,
-                                              holo_kw=self.holo_kw)
-        if len(self._dataset[idx]) != 1:
-            msg = "Multiple images per file are not supported in the " \
-                  + "SeriesFolder file format! Besides the fact that it " \
-                  + "would add unnecessary complexity, it is also really a " \
-                  + "bad idea to do this. Please restructure your " \
-                  + "workflow accordingly. The offending file is " \
-                  + "'{}'.".format(self.files[idx])
-            raise NotImplementedError(msg)
-        return self._dataset[idx]
+    def _get_series_from_file(self, file_idx):
+        if self._series is None:
+            self._series = [None] * len(self.files)
+        if self._series[file_idx] is None:
+            format_class = self.format_dict[self._formats[file_idx]]
+            self._series[file_idx] = format_class(
+                path=self._files[file_idx],
+                meta_data=self.meta_data,
+                as_type=self.as_type,
+                qpretrieve_kw=self.qpretrieve_kw)
+        return self._series[file_idx]
 
-    @lru_cache(maxsize=32)
+    @lru_cache()
+    def _get_sub_image_mapping(self):
+        mapping = []
+        for file_idx in range(len(self.files)):
+            ds = self._get_series_from_file(file_idx)
+            for jj in range(len(ds)):
+                # index of file, index of image in file
+                mapping.append((file_idx, jj))
+        return mapping
+
+    @lru_cache()
     def _identifier_data(self):
         """Return a unique identifier for the folder data"""
         # Use only file names
@@ -79,6 +82,9 @@ class SeriesFolder(SeriesData):
 
         .. versionchanged:: 0.6.0
             `path` is not searched recursively anymore
+
+        .. versionchanged:: 0.13.0
+            series file formats are now supported
         """
         path = pathlib.Path(path)
         fifo = []
@@ -87,12 +93,11 @@ class SeriesFolder(SeriesData):
             if fp.is_dir():
                 continue
             for fmt in get_format_classes():
-                # series data is not supported in SeriesFolder
-                if not fmt.is_series and fmt.verify(fp):
+                if fmt.verify(fp):
                     fifo.append((fp, fmt.__name__))
                     break
 
-        # ignore qpimage formats if multiple formats were
+        # Ignore qpimage formats if multiple formats were
         # detected.
         theformats = [ff[1] for ff in fifo]
         formset = set(theformats)
@@ -100,18 +105,21 @@ class SeriesFolder(SeriesData):
             fmts_qpimage = ["SinglePhaseQpimageHDF5",
                             "SeriesPhaseQpimageHDF5"]
             fifo = [ff for ff in fifo if ff[1] not in fmts_qpimage]
-        # ignore raw tif files if single_tif_phasics is detected
+
+        # Ignore raw tif files if SinglePhasePhasicsTif is detected
         if len(formset) > 1 and "SinglePhasePhasicsTif" in theformats:
             fmts_badtif = "SingleRawOAHTif"
             fifo = [ff for ff in fifo if ff[1] not in fmts_badtif]
-        # otherwise, prevent multiple file formats
+
+        # Otherwise, prevent multiple file formats in one directory.
         theformats2 = [ff[1] for ff in fifo]
         formset2 = set(theformats2)
         if len(formset2) > 1:
             msg = "Qpformat does not support multiple different file " \
                   + "formats within one directory: {}".format(formset2)
             raise MultipleFormatsNotSupportedError(msg)
-        # sort the lists
+
+        # Finally, sort the list.
         fifo = sorted(fifo)
         return fifo
 
@@ -127,7 +135,7 @@ class SeriesFolder(SeriesData):
     @property
     def storage_type(self):
         """The storage type depends on the wrapped file format"""
-        ds = self._get_dataset(0)
+        ds = self._get_series_from_file(0)
         return ds.storage_type
 
     def get_identifier(self, idx):
@@ -136,24 +144,28 @@ class SeriesFolder(SeriesData):
         .. versionchanged:: 0.4.2
             indexing starts at 1 instead of 0
         """
-        name = self._get_cropped_file_names()[idx]
-        return "{}:{}:{}".format(self.identifier, name, idx + 1)
+        file_idx, jj = self._get_sub_image_mapping()[idx]
+        name = self._get_cropped_file_names()[file_idx]
+        return f"{self.identifier}:{name}:{jj}:{idx}"
 
     def get_name(self, idx):
         """Return name of data at index `idx`
 
         .. versionadded:: 0.4.2
         """
-        return "{}".format(self.path / self.files[idx])
+        file_idx, jj = self._get_sub_image_mapping()[idx]
+        return f"{self.path / self.files[file_idx]}:{jj}"
 
     def get_time(self, idx):
-        ds = self._get_dataset(idx)
-        return ds.get_time()
+        file_idx, jj = self._get_sub_image_mapping()[idx]
+        ds = self._get_series_from_file(file_idx)
+        return ds.get_time(jj)
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
-        ds = self._get_dataset(idx)
-        qpi = ds.get_qpimage_raw()
+        file_idx, jj = self._get_sub_image_mapping()[idx]
+        ds = self._get_series_from_file(file_idx)
+        qpi = ds.get_qpimage_raw(jj)
         qpi["identifier"] = self.get_identifier(idx)
         return qpi
 

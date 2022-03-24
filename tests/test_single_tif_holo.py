@@ -18,8 +18,8 @@ def test_basic():
 
 def test_identifier():
     path = datapath / "single_holo.tif"
-    ds = qpformat.load_data(path, holo_kw={"sideband": 1})
-    assert ds.identifier == "b65c8"
+    ds = qpformat.load_data(path, qpretrieve_kw={"invert_phase": False})
+    assert ds.identifier == "9e409"
 
 
 def test_load_data():
