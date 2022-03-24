@@ -65,10 +65,10 @@ class SeriesData(object):
         self.format = self.__class__.__name__
 
     def __repr__(self):
-        rep = f"QPFormat '{self.format}'" \
-              + f", {len(self)} image(s)" \
-              + f"at {hex(id(self))}" \
-              + "\nfile: {self.path}"
+        rep = f"<qpformat {self.format} '{self.path}'" \
+              + f", {len(self)} image" \
+              + ("s " if len(self) > 1 else " ") \
+              + f"at {hex(id(self))}>"
 
         meta = []
         if "wavelength" in self.meta_data:
