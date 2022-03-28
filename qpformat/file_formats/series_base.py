@@ -202,6 +202,15 @@ class SeriesData(object):
         """
         return "{}:{}".format(self.identifier, idx + 1)
 
+    def get_metadata(self, idx):
+        """Return the metadata of data at index `idx`
+
+        Subclasses should implement this with speed in mind.
+        """
+        meta_data = copy.deepcopy(self.meta_data)
+        meta_data["identifier"] = self.get_identifier(idx)
+        return meta_data
+
     def get_name(self, idx):
         """Return name of data at index `idx`
 
@@ -209,18 +218,6 @@ class SeriesData(object):
             indexing starts at 1 instead of 0
         """
         return "{}:{}".format(self.path, idx + 1)
-
-    def get_time(self, idx):
-        """Return time of data at index `idx`
-
-        Returns nan if the time is not defined"""
-        # raw data
-        qpi = self.get_qpimage_raw(idx)
-        if "time" in qpi.meta:
-            thetime = qpi.meta["time"]
-        else:
-            thetime = np.nan
-        return thetime
 
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
@@ -254,6 +251,12 @@ class SeriesData(object):
         Note that this method must always return a QPImage instance with
         the "identifier" metadata key set!
         """
+
+    def get_time(self, idx):
+        warnings.warn("`get_time` is deprecated, use "
+                      "`get_metadata().get('time', np.nan)` instead!",
+                      DeprecationWarning)
+        return self.get_metadata(idx).get('time', np.nan)
 
     def saveh5(self, h5file, qpi_slice=None, series_slice=None,
                time_interval=None, count=None, max_count=None):
@@ -315,7 +318,7 @@ class SeriesData(object):
         with qpimage.QPSeries(**qpskw) as qps:
             increment = 0
             for ii in sl:
-                ti = self.get_time(ii)
+                ti = self.get_metadata(ii).get("time", np.nan)
                 if ti < ta or ti > tb:
                     # Not part of the series
                     pass

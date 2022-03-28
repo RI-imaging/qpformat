@@ -61,17 +61,21 @@ class SeriesPhasePhasicsZipTif(SeriesData):
             self._files = SeriesPhasePhasicsZipTif._index_files(self.path)
         return self._files
 
+    def get_metadata(self, idx):
+        meta_data = self._get_dataset(idx).get_metadata()
+
+        smeta = super(SeriesPhasePhasicsZipTif, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
+
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
         qpi = ds.get_qpimage_raw()
-        qpi["identifier"] = self.get_identifier(idx)
+        meta_data = self.get_metadata(idx)
+        for key in meta_data:
+            qpi[key] = meta_data[key]
         return qpi
-
-    def get_time(self, idx):
-        # Obtain the time from the tif meta data
-        ds = self._get_dataset(idx)
-        return ds.get_time()
 
     @staticmethod
     def verify(path):

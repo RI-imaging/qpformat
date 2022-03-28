@@ -23,6 +23,18 @@ class SinglePhaseQpimageHDF5(SingleData):
                     and key in attrs):
                 self.meta_data[key] = attrs[key]
 
+    def get_metadata(self, idx=0):
+        meta_data = {}
+        with qpimage.QPImage(h5file=self.path,
+                             h5mode="r",
+                             h5dtype=self.as_type,
+                             ) as qpi:
+            meta_data.update(qpi.meta)
+
+        smeta = super(SinglePhaseQpimageHDF5, self).get_metadata()
+        meta_data.update(smeta)
+        return meta_data
+
     def get_qpimage(self, idx=0):
         """Return background-corrected QPImage"""
         if self._bgdata:
@@ -36,10 +48,9 @@ class SinglePhaseQpimageHDF5(SingleData):
                                   h5dtype=self.as_type,
                                   ).copy()
             # Force meta data
-            for key in self.meta_data:
-                qpi[key] = self.meta_data[key]
-            # set identifier
-            qpi["identifier"] = self.get_identifier(idx)
+            meta_data = self.get_metadata()
+            for key in meta_data:
+                qpi[key] = meta_data[key]
         return qpi
 
     def get_qpimage_raw(self, idx=0):
@@ -51,10 +62,9 @@ class SinglePhaseQpimageHDF5(SingleData):
         # Remove previously performed background correction
         qpi.set_bg_data(None)
         # Force meta data
-        for key in self.meta_data:
-            qpi[key] = self.meta_data[key]
-        # set identifier
-        qpi["identifier"] = self.get_identifier(idx)
+        meta_data = self.get_metadata()
+        for key in meta_data:
+            qpi[key] = meta_data[key]
         return qpi
 
     @staticmethod

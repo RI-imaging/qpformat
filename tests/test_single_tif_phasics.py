@@ -58,7 +58,7 @@ def test_load_data():
 def test_data_content():
     path = datapath / "single_phasics.tif"
     ds = qpformat.load_data(path)
-    assert ds.get_time() == 1461951095.00827
+    assert ds.get_metadata().get('time', np.nan) == 1461951095.00827
     qpi = ds.get_qpimage()
     assert qpi.meta["wavelength"] == 550e-9
     assert np.allclose(qpi.amp.max(), 188.57930365845519)

@@ -1,5 +1,4 @@
 import calendar
-import copy
 from os import fspath
 import time
 import xml.etree.ElementTree as ET
@@ -99,11 +98,13 @@ class SinglePhasePhasicsTif(SingleData):
             wavelength = np.nan
         return wavelength
 
-    def get_time(self, idx=0):
-        """Return the time of the tif data since the epoch
+    def get_metadata(self, idx=0):
+        """Get image metadata
 
         The time is stored in the "61238" tag.
         """
+        meta_data = {}
+
         timestr = SinglePhasePhasicsTif._get_meta_data(
             path=self.path,
             section="acquisition info",
@@ -117,9 +118,11 @@ class SinglePhasePhasicsTif(SingleData):
             fracsec = float(timeus) * 1e-5
             # use calendar, because we need UTC
             thetime = calendar.timegm(structtime) + fracsec
-        else:
-            thetime = np.nan
-        return thetime
+            meta_data["time"] = thetime
+
+        smeta = super(SinglePhasePhasicsTif, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
 
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
@@ -175,15 +178,10 @@ class SinglePhasePhasicsTif(SingleData):
                 # convert from [nm] to [rad]
                 pha = opd / (self.meta_data["wavelength"] * 1e9) * 2 * np.pi
 
-        meta_data = copy.copy(self.meta_data)
-        if "time" not in meta_data:
-            meta_data["time"] = self.get_time()
         qpi = qpimage.QPImage(data=(pha, inten),
                               which_data="phase,intensity",
-                              meta_data=meta_data,
+                              meta_data=self.get_metadata(idx),
                               h5dtype=self.as_type)
-        # set identifier
-        qpi["identifier"] = self.get_identifier()
         return qpi
 
     @staticmethod

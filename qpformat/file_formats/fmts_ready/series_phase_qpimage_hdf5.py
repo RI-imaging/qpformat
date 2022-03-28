@@ -31,6 +31,16 @@ class SeriesPhaseQpimageHDF5(SeriesData):
     def _qpseries(self):
         return qpimage.QPSeries(h5file=self.path, h5mode="r")
 
+    def get_metadata(self, idx):
+        meta_data = {}
+        with self._qpseries() as qps:
+            qpi = qps.get_qpimage(index=idx)
+            meta_data.update(qpi.meta)
+
+        smeta = super(SeriesPhaseQpimageHDF5, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
+
     def get_qpimage(self, idx):
         """Return background-corrected QPImage of data at index `idx`"""
         if self._bgdata:
@@ -42,10 +52,9 @@ class SeriesPhaseQpimageHDF5(SeriesData):
             with self._qpseries() as qps:
                 qpi = qps.get_qpimage(index=idx).copy()
             # Force meta data
-            for key in self.meta_data:
-                qpi[key] = self.meta_data[key]
-            # set identifier
-            qpi["identifier"] = self.get_identifier(idx)
+            meta_data = self.get_metadata(idx)
+            for key in meta_data:
+                qpi[key] = meta_data[key]
         return qpi
 
     def get_qpimage_raw(self, idx):
@@ -55,10 +64,9 @@ class SeriesPhaseQpimageHDF5(SeriesData):
         # Remove previously performed background correction
         qpi.set_bg_data(None)
         # Force meta data
-        for key in self.meta_data:
-            qpi[key] = self.meta_data[key]
-        # set identifier
-        qpi["identifier"] = self.get_identifier(idx)
+        meta_data = self.get_metadata(idx)
+        for key in meta_data:
+            qpi[key] = meta_data[key]
         return qpi
 
     @staticmethod

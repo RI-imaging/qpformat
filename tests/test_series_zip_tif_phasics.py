@@ -27,9 +27,9 @@ def test_data_content():
     path = datapath / "series_phasics.zip"
     ds = qpformat.load_data(path)
     assert len(ds) == 3
-    assert ds.get_time(0) == 1461949418.29027
-    assert ds.get_time(1) == 1461949418.62727
-    assert ds.get_time(2) == 1461949419.11427
+    assert ds.get_metadata(0).get('time', np.nan) == 1461949418.29027
+    assert ds.get_metadata(1).get('time', np.nan) == 1461949418.62727
+    assert ds.get_metadata(2).get('time', np.nan) == 1461949419.11427
     qpi = ds.get_qpimage(0)
     assert qpi.meta["wavelength"] == 550e-9
     assert np.allclose(qpi.amp.max(), 183.96992660669972)

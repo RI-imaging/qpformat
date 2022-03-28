@@ -63,32 +63,38 @@ class SeriesRawOAHZipTif(SeriesData):
             self._files = SeriesRawOAHZipTif._index_files(self.path)
         return self._files
 
-    def get_time(self, idx):
-        """Time for each TIFF file
+    @functools.cache
+    def get_metadata(self, idx):
+        """Metadata for each TIFF file
 
         If there are no metadata keyword arguments defined for the
         TIFF file format, then the zip file `date_time` value is
         used.
         """
+        meta_data = {}
         # first try to get the time from the TIFF file
         # (possible meta data keywords)
         ds = self._get_dataset(idx)
-        thetime = ds.get_time()
+        thetime = ds.get_metadata().get("time", np.nan)
         if np.isnan(thetime):
             # use zipfile date_time
             zf = zipfile.ZipFile(self.path)
             info = zf.getinfo(self.files[idx])
             timetuple = tuple(list(info.date_time) + [0, 0, 0])
             thetime = time.mktime(timetuple)
-        return thetime
+        meta_data["time"] = thetime
+
+        smeta = super(SeriesRawOAHZipTif, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         ds = self._get_dataset(idx)
         qpi = ds.get_qpimage_raw()
-        # set identifier
-        qpi["identifier"] = self.get_identifier(idx)
-        qpi["time"] = self.get_time(idx)
+        meta_data = self.get_metadata(idx)
+        for key in meta_data:
+            qpi[key] = meta_data[key]
         return qpi
 
     @staticmethod

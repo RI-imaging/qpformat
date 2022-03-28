@@ -4,6 +4,7 @@ import tempfile
 import time
 import zipfile
 
+import numpy as np
 import qpformat
 
 
@@ -41,9 +42,9 @@ def test_basic():
 def test_time():
     path = setup_test_zip(2)
     ds = qpformat.load_data(path)
-    ds.get_time(0)
+    ds.get_metadata(0).get('time', np.nan)
     # this is the creation date of "single_holo.tif"
-    assert ds.get_time(0) == DATATIME - UTCOFFSET
+    assert ds.get_metadata(0).get('time', np.nan) == DATATIME - UTCOFFSET
 
 
 def test_load_data():

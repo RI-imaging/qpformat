@@ -148,6 +148,11 @@ class SeriesFolder(SeriesData):
         name = self._get_cropped_file_names()[file_idx]
         return f"{self.identifier}:{name}:{jj}:{idx}"
 
+    def get_metadata(self, idx):
+        file_idx, jj = self._get_sub_image_mapping()[idx]
+        ds = self._get_series_from_file(file_idx)
+        return ds.get_metadata(jj)
+
     def get_name(self, idx):
         """Return name of data at index `idx`
 
@@ -155,11 +160,6 @@ class SeriesFolder(SeriesData):
         """
         file_idx, jj = self._get_sub_image_mapping()[idx]
         return f"{self.path / self.files[file_idx]}:{jj}"
-
-    def get_time(self, idx):
-        file_idx, jj = self._get_sub_image_mapping()[idx]
-        ds = self._get_series_from_file(file_idx)
-        return ds.get_time(jj)
 
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""

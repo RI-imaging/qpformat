@@ -59,7 +59,7 @@ def test_meta():
     np.save(tf, data)
 
     ds = qpformat.load_data(path=tf, meta_data={"time": 47})
-    assert ds.get_time() == 47
+    assert ds.get_metadata().get('time', np.nan) == 47
     # use `.name` because of short-hand paths on Windows
     assert pathlib.Path(tf).name in ds.get_name()
 

@@ -48,7 +48,7 @@ class SeriesRawOAHHyperSpyHDF5(SeriesData):
             warnings.warn(msg, WrongSignalTypeWarnging)
         return signal_type == "hologram"
 
-    @functools.lru_cache(maxsize=5)
+    @functools.cache
     def _get_experiments(self):
         """Get all experiments from the hdf5 file"""
         explist = []
@@ -68,6 +68,27 @@ class SeriesRawOAHHyperSpyHDF5(SeriesData):
             raise HyperSpyNoDataFoundError(msg)
         return explist
 
+    @functools.cache
+    def get_metadata(self, idx=0):
+        name = self._get_experiments()[idx]
+        with h5py.File(name=self.path, mode="r") as h5:
+            exp = h5["Experiments"][name]
+            runit = exp["axis-0"].attrs["units"]
+            # resolution
+            rx = exp["axis-0"].attrs["scale"]
+            ry = exp["axis-1"].attrs["scale"]
+            if rx != ry:
+                raise NotImplementedError("Only square pixels supported!")
+            if runit == "nm":
+                pixel_size = rx * 1e-9
+            else:
+                raise NotImplementedError("Units '{}' not implemented!")
+
+        meta_data = {"pixel size": pixel_size}
+        smeta = super(SeriesRawOAHHyperSpyHDF5, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
+
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         name = self._get_experiments()[idx]
@@ -75,23 +96,10 @@ class SeriesRawOAHHyperSpyHDF5(SeriesData):
             exp = h5["Experiments"][name]
             # hologram data
             data = exp["data"][:]
-            # resolution
-            rx = exp["axis-0"].attrs["scale"]
-            ry = exp["axis-1"].attrs["scale"]
-            if rx != ry:
-                raise NotImplementedError("Only square pixels supported!")
-            runit = exp["axis-0"].attrs["units"]
-            if runit == "nm":
-                pixel_size = rx * 1e-9
-            else:
-                raise NotImplementedError("Units '{}' not implemented!")
-
-        meta_data = {"pixel size": pixel_size}
-        meta_data.update(self.meta_data)
 
         qpi = qpimage.QPImage(data=data,
                               which_data="raw-oah",
-                              meta_data=meta_data,
+                              meta_data=self.get_metadata(idx),
                               qpretrieve_kw=self.qpretrieve_kw,
                               h5dtype=self.as_type)
         # set identifier

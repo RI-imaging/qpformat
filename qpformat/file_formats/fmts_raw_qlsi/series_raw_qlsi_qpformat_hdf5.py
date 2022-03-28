@@ -1,4 +1,3 @@
-import copy
 import functools
 
 import h5py
@@ -28,27 +27,31 @@ class SeriesRawQLSIQpformatHDF5(SeriesData):
             thetime = ds.attrs.get("time", np.nan)
         return thetime
 
+    def get_metadata(self, idx):
+        """Get metadata directly from HDF5 attributes"""
+        meta_data = {}
+        with h5py.File(self.path) as h5:
+            ds = h5[str(idx)]
+            attrs = dict(ds.attrs)
+            for key in qpimage.meta.META_KEYS:
+                if key in attrs:
+                    meta_data[key] = attrs[key]
+
+        smeta = super(SeriesRawQLSIQpformatHDF5, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
+
     def get_qpimage_raw(self, idx):
         """Return QPImage without background correction"""
         with h5py.File(self.path) as h5:
             ds = h5[str(idx)]
-            attrs = dict(ds.attrs)
             data = ds[:]
-
-        meta_data = copy.deepcopy(self.meta_data)
-        for key in qpimage.meta.META_KEYS:
-            if (key not in self.meta_data
-                    and key in attrs):
-                meta_data[key] = attrs[key]
 
         qpi = qpimage.QPImage(data=data,
                               which_data="raw-qlsi",
-                              meta_data=meta_data,
+                              meta_data=self.get_metadata(idx),
                               qpretrieve_kw=self.qpretrieve_kw,
                               h5dtype=self.as_type)
-        # set identifier
-        qpi["identifier"] = self.get_identifier(idx)
-        qpi["time"] = self.get_time(idx)
         return qpi
 
     @staticmethod

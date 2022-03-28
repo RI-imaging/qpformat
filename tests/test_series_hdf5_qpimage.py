@@ -47,7 +47,7 @@ def test_load_data():
     ds = qpformat.load_data(tf)
     assert len(ds) == 2
     assert ds.path.samefile(pathlib.Path(tf))
-    assert np.isnan(ds.get_time(1))
+    assert np.isnan(ds.get_metadata(1).get('time', np.nan))
     assert "SeriesPhaseQpimageHDF5" in ds.__repr__()
     qpd = ds.get_qpimage(1)
     assert qpd["identifier"] != qpi1["identifier"]
@@ -138,7 +138,7 @@ def test_subjoined_load_data():
     ds = qpformat.load_data(tf)
     assert len(ds) == 2
     assert ds.path.samefile(pathlib.Path(tf))
-    assert np.isnan(ds.get_time(1))
+    assert np.isnan(ds.get_metadata(1).get('time', np.nan))
     assert "SeriesPhaseQpimageSubjoinedHDF5" in ds.__repr__()
     qpd = ds.get_qpimage(1)
     assert qpd["identifier"] != qpi1["identifier"]

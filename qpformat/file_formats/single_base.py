@@ -14,6 +14,9 @@ class SingleData(SeriesData, abc.ABC):
     def get_identifier(self, idx=0):
         return self.identifier
 
+    def get_metadata(self, idx=0):
+        return super(SingleData, self).get_metadata(idx=0)
+
     def get_name(self, idx=0):
         return super(SingleData, self).get_name(idx=0)
 
@@ -31,3 +34,11 @@ class SingleData(SeriesData, abc.ABC):
         """
         thetime = super(SingleData, self).get_time(idx=0)
         return thetime
+
+    def get_wavelength(self, idx=0):
+        """Time of the data
+
+        Returns nan if the time is not defined
+        """
+        wl = super(SingleData, self).get_wavelength(idx=0)
+        return wl

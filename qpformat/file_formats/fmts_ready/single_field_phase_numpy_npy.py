@@ -1,4 +1,3 @@
-import copy
 from functools import lru_cache
 import pathlib
 
@@ -33,13 +32,10 @@ class SingleFieldPhaseNumpyNpy(SingleData):
         """Return QPImage without background correction"""
         # Load experimental data
         nf = np.load(str(self.path), mmap_mode="c", allow_pickle=False)
-        meta_data = copy.copy(self.meta_data)
         qpi = qpimage.QPImage(data=nf,
                               which_data=self.storage_type,
-                              meta_data=meta_data,
+                              meta_data=self.get_metadata(),
                               h5dtype=self.as_type)
-        # get identifier
-        qpi["identifier"] = self.get_identifier(idx)
         return qpi
 
     @staticmethod

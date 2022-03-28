@@ -114,22 +114,29 @@ class SeriesFieldSinogramMeepHDF5(SeriesData):
 
         meta["sim center"] = np.array(dataset.shape) / 2
         meta["sim model"] = "fdtd"
-
         return meta
+
+    def get_metadata(self, idx):
+        name = self._get_data_indices()[idx]
+        with h5py.File(name=self.path, mode="r") as h5:
+            dataset = h5["sinogram"][name]["field"]
+            meta_data = self._get_metadata(dataset)
+        meta_data["time"] = float(idx)
+
+        smeta = super(SeriesFieldSinogramMeepHDF5, self).get_metadata(idx)
+        meta_data.update(smeta)
+        return meta_data
 
     def get_qpimage_raw(self, idx=0):
         """Return QPImage without background correction"""
         name = self._get_data_indices()[idx]
         with h5py.File(name=self.path, mode="r") as h5:
-            dataset = h5["sinogram"][name]["field"]
-            meta_data = self._get_metadata(dataset)
-            meta_data["time"] = float(idx)
-            qpi = qpimage.QPImage(data=dataset[:],
-                                  which_data="field",
-                                  meta_data=meta_data,
-                                  h5dtype=self.as_type)
-        # set identifier
-        qpi["identifier"] = self.get_identifier(idx)
+            data = h5["sinogram"][name]["field"][:]
+
+        qpi = qpimage.QPImage(data=data,
+                              which_data="field",
+                              meta_data=self.get_metadata(idx),
+                              h5dtype=self.as_type)
         return qpi
 
     @staticmethod
