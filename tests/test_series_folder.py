@@ -74,7 +74,8 @@ def test_load_data():
     assert qpi0 == qpi1
     assert ds.get_qpimage_raw(0) == ds.get_qpimage_raw(1)
     assert ds.get_qpimage(0).shape == (50, 50)
-    assert np.isnan(ds.get_metadata(0).get('time', np.nan)), "no time defined in original file"
+    assert np.isnan(ds.get_metadata(0).get('time', np.nan)
+                    ), "no time defined in original file"
     # format should be right
     assert ds.verify(ds.path)
     assert ds.__class__.__name__ == "SeriesFolder"
