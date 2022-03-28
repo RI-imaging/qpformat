@@ -29,7 +29,7 @@ def load_data(path, fmt=None, bg_data=None, bg_fmt=None,
     fmt: str
         The file format to use (see `file_formats.formats`).
         If set to `None`, the file format is guessed.
-    bg_data: str or pathlib.Path
+    bg_data: str or pathlib.Path or qpimage.QPImage
         Path to background data file or `qpimage.QPImage`
     bg_fmt: str
         The file format to use (see `file_formats.formats`)
