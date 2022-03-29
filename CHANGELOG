@@ -1,5 +1,6 @@
 0.13.1
  - ref: deprecate get_time in favor of get_metadata
+ - setup: bump qpimage from 0.8.3 to 0.8.5
 0.13.0
  - BREAKING CHANGE: renamed all file format classes
  - feat: add file format class for QLSI data
