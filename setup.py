@@ -23,11 +23,12 @@ setup(
     license="MIT",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["h5py>=2.7.0",
-                      "numpy>=1.12.0",
-                      "qpimage>=0.8.5",
-                      "tifffile>=2020.5.25",
-                      ],
+    install_requires=[
+        "h5py>=3.5.0",  # no timestamps for datasets in 3.5
+        "numpy>=1.12.0",
+        "qpimage>=0.9.1",
+        "tifffile>=2020.5.25",
+        ],
     python_requires='>=3.9, <4',
     entry_points={
        "console_scripts": [

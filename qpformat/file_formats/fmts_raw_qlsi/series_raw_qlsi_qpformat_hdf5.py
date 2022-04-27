@@ -1,3 +1,4 @@
+import copy
 import functools
 
 import h5py
@@ -8,7 +9,13 @@ from ..series_base import SeriesData
 
 
 class SeriesRawQLSIQpformatHDF5(SeriesData):
-    """Raw quadriwave lateral shearing interferometry series data (HDF5)"""
+    """Raw quadriwave lateral shearing interferometry series data (HDF5)
+
+    If you would like to have gradient-based background correction,
+    you must store a reference image in the HDF5 dataset named
+    "reference" (next to the "0", "1", etc. datasets with your
+    measurement data).
+    """
     storage_type = "raw-qlsi"
     priority = -10  # higher priority, because it's fast
 
@@ -18,7 +25,8 @@ class SeriesRawQLSIQpformatHDF5(SeriesData):
     @functools.cache
     def __len__(self):
         with h5py.File(self.path) as h5:
-            return len(h5)
+            has_ref = "reference" in h5
+            return len(h5) - has_ref
 
     def get_time(self, idx):
         """Time for each dataset"""
@@ -42,15 +50,41 @@ class SeriesRawQLSIQpformatHDF5(SeriesData):
         return meta_data
 
     def get_qpimage_raw(self, idx):
-        """Return QPImage without background correction"""
+        """Return raw QPImage (can already be background-corrected)
+
+        Note that this QLSI file format may contain a reference dataset
+        which will be taken into account during data processing.
+        In this case, the data returned by `get_qpimage_raw` is already
+        background-corrected with this reference image. The reason
+        behind this unintuitive behavior is that in QLSI, you can
+        perform the background correction in the phase gradient image
+        before integration (and not after computing the phase as in
+        e.g. DHM).
+        """
+        # Get metadata
+        metadata = self.get_metadata(idx)
+        qpretrieve_kw = copy.deepcopy(self.qpretrieve_kw)
+        if "wavelength" in metadata:
+            qpretrieve_kw.setdefault("wavelength", metadata["wavelength"])
+        # Load experimental data
         with h5py.File(self.path) as h5:
             ds = h5[str(idx)]
             data = ds[:]
+            # try to get optional reference data
+            if "reference" in h5:
+                bg_data = h5["reference"][:]
+            else:
+                bg_data = None
+            # get additional metadata required for data analysis
+            if "qlsi_pitch_term" in ds.attrs:
+                qpretrieve_kw.setdefault("qlsi_pitch_term",
+                                         ds.attrs["qlsi_pitch_term"])
 
         qpi = qpimage.QPImage(data=data,
+                              bg_data=bg_data,
                               which_data="raw-qlsi",
-                              meta_data=self.get_metadata(idx),
-                              qpretrieve_kw=self.qpretrieve_kw,
+                              meta_data=metadata,
+                              qpretrieve_kw=qpretrieve_kw,
                               h5dtype=self.as_type)
         return qpi
 
