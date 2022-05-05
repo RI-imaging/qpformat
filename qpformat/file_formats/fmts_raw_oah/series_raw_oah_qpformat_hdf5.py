@@ -17,7 +17,9 @@ class SeriesRawOAHQpformatHDF5(SeriesData):
     @functools.cache
     def __len__(self):
         with h5py.File(self.path) as h5:
-            return len(h5)
+            has_ref = "reference" in h5
+            has_logs = "logs" in h5
+            return len(h5) - has_ref - has_logs
 
     def get_metadata(self, idx):
         """Get metadata directly from HDF5 attributes"""

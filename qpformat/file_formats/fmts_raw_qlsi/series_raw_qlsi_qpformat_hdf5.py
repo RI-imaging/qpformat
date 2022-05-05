@@ -26,7 +26,8 @@ class SeriesRawQLSIQpformatHDF5(SeriesData):
     def __len__(self):
         with h5py.File(self.path) as h5:
             has_ref = "reference" in h5
-            return len(h5) - has_ref
+            has_logs = "logs" in h5
+            return len(h5) - has_ref - has_logs
 
     def get_time(self, idx):
         """Time for each dataset"""
