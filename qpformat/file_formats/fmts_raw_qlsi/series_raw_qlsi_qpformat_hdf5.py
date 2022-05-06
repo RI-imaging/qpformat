@@ -21,6 +21,10 @@ class SeriesRawQLSIQpformatHDF5(SeriesData):
 
     def __init__(self, *args, **kwargs):
         super(SeriesRawQLSIQpformatHDF5, self).__init__(*args, **kwargs)
+        # We keep a reference to the background data, because this way
+        # qpretrieve can keep a weak reference and remember the Fourier
+        # transform of the reference data.
+        self._bg_data = None
 
     @functools.cache
     def __len__(self):
@@ -72,17 +76,16 @@ class SeriesRawQLSIQpformatHDF5(SeriesData):
             ds = h5[str(idx)]
             data = ds[:]
             # try to get optional reference data
-            if "reference" in h5:
-                bg_data = h5["reference"][:]
-            else:
-                bg_data = None
+            if self._bg_data is None:
+                if "reference" in h5:
+                    self._bg_data = h5["reference"][:]
             # get additional metadata required for data analysis
             if "qlsi_pitch_term" in ds.attrs:
                 qpretrieve_kw.setdefault("qlsi_pitch_term",
                                          ds.attrs["qlsi_pitch_term"])
 
         qpi = qpimage.QPImage(data=data,
-                              bg_data=bg_data,
+                              bg_data=self._bg_data,
                               which_data="raw-qlsi",
                               meta_data=metadata,
                               qpretrieve_kw=qpretrieve_kw,

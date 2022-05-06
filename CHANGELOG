@@ -1,3 +1,7 @@
+0.14.2
+ - fix: keep a reference of the reference data for the QLSI
+   series file format, which enables qpretrieve 0.2.10 to make
+   use of its caching feature
 0.14.1
  - fix: support "logs" key in QLSI and OAH HDF5 file formats
 0.14.0
