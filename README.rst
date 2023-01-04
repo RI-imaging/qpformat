@@ -35,7 +35,7 @@ Testing
 
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/qpformat.svg
    :target: https://pypi.python.org/pypi/qpformat
-.. |Tests Status| image:: https://img.shields.io/github/workflow/status/RI-Imaging/qpformat/Checks
+.. |Tests Status| image:: https://img.shields.io/github/actions/workflow/status/RI-Imaging/qpformat/check.yml
    :target: https://github.com/RI-Imaging/qpformat/actions?query=workflow%3AChecks
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpformat/master.svg
    :target: https://codecov.io/gh/RI-imaging/qpformat
