@@ -30,7 +30,7 @@ setup(
         "qpretrieve>=0.3.0",
         "tifffile>=2020.5.25",
         ],
-    python_requires='>=3.9, <4',
+    python_requires='>=3.10, <4',
     entry_points={
        "console_scripts": [
            "qpinfo = qpformat.cli:qpinfo",
