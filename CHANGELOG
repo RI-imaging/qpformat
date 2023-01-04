@@ -1,3 +1,5 @@
+0.14.3
+ - setup: require qpretrieve 0.3.0
 0.14.2
  - fix: keep a reference of the reference data for the QLSI
    series file format, which enables qpretrieve 0.2.10 to make

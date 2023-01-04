@@ -27,6 +27,7 @@ setup(
         "h5py>=3.5.0",  # no timestamps for datasets in 3.5
         "numpy>=1.12.0",
         "qpimage>=0.9.1",
+        "qpretrieve>=0.3.0",
         "tifffile>=2020.5.25",
         ],
     python_requires='>=3.9, <4',
