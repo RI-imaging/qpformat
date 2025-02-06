@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=42", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qpformat"
+authors = [{ name = "Paul Müller", email = "dev@craban.de" }]
+description = "library for opening quantitative phase imaging data"
+readme = "README.rst"
+license = { text = "MIT" }
+requires-python = ">=3.10, <4"
+dynamic = ["version"]
+dependencies = [
+    "h5py>=3.5.0",
+    "numpy>=1.12.0",
+    "qpimage>=0.9.1",
+    "qpretrieve>=0.3.0",
+    "tifffile>=2020.5.25"
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research"
+]
+keywords = [
+    "data file format",
+    "digital holographic microscopy",
+    "quantitative phase imaging"
+]
+
+[project.scripts]
+qpinfo = "qpformat.cli:qpinfo"
+
+[project.urls]
+Homepage = "https://github.com/RI-imaging/qpimage"
+
+[tool.setuptools_scm]
+write_to = "qpformat/_version.py"
+version_scheme = "post-release"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qpformat"]
+
+
+
