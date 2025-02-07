@@ -108,3 +108,4 @@ examples/*.hdf5
 .pytest_cache
 
 .idea
+_version.py
